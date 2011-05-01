@@ -1,0 +1,9 @@
+bin/
+External/
+*.userprefs
+*~
+*.pidb
+*.suo
+obj/
+*.zip
+Wiki/

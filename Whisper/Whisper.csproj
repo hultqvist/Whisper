@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{20B8D0D2-F53D-4102-83EA-928450F3AEC7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Whisper</RootNamespace>
+    <AssemblyName>Whisper</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="Sender.cs" />
+    <Compile Include="Receiver.cs" />
+    <Compile Include="Key.cs" />
+    <Compile Include="Messages\ListMessage.cs" />
+    <Compile Include="Messages\RouteMessage.cs" />
+    <Compile Include="ID\IGenerateID.cs" />
+    <Compile Include="ID\ClearTextID.cs" />
+    <Compile Include="ID\RecipientID.cs" />
+    <Compile Include="Storages\DiskStorage.cs" />
+    <Compile Include="Storages\Storage.cs" />
+    <Compile Include="Storages\EncryptedStorage.cs" />
+    <Compile Include="ID\SenderID.cs" />
+    <Compile Include="Storages\ClearTextStorage.cs" />
+    <Compile Include="Storages\StorageFilter.cs" />
+    <Compile Include="Messages\SignedMessage.cs" />
+    <Compile Include="Messages\Message.cs" />
+    <Compile Include="HexParser.cs" />
+    <Compile Include="Blobs\Blob.cs" />
+    <Compile Include="Blobs\ClearID.cs" />
+    <Compile Include="Blobs\Hash.cs" />
+    <Compile Include="Blobs\BlobKeys.cs" />
+    <Compile Include="Blobs\CustomID.cs" />
+    <Compile Include="Blobs\BlobHash.cs" />
+    <Compile Include="Blobs\BinaryBlob.cs" />
+    <Compile Include="Messages\TreeMessage.cs" />
+    <Compile Include="Blobs\Tree.cs" />
+    <Compile Include="Blobs\StreamBlob.cs" />
+    <Compile Include="Blobs\BlobKey.cs" />
+    <Compile Include="PublicKey.cs" />
+    <Compile Include="PrivateKey.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Messages\" />
+    <Folder Include="ID\" />
+    <Folder Include="Storages\" />
+    <Folder Include="Blobs\" />
+  </ItemGroup>
+</Project>
