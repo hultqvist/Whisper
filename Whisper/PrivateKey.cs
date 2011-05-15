@@ -5,6 +5,11 @@ namespace Whisper
 {
 	public class PrivateKey : Key
 	{
+		public PrivateKey()
+		{
+		
+		}
+
 		public PrivateKey(string xmlKey)
 		{
 			rsa.FromXmlString(xmlKey);

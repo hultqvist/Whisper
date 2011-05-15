@@ -1,7 +1,7 @@
 using System;
 using System.Security.Cryptography;
 using System.IO;
-using Whisper.Blobs;
+using Whisper.Blobing;
 
 namespace Whisper
 {

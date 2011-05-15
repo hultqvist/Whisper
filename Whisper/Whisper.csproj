@@ -6,7 +6,7 @@
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{20B8D0D2-F53D-4102-83EA-928450F3AEC7}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>Whisper</RootNamespace>
     <AssemblyName>Whisper</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -33,46 +33,56 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Main.cs" />
-    <Compile Include="Sender.cs" />
-    <Compile Include="Receiver.cs" />
     <Compile Include="Key.cs" />
-    <Compile Include="Messages\ListMessage.cs" />
-    <Compile Include="Messages\RouteMessage.cs" />
-    <Compile Include="ID\IGenerateID.cs" />
-    <Compile Include="ID\ClearTextID.cs" />
-    <Compile Include="ID\RecipientID.cs" />
-    <Compile Include="Storages\DiskStorage.cs" />
-    <Compile Include="Storages\Storage.cs" />
-    <Compile Include="Storages\EncryptedStorage.cs" />
-    <Compile Include="ID\SenderID.cs" />
-    <Compile Include="Storages\ClearTextStorage.cs" />
-    <Compile Include="Storages\StorageFilter.cs" />
-    <Compile Include="Messages\SignedMessage.cs" />
-    <Compile Include="Messages\Message.cs" />
     <Compile Include="HexParser.cs" />
-    <Compile Include="Blobs\Blob.cs" />
-    <Compile Include="Blobs\ClearID.cs" />
-    <Compile Include="Blobs\Hash.cs" />
-    <Compile Include="Blobs\BlobKeys.cs" />
-    <Compile Include="Blobs\CustomID.cs" />
-    <Compile Include="Blobs\BlobHash.cs" />
-    <Compile Include="Blobs\BinaryBlob.cs" />
-    <Compile Include="Messages\TreeMessage.cs" />
-    <Compile Include="Blobs\Tree.cs" />
-    <Compile Include="Blobs\StreamBlob.cs" />
-    <Compile Include="Blobs\BlobKey.cs" />
     <Compile Include="PublicKey.cs" />
     <Compile Include="PrivateKey.cs" />
+    <Compile Include="KeyStorage.cs" />
+    <Compile Include="Messaging\ListMessage.cs" />
+    <Compile Include="Messaging\RouteMessage.cs" />
+    <Compile Include="Messaging\SignedMessage.cs" />
+    <Compile Include="Messaging\Message.cs" />
+    <Compile Include="Messaging\TreeMessage.cs" />
+    <Compile Include="Storing\DiskStorage.cs" />
+    <Compile Include="Storing\EncryptedStorage.cs" />
+    <Compile Include="Storing\ClearTextStorage.cs" />
+    <Compile Include="Storing\StorageFilter.cs" />
+    <Compile Include="Blobing\Blob.cs" />
+    <Compile Include="Blobing\BlobKeys.cs" />
+    <Compile Include="Blobing\CustomID.cs" />
+    <Compile Include="Blobing\BinaryBlob.cs" />
+    <Compile Include="Blobing\StreamBlob.cs" />
+    <Compile Include="Blobing\BlobKey.cs" />
+    <Compile Include="Blobing\TreeBlob.cs" />
+    <Compile Include="Storing\MultiStorage.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Storing\ClearTextID.cs" />
+    <Compile Include="Storing\IGenerateID.cs" />
+    <Compile Include="Storing\RecipientID.cs" />
+    <Compile Include="Storing\SenderID.cs" />
+    <Compile Include="Storing\NullID.cs" />
+    <Compile Include="BlobHash.cs" />
+    <Compile Include="Hash.cs" />
+    <Compile Include="Storage.cs" />
+    <Compile Include="Blobing\TrippleID.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Messages\" />
-    <Folder Include="ID\" />
-    <Folder Include="Storages\" />
-    <Folder Include="Blobs\" />
+    <Folder Include="Messaging\" />
+    <Folder Include="Storing\" />
+    <Folder Include="Blobing\" />
   </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="Hierarchical" ResourceNamePolicy="FileFormatDefault" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>
