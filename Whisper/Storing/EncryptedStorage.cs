@@ -134,7 +134,7 @@ namespace Whisper.Storing
 			return null;
 		}
 
-		void Decrypt(Blob blob)
+		bool Decrypt(Blob blob)
 		{
 			if (blob.Keys == null)
 				throw new InvalidDataException("Missing keys");
@@ -142,7 +142,7 @@ namespace Whisper.Storing
 			//Decrypt Key
 			BlobKey key = Decrypt(blob.Keys.Keys);
 			if (key == null)
-				throw new InvalidDataException("Could not decrypt key");
+				return false;
 			
 			blob.Keys.RM.Key = key.bytes;
 			
@@ -157,6 +157,7 @@ namespace Whisper.Storing
 				blob.Data = ms.ToArray();
 			}
 			blob.ClearHash = Hash.ComputeHash(blob.Data);
+			return true;
 		}
 
 	}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Whisper;
 using Whisper.Storing;
 using Whisper.Messaging;
+using System.IO;
 namespace Wcp
 {
 	public static class List
@@ -17,12 +18,10 @@ namespace Wcp
 
 			//Sender and Recipient keys
 			KeyStorage keyStorage = new KeyStorage();
-			PrivateKey key = keyStorage.DefaultKey;
 
 			//Find message
 			ICollection<BlobHash> messages = storage.GetMessageList();
 			EncryptedStorage es = new EncryptedStorage(storage, keyStorage);
-			es.AddKey(key);
 
 			//Iterate over all messages
 			foreach (BlobHash mid in messages)

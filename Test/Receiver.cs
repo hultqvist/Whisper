@@ -25,7 +25,7 @@ namespace Test
 		{
 			//Find message
 			ICollection<BlobHash> messages = storage.GetMessageList();
-			EncryptedStorage es = new EncryptedStorage(storage, keyStorage, null);
+			EncryptedStorage es = new EncryptedStorage(storage, keyStorage);
 
 			foreach (BlobHash mid in messages)
 			{
@@ -37,12 +37,12 @@ namespace Test
 					continue;
 				}
 
-				TreeMessage fm = message as TreeMessage;
-				if (fm != null)
+				TreeMessage tm = message as TreeMessage;
+				if (tm != null)
 				{
-					Console.WriteLine("Found TreeMessage " + fm.Name);
-					string targetPath = Path.Combine(target, fm.Name);
-					TreeBlob.Extract(es, fm.TreeID, targetPath);
+					Console.WriteLine("Found TreeMessage " + tm.Name);
+					string targetPath = Path.Combine(target, tm.Name);
+					TreeBlob.Extract(es, tm.TreeID, targetPath);
 					continue;
 				}
 

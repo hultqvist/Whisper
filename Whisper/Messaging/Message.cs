@@ -21,7 +21,8 @@ namespace Whisper.Messaging
 			if (id == 3)
 				return new ListMessage();
 
-			throw new ArgumentException("ID not found");
+			//MessageID not recognized
+			return null;
 		}
 
 		public static int GetID(Message message)
@@ -79,9 +80,14 @@ namespace Whisper.Messaging
 		}
 		public static Message FromBlob(Blob blob, KeyStorage keyStorage)
 		{
+			if (blob == null)
+				return null;
+			
 			int typeID = BitConverter.ToInt32(blob.Data, 0);
 			Message message = Message.FromID(typeID);
-			
+			if (message == null)
+				return null;
+
 			//all but last signature
 			byte[] data;
 			if (message is SignedMessage)
