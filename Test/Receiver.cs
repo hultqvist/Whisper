@@ -12,29 +12,25 @@ namespace Test
 	{
 		Storage storage;
 		string target;
-		Key key;
-		Key senderKey;
+		KeyStorage keyStorage;
 
-		public Receiver(Storage storage, string target, Key key, Key senderKey)
+		public Receiver(Storage storage, string target, KeyStorage keyStorage)
 		{
 			this.storage = storage;
 			this.target = target;
-			this.key = key;
-			this.senderKey = senderKey;
+			this.keyStorage = keyStorage;
 		}
 
 		public void Run()
 		{
 			//Find message
 			ICollection<BlobHash> messages = storage.GetMessageList();
-			EncryptedStorage es = new EncryptedStorage(storage, null);
-			es.AddKey(key);
-			es.AddKey(senderKey);
+			EncryptedStorage es = new EncryptedStorage(storage, keyStorage, null);
 
 			foreach (BlobHash mid in messages)
 			{
 				Blob blob = es.ReadBlob(mid);
-				Message message = Message.FromBlob(blob, senderKey);
+				Message message = Message.FromBlob(blob, keyStorage);
 				if (message == null)
 				{
 					Console.WriteLine("Missing key: " + mid);

@@ -77,7 +77,7 @@ namespace Whisper.Messaging
 		{
 			return FromBlob(blob, null);
 		}
-		public static Message FromBlob(Blob blob, Key signKey)
+		public static Message FromBlob(Blob blob, KeyStorage keyStorage)
 		{
 			int typeID = BitConverter.ToInt32(blob.Data, 0);
 			Message message = Message.FromID(typeID);
@@ -104,8 +104,14 @@ namespace Whisper.Messaging
 			{
 				byte[] sig = new byte[128];
 				Array.Copy(blob.Data, blob.Data.Length - sig.Length, sig, 0, sig.Length);
-				if (signKey.Verify(data, sig))
-					((SignedMessage) message).Signature = signKey;
+				foreach (PublicKey key in keyStorage.PublicKeys)
+				{
+					if (key.Verify(data, sig))
+					{
+						((SignedMessage) message).Signature = key;
+						break;
+					}
+				}
 			}
 			
 			return message;

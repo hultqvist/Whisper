@@ -10,25 +10,29 @@ namespace Wcp
 {
 	class MainClass
 	{
-		public static void Main(string[] args)
+		public static void Main (string[] args)
 		{
-			try
-			{
+			try {
 				if (args.Length == 0)
-					throw new HelpException();
+					throw new HelpException ("Missing command argument");
 				
-				if (args[0] == "list")
-					List.Main(args);
-				if (args[0] == "put")
-					Put.Main(args);
-				if (args[0] == "get")
-					Get.Main(args);
-				
-				Console.WriteLine("All done");
-			} catch (HelpException he)
-			{
-				Console.Error.WriteLine("Error: {0}", he.Message);
-				Console.WriteLine(@"
+				switch (args[0].ToLower()) {
+				case "list":
+					List.Main (args);
+					break;
+				case "put":
+					Put.Main (args);
+					break;
+				case "get":
+					Get.Main (args);
+					break;
+				default:
+					throw new HelpException ("Unknown command: " + args[0]);
+				}
+				Console.WriteLine ("All done");
+			} catch (HelpException he) {
+				Console.Error.WriteLine ("Error: {0}", he.Message);
+				Console.WriteLine (@"
 Usage: wcf.exe <command> [...]
 Where command is:
 	put <source directory> <storage path> <recipient name>

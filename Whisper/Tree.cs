@@ -82,7 +82,7 @@ namespace Whisper
 				IGenerateID id = null;
 				if(EncryptKeys.Count == 1)
 					id = new RecipientID(EncryptKeys.First());
-				s = new EncryptedStorage(s, id);
+				s = new EncryptedStorage(s, null, id);
 			}
 
 			//Storage preparation done

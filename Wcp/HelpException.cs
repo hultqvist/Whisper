@@ -6,10 +6,7 @@ namespace Wcp
 	/// </summary>
 	public class HelpException : Exception
 	{
-		public HelpException()
-		{
-		}
-		public HelpException(string message)
+		public HelpException(string message) : base(message)
 		{
 		}
 	}

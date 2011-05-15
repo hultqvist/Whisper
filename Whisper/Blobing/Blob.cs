@@ -62,7 +62,7 @@ namespace Whisper.Blobing
 		/// <param name="key">
 		/// A <see cref="Key"/>
 		/// </param>
-		public void AddKey(Key key)
+		public void AddKey(PublicKey key)
 		{
 			if (Keys == null)
 				throw new InvalidOperationException("Must call Encrypt before");

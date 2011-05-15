@@ -6,7 +6,7 @@ namespace Whisper.Messaging
 	/// </summary>
 	public abstract class SignedMessage : Message
 	{
-		public Key Signature { get; set; }
+		public PublicKey Signature { get; set; }
 	}
 }
 

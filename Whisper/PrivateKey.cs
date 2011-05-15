@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 namespace Whisper
 {
-	public class PrivateKey : Key
+	public class PrivateKey : PublicKey
 	{
 		public PrivateKey()
 		{

@@ -11,21 +11,21 @@ namespace Test
 	{
 		string source;
 		Storage storage;
-		PrivateKey key;
+		KeyStorage keyStorage;
 		PublicKey targetKey;
 
-		public Sender(string source, Storage storage, PrivateKey key, PublicKey targetKey)
+		public Sender(string source, Storage storage, KeyStorage keyStorage, PublicKey targetKey)
 		{
 			this.source = source;
 			this.storage = storage;
-			this.key = key;
+			this.keyStorage = keyStorage;
 			this.targetKey = targetKey;
 		}
 
 		public void Run()
 		{
 			Console.WriteLine("Create Encrypted storage...");
-			EncryptedStorage encStorage = new EncryptedStorage(storage, new RecipientID(targetKey));
+			EncryptedStorage encStorage = new EncryptedStorage(storage, null, new RecipientID(targetKey));
 			encStorage.AddKey(targetKey);
 
 			//TreeMessage Encrypted
@@ -46,7 +46,7 @@ namespace Test
 		{
 			Blob treeBlob = TreeBlob.GenerateBlob(source, storage, blobList);
 			TreeMessage fm = new TreeMessage(treeBlob.ClearID, "EncryptedTest");
-			Blob fc = SignedMessage.ToBlob(fm, key);
+			Blob fc = SignedMessage.ToBlob(fm, keyStorage.DefaultKey);
 			storage.WriteBlob(fc);
 			blobList.Add(fc.BlobHash);
 			//storage.StoreMessage(fc.BlobHash);
@@ -56,7 +56,7 @@ namespace Test
 		private void TestRouteMessage(EncryptedStorage storage, Blob messageBlob, List<BlobHash> blobList)
 		{
 			RouteMessage rm = new RouteMessage("StorageB", messageBlob.BlobHash, blobList.ToArray());
-			Blob blob = Message.ToBlob(rm, key);
+			Blob blob = Message.ToBlob(rm, keyStorage.DefaultKey);
 			storage.WriteBlob(blob);
 			storage.StoreMessage(blob.BlobHash);
 		}

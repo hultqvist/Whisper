@@ -13,27 +13,58 @@ namespace Whisper.Storing
 	public class EncryptedStorage : StorageFilter
 	{
 		private readonly IGenerateID idGenerator;
+		private readonly KeyStorage keyStorage;
 		/// <summary>
-		/// Recipient keys or, when reading, all keys that might be used in decoding a message
+		/// keys used for encryption
 		/// </summary>
-		public List<Key> Keys = new List<Key>();
+		public List<PublicKey> recipientKeys = new List<PublicKey>();
 
-		public EncryptedStorage(Storage storage, IGenerateID idGenerator) : base(storage)
+		/// <summary>
+		/// Encrypts all blobs before sending them to the underlying storage
+		/// </summary>
+		/// <param name="storage">
+		/// This is where the encrypted blobs are sent
+		/// </param>
+		/// <param name="keyStorage">
+		/// If decrypting, this is where we look for private keys
+		/// </param>
+		public EncryptedStorage(Storage storage, KeyStorage keyStorage) : base(storage)
 		{
-			if (idGenerator == null)
-				this.idGenerator = new NullID();
-			else
-				this.idGenerator = idGenerator;
+			this.idGenerator = new NullID();
+			this.keyStorage = keyStorage;
 		}
 
-		public void AddKey(Key key)
+		/// <summary>
+		/// Encrypts all blobs before sending them to the underlying storage
+		/// </summary>
+		/// <param name="storage">
+		/// This is where the encrypted blobs are sent
+		/// </param>
+		/// <param name="keyStorage">
+		/// If decrypting, this is where we look for private keys
+		/// </param>
+		/// <param name="idgenerator">
+		/// Used to generate CustomID for all blobs
+		/// </param>
+		public EncryptedStorage(Storage storage, KeyStorage keyStorage, IGenerateID idGenerator) : base(storage)
 		{
-			this.Keys.Add(key);
+			if (idGenerator == null)
+				throw new ArgumentException("idGenerator cannot be null, use other constructor instead");
+			this.idGenerator = idGenerator;
+			this.keyStorage = keyStorage;
+		}
+
+		/// <summary>
+		/// Add recipient keys
+		/// </summary>
+		public void AddKey(PublicKey key)
+		{
+			this.recipientKeys.Add(key);
 		}
 
 		public override void WriteBlob(Blob blob)
 		{
-			if (Keys.Count == 0)
+			if (recipientKeys.Count == 0)
 				throw new InvalidOperationException("EncryptedStorage must have at least one key");
 			
 			//Encrypt
@@ -50,7 +81,7 @@ namespace Whisper.Storing
 				return;
 			}
 			
-			foreach (Key k in Keys)
+			foreach (PublicKey k in recipientKeys)
 				blob.AddKey(k);
 			base.WriteBlob(blob);
 		}
@@ -93,7 +124,7 @@ namespace Whisper.Storing
 		{
 			foreach (BlobKey pair in pairs)
 			{
-				foreach (PrivateKey k in this.Keys)
+				foreach (PrivateKey k in this.keyStorage.PrivateKeys)
 				{
 					BlobKey clear = new BlobKey();
 					clear.bytes = k.Decrypt(pair.bytes);

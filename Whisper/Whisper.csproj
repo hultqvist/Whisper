@@ -37,7 +37,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Key.cs" />
     <Compile Include="HexParser.cs" />
     <Compile Include="PublicKey.cs" />
     <Compile Include="PrivateKey.cs" />
@@ -70,18 +69,20 @@
     <Compile Include="Storage.cs" />
     <Compile Include="Blobing\TrippleID.cs" />
     <Compile Include="Tree.cs" />
+    <Compile Include="Keys\DiskKeyStorage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Messaging\" />
     <Folder Include="Storing\" />
     <Folder Include="Blobing\" />
+    <Folder Include="Keys\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
         <Policies>
-          <DotNetNamingPolicy DirectoryNamespaceAssociation="Hierarchical" ResourceNamePolicy="FileFormatDefault" />
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="FileFormatDefault" />
         </Policies>
       </Properties>
     </MonoDevelop>

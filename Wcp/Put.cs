@@ -24,8 +24,8 @@ namespace Wcp
 			
 			//Sender and Recipient keys
 			KeyStorage keyStorage = new KeyStorage();
-			PrivateKey senderKey = keyStorage.DefaultKey();
-			PublicKey recipientKey = keyStorage.GetPublic(receipientName);
+			PrivateKey senderKey = keyStorage.DefaultKey;
+			PublicKey recipientKey = (PublicKey)keyStorage.FromName(receipientName);
 			
 			//Send Tree
 			Console.Write("Generating Tree...");
