@@ -20,7 +20,7 @@ namespace Wcp
 				throw new HelpException("Source directory not found: " + sourcePath);
 
 			//Storage
-			Storage storage = new Whisper.Storing.DiskStorage(storagePath);
+			Storage storage = Storage.Create(storagePath);
 			
 			//Sender and Recipient keys
 			KeyStorage keyStorage = new KeyStorage();
@@ -35,7 +35,7 @@ namespace Wcp
 			tree.Storage.Add(storage);
 			tree.EncryptKeys.Add(recipientKey);
 			tree.SigningKey = senderKey;
-			BlobHash treeMessage = tree.Generate();
+			ChunkHash treeMessage = tree.Generate();
 			Console.WriteLine("done");
 			
 			//Store Message ID
@@ -43,10 +43,10 @@ namespace Wcp
 			
 			//RouteMessage
 			RouteMessage rm = new RouteMessage();
-			rm.Blobs = tree.BlobList;
+			rm.Chunks = tree.BlobList;
 			rm.To = receipientName;
 			//Store unencrypted RouteMessage
-			storage.WriteBlob(SignedMessage.ToBlob(rm, senderKey));
+			storage.WriteChunk(SignedMessage.ToChunk(rm, senderKey));
 			Console.WriteLine("RouteMessage Stored");
 
 		}

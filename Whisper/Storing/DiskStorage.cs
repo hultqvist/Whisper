@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using Whisper.Blobing;
+using Whisper.Chunks;
 using Whisper.Storing;
 using System.Collections.Generic;
 using Whisper.Messaging;
@@ -31,19 +31,19 @@ namespace Whisper.Storing
 			Directory.CreateDirectory(messageRoot);
 		}
 
-		public override BlobHash GetBlobHash(CustomID id)
+		public override ChunkHash GetCustomHash(CustomID id)
 		{
 			string idPath = Path.Combine(idRoot, id.ToString() + ".id");
 			if (File.Exists(idPath) == false)
 				return null;
 			byte[] hash = File.ReadAllBytes(idPath);
-			return new BlobHash(new Hash(hash));
+			return new ChunkHash(new Hash(hash));
 		}
 
-		public override void WriteBlob(Blob blob)
+		public override void WriteChunk(Chunk blob)
 		{
 			//Data
-			string dataPath = Path.Combine(dataRoot, blob.BlobHash.ToString());
+			string dataPath = Path.Combine(dataRoot, blob.ChunkHash.ToString());
 			File.WriteAllBytes(dataPath, blob.Data);
 			
 			//Keys
@@ -52,7 +52,7 @@ namespace Whisper.Storing
 				using (FileStream stream = new FileStream(dataPath + ".keys", FileMode.Create))
 				{
 					BinaryWriter bw = new BinaryWriter(stream);
-					blob.Keys.WriteBlob(bw);
+					blob.Keys.WriteChunk(bw);
 				}
 			}
 
@@ -60,21 +60,21 @@ namespace Whisper.Storing
 			if (blob.CustomID != null)
 			{
 				string idPath = Path.Combine(idRoot, blob.CustomID.ToString() + ".id");
-				File.WriteAllBytes(idPath, blob.BlobHash.bytes);
+				File.WriteAllBytes(idPath, blob.ChunkHash.bytes);
 			}
 		}
 
-		public override Blob ReadBlob(BlobHash blobHash)
+		public override Chunk ReadChunk(ChunkHash chunkHash)
 		{
-			Blob blob = new Blob();
+			Chunk chunk = new Chunk();
 			
 			//Read Data
-			string dataPath = Path.Combine(dataRoot, blobHash.ToString());
-			blob.Data = File.ReadAllBytes(dataPath);
+			string dataPath = Path.Combine(dataRoot, chunkHash.ToString());
+			chunk.Data = File.ReadAllBytes(dataPath);
 			//Verify Hash
-			blob.BlobHash = new BlobHash(Hash.ComputeHash(blob.Data));
-			if (blob.BlobHash.Equals(blobHash) == false)
-				throw new InvalidDataException("Hash mismatch: " + blobHash);
+			chunk.ChunkHash = new ChunkHash(Hash.ComputeHash(chunk.Data));
+			if (chunk.ChunkHash.Equals(chunkHash) == false)
+				throw new InvalidDataException("Hash mismatch: " + chunkHash);
 			
 			//Read keys
 			string keyPath = dataPath + ".keys";
@@ -83,31 +83,31 @@ namespace Whisper.Storing
 				using (FileStream stream = new FileStream(dataPath + ".keys", FileMode.Open))
 				{
 					BinaryReader br = new BinaryReader(stream);
-					blob.Keys = new BlobKeys();
-					blob.Keys.ReadBlob(br);
+					chunk.Keys = new ChunkKeys();
+					chunk.Keys.ReadChunk(br);
 				}
 			}
 			else
-				blob.ClearHash = new Hash(blobHash);
+				chunk.ClearHash = new Hash(chunkHash);
 
-			return blob;
+			return chunk;
 		}
 
-		public override void StoreMessage(BlobHash id)
+		public override void StoreMessage(ChunkHash id)
 		{
 			string path = Path.Combine(messageRoot, id.ToString());
 			File.WriteAllBytes(path, new byte[0]);
 		}
 
-		public override ICollection<BlobHash> GetMessageList()
+		public override ICollection<ChunkHash> GetMessageList()
 		{
-			List<BlobHash> list = new List<BlobHash>();
+			List<ChunkHash> list = new List<ChunkHash>();
 			string[] files = Directory.GetFiles(messageRoot);
 			
 			foreach (string file in files)
 			{
 				string name = Path.GetFileName(file);
-				list.Add(BlobHash.FromString(name));
+				list.Add(ChunkHash.FromString(name));
 			}
 			return list;
 		}

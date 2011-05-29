@@ -1,22 +1,22 @@
 using System;
 using System.IO;
 using System.Text;
-namespace Whisper.Blobing
+namespace Whisper.Chunks
 {
 	/// <summary>
 	/// This base class is used by classes that need to be stored in binary format.
 	/// </summary>
-	public abstract class BinaryBlob
+	public abstract class BinaryChunk
 	{
 		/// <summary>
 		/// Read data from blob into class structure
 		/// </summary>
-		internal abstract void ReadBlob(BinaryReader reader);
+		internal abstract void ReadChunk(BinaryReader reader);
 
 		/// <summary>
 		/// Write class structure into a blob
 		/// </summary>
-		internal abstract void WriteBlob(BinaryWriter writer);
+		internal abstract void WriteChunk(BinaryWriter writer);
 
 		/// <summary>
 		/// Helper to store variable length strings in binary format.
@@ -59,23 +59,23 @@ namespace Whisper.Blobing
 		/// <summary>
 		/// Read blob data into class
 		/// </summary>
-		internal void ReadBlob(Blob blob)
+		internal void ReadChunk(Chunk blob)
 		{
 			MemoryStream ms = new MemoryStream(blob.Data);
 			BinaryReader br = new BinaryReader(ms);
-			ReadBlob(br);
+			ReadChunk(br);
 		}
 
 		/// <summary>
 		/// Generate a blob from class.
 		/// The blob must be stored afterwards.
 		/// </summary>
-		internal Blob ToBlob()
+		internal Chunk ToBlob()
 		{
 			MemoryStream ms = new MemoryStream();
 			BinaryWriter bw = new BinaryWriter(ms);
-			WriteBlob(bw);
-			return new Blob(ms.ToArray());
+			WriteChunk(bw);
+			return new Chunk(ms.ToArray());
 		}
 	}
 }

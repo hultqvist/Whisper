@@ -1,6 +1,6 @@
 using System;
 using Whisper;
-using Whisper.Blobing;
+using Whisper.Chunks;
 using System.Security.Cryptography;
 using System.IO;
 namespace Whisper.Storing
@@ -16,12 +16,12 @@ namespace Whisper.Storing
 			this.sender = senderKey;
 		}
 
-		public CustomID GetID(Blob blob)
+		public CustomID GetID(Chunk blob)
 		{
 			MemoryStream ms = new MemoryStream();
 			BinaryWriter bw = new BinaryWriter(ms);
-			sender.WriteBlob(bw);
-			blob.ClearHash.WriteBlob(bw);
+			sender.WriteChunk(bw);
+			blob.ClearHash.WriteChunk(bw);
 			return new CustomID(Hash.ComputeHash(ms.ToArray()));
 		}
 		

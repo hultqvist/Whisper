@@ -2,20 +2,20 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using Whisper.Storing;
-using Whisper.Blobing;
+using Whisper.Chunks;
 using System.Text;
 
-namespace Whisper.Blobing
+namespace Whisper.Chunks
 {
-	public class TreeBlob : BinaryBlob
+	public class TreeChunk : BinaryChunk
 	{
 		public List<TreeFile> Directories = new List<TreeFile>();
 		public List<TreeFile> Files = new List<TreeFile>();
 
-		public static Blob GenerateBlob(string path, Storage storage, ICollection<BlobHash> blobList)
+		public static Chunk GenerateBlob(string path, Storage storage, ICollection<ChunkHash> blobList)
 		{
 			string fullPath = Path.GetFullPath(path);
-			TreeBlob tree = new TreeBlob();
+			TreeChunk tree = new TreeChunk();
 			
 			//Subdirectories
 			string[] dirs = Directory.GetDirectories(fullPath);
@@ -23,7 +23,7 @@ namespace Whisper.Blobing
 			{
 				TreeFile df = new TreeFile();
 				df.Name = Path.GetFileName(d);
-				df.Tripple = TreeBlob.GenerateBlob(d, storage, blobList).ClearID;
+				df.Tripple = TreeChunk.GenerateBlob(d, storage, blobList).ClearID;
 				tree.Directories.Add(df);
 			}
 			
@@ -33,15 +33,15 @@ namespace Whisper.Blobing
 			{
 				TreeFile ff = new TreeFile();
 				ff.Name = Path.GetFileName(f);
-				ff.Tripple = StreamBlob.GenerateBlob(f, storage, blobList).ClearID;
+				ff.Tripple = StreamChunk.GenerateBlob(f, storage, blobList).ClearID;
 				tree.Files.Add(ff);
 			}
 			
-			Blob treeBlob = tree.ToBlob();
-			storage.WriteBlob(treeBlob);
+			Chunk treeBlob = tree.ToBlob();
+			storage.WriteChunk(treeBlob);
 			
 			if (blobList != null)
-				blobList.Add(treeBlob.BlobHash);
+				blobList.Add(treeBlob.ChunkHash);
 			return treeBlob;
 		}
 
@@ -49,44 +49,44 @@ namespace Whisper.Blobing
 		{
 			Directory.CreateDirectory(targetPath);
 			
-			BlobHash cid = store.GetBlobHash(id.CustomID);
+			ChunkHash cid = store.GetCustomHash(id.CustomID);
 			if (cid == null)
-				cid = id.BlobHash;
-			Blob c = store.ReadBlob(cid);
+				cid = id.ChunkHash;
+			Chunk c = store.ReadChunk(cid);
 			if (c.Verify(id) == false)
 				throw new InvalidDataException("Invalid hash data");
-			TreeBlob tree = new TreeBlob();
-			tree.ReadBlob(c);
+			TreeChunk tree = new TreeChunk();
+			tree.ReadChunk(c);
 			
 			foreach (TreeFile file in tree.Files)
 			{
-				StreamBlob.Extract(store, file.Tripple, Path.Combine(targetPath, file.Name));
+				StreamChunk.Extract(store, file.Tripple, Path.Combine(targetPath, file.Name));
 			}
 			
 			foreach (TreeFile subdir in tree.Directories)
 			{
-				TreeBlob.Extract(store, subdir.Tripple, Path.Combine(targetPath, subdir.Name));
+				TreeChunk.Extract(store, subdir.Tripple, Path.Combine(targetPath, subdir.Name));
 			}
 		}
 
 		#region Blob Reader/Writer
 
-		internal override void WriteBlob(BinaryWriter writer)
+		internal override void WriteChunk(BinaryWriter writer)
 		{
 			writer.Write((int) Directories.Count);
 			foreach (TreeFile d in Directories)
 			{
-				d.WriteBlob(writer);
+				d.WriteChunk(writer);
 			}
 			
 			writer.Write((int) Files.Count);
 			foreach (TreeFile f in Files)
 			{
-				f.WriteBlob(writer);
+				f.WriteChunk(writer);
 			}
 		}
 
-		internal override void ReadBlob(BinaryReader reader)
+		internal override void ReadChunk(BinaryReader reader)
 		{
 			int dirs = reader.ReadInt32();
 			for (int n = 0; n < dirs; n++)
@@ -105,7 +105,7 @@ namespace Whisper.Blobing
 		
 	}
 
-	public class TreeFile : BinaryBlob
+	public class TreeFile : BinaryChunk
 	{
 		public string Name { get; set; }
 
@@ -117,13 +117,13 @@ namespace Whisper.Blobing
 
 		#region Blob Reader/Writer
 
-		internal override void WriteBlob(BinaryWriter writer)
+		internal override void WriteChunk(BinaryWriter writer)
 		{
-			Tripple.WriteBlob(writer);
+			Tripple.WriteChunk(writer);
 			WriteString(writer, Name);
 		}
 
-		internal override void ReadBlob(BinaryReader reader)
+		internal override void ReadChunk(BinaryReader reader)
 		{
 			Tripple = TrippleID.FromBlob(reader);
 			Name = ReadString(reader);
@@ -132,7 +132,7 @@ namespace Whisper.Blobing
 		static internal TreeFile FromBlob(BinaryReader reader)
 		{
 			TreeFile file = new TreeFile();
-			file.ReadBlob(reader);
+			file.ReadChunk(reader);
 			return file;
 		}
 		

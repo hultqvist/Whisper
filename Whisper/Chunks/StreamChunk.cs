@@ -2,14 +2,14 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using Whisper.Storing;
-using Whisper.Blobing;
+using Whisper.Chunks;
 
-namespace Whisper.Blobing
+namespace Whisper.Chunks
 {
 	/// <summary>
 	/// Collection of blobs into a larger stream(file).
 	/// </summary>
-	public class StreamBlob : BinaryBlob
+	public class StreamChunk : BinaryChunk
 	{
 		public long Size { get; set; }
 		/// <summary>
@@ -17,9 +17,9 @@ namespace Whisper.Blobing
 		/// </summary>
 		public List<TrippleID> Blobs = new List<TrippleID>();
 
-		public static Blob GenerateBlob(string path, Storage storage, ICollection<BlobHash> blobList)
+		public static Chunk GenerateBlob(string path, Storage storage, ICollection<ChunkHash> blobList)
 		{
-			StreamBlob message = new StreamBlob();
+			StreamChunk message = new StreamChunk();
 			
 			using (Stream stream = new FileStream(path, FileMode.Open))
 			{
@@ -33,21 +33,21 @@ namespace Whisper.Blobing
 					if (data.Length == 0)
 						break;
 					
-					Blob c = new Blob(data);
-					storage.WriteBlob(c);
+					Chunk c = new Chunk(data);
+					storage.WriteChunk(c);
 					
 					message.Blobs.Add(c.ClearID);
 				}
 			}
 
-			Blob messageBlob = message.ToBlob();
-			storage.WriteBlob(messageBlob);
+			Chunk messageBlob = message.ToBlob();
+			storage.WriteChunk(messageBlob);
 			
 			if (blobList != null)
 			{
 				foreach (TrippleID cid in message.Blobs)
-					blobList.Add(cid.BlobHash);
-				blobList.Add(messageBlob.BlobHash);
+					blobList.Add(cid.ChunkHash);
+				blobList.Add(messageBlob.ChunkHash);
 			}
 			
 			return messageBlob;
@@ -55,16 +55,16 @@ namespace Whisper.Blobing
 
 		public static void Extract(Storage store, TrippleID fileCID, string targetPath)
 		{
-			Blob fileBlob = store.ReadBlob(fileCID.BlobHash);
+			Chunk fileBlob = store.ReadChunk(fileCID.ChunkHash);
 			if (fileBlob.Verify(fileCID) == false)
 				throw new InvalidDataException("ClearID verification failed");
-			StreamBlob streamBlob = StreamBlob.FromBlob(fileBlob);
+			StreamChunk streamBlob = StreamChunk.FromBlob(fileBlob);
 			
 			using (FileStream file = File.Open(targetPath, FileMode.Create))
 			{
 				foreach (TrippleID cid in streamBlob.Blobs)
 				{
-					Blob fc = store.ReadBlob(cid.BlobHash);
+					Chunk fc = store.ReadChunk(cid.ChunkHash);
 					if (fc.Verify(cid) == false)
 						throw new InvalidDataException("ClearID verification failed");
 					
@@ -79,17 +79,17 @@ namespace Whisper.Blobing
 
 		#region Blob Reader/Writer
 
-		internal override void WriteBlob(BinaryWriter writer)
+		internal override void WriteChunk(BinaryWriter writer)
 		{
 			writer.Write((int) Size);
 			writer.Write((int) Blobs.Count);
 			foreach (TrippleID id in Blobs)
 			{
-				id.WriteBlob(writer);
+				id.WriteChunk(writer);
 			}
 		}
 
-		internal override void ReadBlob(BinaryReader reader)
+		internal override void ReadChunk(BinaryReader reader)
 		{
 			Size = reader.ReadInt32();
 			int count = reader.ReadInt32();
@@ -100,10 +100,10 @@ namespace Whisper.Blobing
 			}
 		}
 
-		static internal StreamBlob FromBlob(Blob blob)
+		static internal StreamChunk FromBlob(Chunk blob)
 		{
-			StreamBlob stream = new StreamBlob();
-			stream.ReadBlob(blob);
+			StreamChunk stream = new StreamChunk();
+			stream.ReadChunk(blob);
 			return stream;
 		}
 

@@ -29,7 +29,7 @@ namespace Whisper
 			return rsa.SignData(data, new SHA256Managed());
 		}
 
-		internal override void WriteBlob(BinaryWriter writer)
+		internal override void WriteChunk(BinaryWriter writer)
 		{
 			RSAParameters rp = rsa.ExportParameters(true);
 			WriteVarBytes(writer, rp.Modulus);
@@ -38,7 +38,7 @@ namespace Whisper
 			WriteVarBytes(writer, rp.Q);
 		}
 
-		internal override void ReadBlob(BinaryReader reader)
+		internal override void ReadChunk(BinaryReader reader)
 		{
 			RSAParameters rp = new RSAParameters();
 			rp.Modulus = ReadVarBytes(reader);

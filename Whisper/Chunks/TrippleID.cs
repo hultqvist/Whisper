@@ -1,18 +1,18 @@
 using System;
 using System.IO;
-namespace Whisper.Blobing
+namespace Whisper.Chunks
 {
 	/// <summary>
 	/// A triplet representing a single blob.
 	/// Hash of the possibly encrypted blob,
 	/// CustomID and hash of the cleartext data.
 	/// </summary>
-	public class TrippleID : BinaryBlob
+	public class TrippleID : BinaryChunk
 	{
 		/// <summary>
 		/// Hash of ciphertext Data
 		/// </summary>
-		public BlobHash BlobHash { get; set; }
+		public ChunkHash ChunkHash { get; set; }
 		/// <summary>
 		/// Sender choosen id, see Whisper.Storing.* for examples
 		/// </summary>
@@ -26,38 +26,38 @@ namespace Whisper.Blobing
 		{
 		}
 
-		public TrippleID(Blob blob)
+		public TrippleID(Chunk blob)
 		{
-			this.BlobHash = blob.BlobHash;
+			this.ChunkHash = blob.ChunkHash;
 			this.CustomID = blob.CustomID;
 			this.ClearHash = blob.ClearHash;
 		}
 
 		public override string ToString()
 		{
-			return "Clear " + BlobHash + " [" + ClearHash + "]";
+			return "Clear " + ChunkHash + " [" + ClearHash + "]";
 		}
 
 		#region Blob Reader/Writer
 
-		internal override void WriteBlob(BinaryWriter writer)
+		internal override void WriteChunk(BinaryWriter writer)
 		{
-			this.BlobHash.WriteBlob(writer);
-			this.CustomID.WriteBlob(writer);
-			this.ClearHash.WriteBlob(writer);
+			this.ChunkHash.WriteChunk(writer);
+			this.CustomID.WriteChunk(writer);
+			this.ClearHash.WriteChunk(writer);
 		}
 
-		internal override void ReadBlob(BinaryReader reader)
+		internal override void ReadChunk(BinaryReader reader)
 		{
-			this.BlobHash = BlobHash.FromBlob(reader);
-			this.CustomID = CustomID.FromBlob(reader);
-			this.ClearHash = Hash.FromBlob(reader);
+			this.ChunkHash = ChunkHash.FromChunk(reader);
+			this.CustomID = CustomID.FromChunk(reader);
+			this.ClearHash = Hash.FromChunk(reader);
 		}
 
 		internal static TrippleID FromBlob(BinaryReader reader)
 		{
 			TrippleID id = new TrippleID();
-			id.ReadBlob(reader);
+			id.ReadChunk(reader);
 			return id;
 		}
 

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Whisper;
-using Whisper.Blobing;
+using Whisper.Chunks;
 using Whisper.Storing;
 using Whisper.Messaging;
 
@@ -29,9 +29,9 @@ namespace Test
 			encStorage.AddKey(targetKey);
 
 			//TreeMessage Encrypted
-			List<BlobHash> blobList = new List<BlobHash>();
+			List<ChunkHash> blobList = new List<ChunkHash>();
 			Console.WriteLine("Send directory encrypted " + source);
-			Blob blobTreeMessage = TestEncryptedTree(encStorage, blobList);
+			Chunk blobTreeMessage = TestEncryptedTree(encStorage, blobList);
 
 			//Route message
 			Console.WriteLine("Send route message...");
@@ -42,32 +42,32 @@ namespace Test
 			Console.WriteLine("Send tree unencrypted...");
 		}
 
-		private Blob TestEncryptedTree(EncryptedStorage storage, List<BlobHash> blobList)
+		private Chunk TestEncryptedTree(EncryptedStorage storage, List<ChunkHash> blobList)
 		{
-			Blob treeBlob = TreeBlob.GenerateBlob(source, storage, blobList);
+			Chunk treeBlob = TreeChunk.GenerateBlob(source, storage, blobList);
 			TreeMessage fm = new TreeMessage(treeBlob.ClearID, "EncryptedTest");
-			Blob fc = SignedMessage.ToBlob(fm, keyStorage.DefaultKey);
-			storage.WriteBlob(fc);
-			blobList.Add(fc.BlobHash);
+			Chunk fc = SignedMessage.ToChunk(fm, keyStorage.DefaultKey);
+			storage.WriteChunk(fc);
+			blobList.Add(fc.ChunkHash);
 			//storage.StoreMessage(fc.BlobHash);
 			return fc;
 		}
 
-		private void TestRouteMessage(EncryptedStorage storage, Blob messageBlob, List<BlobHash> blobList)
+		private void TestRouteMessage(EncryptedStorage storage, Chunk messageBlob, List<ChunkHash> blobList)
 		{
-			RouteMessage rm = new RouteMessage("StorageB", messageBlob.BlobHash, blobList.ToArray());
-			Blob blob = Message.ToBlob(rm, keyStorage.DefaultKey);
-			storage.WriteBlob(blob);
-			storage.StoreMessage(blob.BlobHash);
+			RouteMessage rm = new RouteMessage("StorageB", messageBlob.ChunkHash, blobList.ToArray());
+			Chunk blob = Message.ToChunk(rm, keyStorage.DefaultKey);
+			storage.WriteChunk(blob);
+			storage.StoreMessage(blob.ChunkHash);
 		}
 
 		private void TestClearTextTree(ClearTextStorage storage)
 		{
-			Blob tree = TreeBlob.GenerateBlob(source, storage, null);
+			Chunk tree = TreeChunk.GenerateBlob(source, storage, null);
 			TreeMessage clearFM = new TreeMessage(tree.ClearID, "ClearTextTest");
-			Blob ctMessageBlob = Message.ToBlob(clearFM, null);
-			storage.WriteBlob(ctMessageBlob);
-			storage.StoreMessage(ctMessageBlob.BlobHash);
+			Chunk ctMessageChunk = Message.ToChunk(clearFM, null);
+			storage.WriteChunk(ctMessageChunk);
+			storage.StoreMessage(ctMessageChunk.ChunkHash);
 		}
 	}
 }

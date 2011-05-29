@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using Whisper.Blobing;
+using Whisper.Chunks;
 using System.Text;
 using System.Collections.Generic;
 namespace Whisper.Messaging
@@ -8,7 +8,7 @@ namespace Whisper.Messaging
 	/// <summary>
 	/// Unsigned messages
 	/// </summary>
-	public abstract class Message : BinaryBlob
+	public abstract class Message : BinaryChunk
 	{
 		#region Message Type
 
@@ -39,14 +39,14 @@ namespace Whisper.Messaging
 
 		#endregion
 
-		#region Static Blob Readers and Writers
+		#region Static Chunk Readers and Writers
 
-		public static Blob ToBlob(Message m)
+		public static Chunk ToChunk(Message m)
 		{
-			return ToBlob(m, null);
+			return ToChunk(m, null);
 		}
 
-		public static Blob ToBlob(Message m, PrivateKey signatureKey)
+		public static Chunk ToChunk(Message m, PrivateKey signatureKey)
 		{
 			using (MemoryStream ms = new MemoryStream())
 			{
@@ -55,7 +55,7 @@ namespace Whisper.Messaging
 				b.Write(Message.GetID(m));
 				
 				//Message Data
-				m.WriteBlob(new BinaryWriter(ms));
+				m.WriteChunk(new BinaryWriter(ms));
 				
 				//Signature
 				if (m is SignedMessage)
@@ -68,22 +68,22 @@ namespace Whisper.Messaging
 					ms.Write(signature, 0, 128);
 				}
 				
-				//Generate Blob Data
+				//Generate Chunk Data
 				byte[] data = ms.ToArray();
-				return new Blob(data);
+				return new Chunk(data);
 			}
 		}
 
-		public static Message FromBlob(Blob blob)
+		public static Message FromChunk(Chunk chunk)
 		{
-			return FromBlob(blob, null);
+			return FromChunk(chunk, null);
 		}
-		public static Message FromBlob(Blob blob, KeyStorage keyStorage)
+		public static Message FromChunk(Chunk chunk, KeyStorage keyStorage)
 		{
-			if (blob == null)
+			if (chunk == null)
 				return null;
 			
-			int typeID = BitConverter.ToInt32(blob.Data, 0);
+			int typeID = BitConverter.ToInt32(chunk.Data, 0);
 			Message message = Message.FromID(typeID);
 			if (message == null)
 				return null;
@@ -92,24 +92,24 @@ namespace Whisper.Messaging
 			byte[] data;
 			if (message is SignedMessage)
 			{
-				data = new byte[blob.Data.Length - 128];
-				Array.Copy(blob.Data, 0, data, 0, data.Length);
+				data = new byte[chunk.Data.Length - 128];
+				Array.Copy(chunk.Data, 0, data, 0, data.Length);
 			} else
-				data = blob.Data;
+				data = chunk.Data;
 			
 			//Message Data
 			using (MemoryStream ms = new MemoryStream(data))
 			{
 				BinaryReader br = new BinaryReader(ms);
 				br.ReadInt32();
-				message.ReadBlob(br);
+				message.ReadChunk(br);
 			}
 
 			//Verify signature
 			if (message is SignedMessage)
 			{
 				byte[] sig = new byte[128];
-				Array.Copy(blob.Data, blob.Data.Length - sig.Length, sig, 0, sig.Length);
+				Array.Copy(chunk.Data, chunk.Data.Length - sig.Length, sig, 0, sig.Length);
 				foreach (PublicKey key in keyStorage.PublicKeys)
 				{
 					if (key.Verify(data, sig))

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Whisper.Blobing;
+using Whisper.Chunks;
 namespace Whisper.Storing
 {
 	public class MultiStorage : Storage
@@ -12,7 +12,7 @@ namespace Whisper.Storing
 			this.storages = storages;
 		}
 
-		public override BlobHash GetBlobHash(CustomID customID)
+		public override ChunkHash GetCustomHash(CustomID customID)
 		{
 			foreach (Storage s in storages)
 				throw new System.NotImplementedException();
@@ -20,11 +20,11 @@ namespace Whisper.Storing
 		}
 
 
-		public override Blob ReadBlob(BlobHash blobHash)
+		public override Chunk ReadChunk(ChunkHash blobHash)
 		{
 			foreach (Storage s in storages)
 			{
-				Blob b = s.ReadBlob(blobHash);
+				Chunk b = s.ReadChunk(blobHash);
 				if (b != null)
 					return b;
 			}
@@ -32,26 +32,26 @@ namespace Whisper.Storing
 		}
 
 
-		public override void WriteBlob(Blob blob)
+		public override void WriteChunk(Chunk blob)
 		{
 			foreach (Storage s in storages)
-				s.WriteBlob(blob);
+				s.WriteChunk(blob);
 		}
 
 
-		public override ICollection<BlobHash> GetMessageList()
+		public override ICollection<ChunkHash> GetMessageList()
 		{
-			List<BlobHash> list = new List<BlobHash>();
+			List<ChunkHash> list = new List<ChunkHash>();
 			foreach (Storage s in storages)
 			{
 				var sl = s.GetMessageList();
-				foreach (BlobHash bh in sl)
+				foreach (ChunkHash bh in sl)
 					list.Add(bh);
 			}
 			return list;
 		}
 
-		public override void StoreMessage(BlobHash blobHash)
+		public override void StoreMessage(ChunkHash blobHash)
 		{
 			foreach (Storage s in storages)
 				s.StoreMessage(blobHash);

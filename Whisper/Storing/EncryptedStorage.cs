@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Whisper.Storing;
-using Whisper.Blobing;
+using Whisper.Chunks;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -62,7 +62,7 @@ namespace Whisper.Storing
 			this.recipientKeys.Add(key);
 		}
 
-		public override void WriteBlob(Blob blob)
+		public override void WriteChunk(Chunk blob)
 		{
 			if (recipientKeys.Count == 0)
 				throw new InvalidOperationException("EncryptedStorage must have at least one key");
@@ -74,21 +74,21 @@ namespace Whisper.Storing
 			blob.CustomID = idGenerator.GetID(blob);
 			
 			//Reuse already existsing CustomID
-			BlobHash hash = GetBlobHash(blob.CustomID);
+			ChunkHash hash = GetCustomHash(blob.CustomID);
 			if (hash != null)
 			{
-				blob.BlobHash = hash;
+				blob.ChunkHash = hash;
 				return;
 			}
 			
 			foreach (PublicKey k in recipientKeys)
 				blob.AddKey(k);
-			base.WriteBlob(blob);
+			base.WriteChunk(blob);
 		}
 
-		public override Blob ReadBlob(BlobHash id)
+		public override Chunk ReadChunk(ChunkHash id)
 		{
-			Blob blob = base.ReadBlob(id);
+			Chunk blob = base.ReadChunk(id);
 			
 			if (blob.Keys != null)
 				Decrypt(blob);
@@ -96,13 +96,13 @@ namespace Whisper.Storing
 			return blob;
 		}
 
-		void Encrypt(Blob blob)
+		void Encrypt(Chunk blob)
 		{
 			if (blob.Keys != null)
 				throw new InvalidOperationException("Can only encrypt once");
 			
 			//Generate key
-			blob.Keys = new BlobKeys();
+			blob.Keys = new ChunkKeys();
 			blob.Keys.RM.GenerateIV();
 			blob.Keys.RM.GenerateKey();
 			
@@ -117,16 +117,16 @@ namespace Whisper.Storing
 			}
 			
 			//Generate Hash
-			blob.BlobHash = new BlobHash(Hash.ComputeHash(blob.Data));
+			blob.ChunkHash = new ChunkHash(Hash.ComputeHash(blob.Data));
 		}
 
-		BlobKey Decrypt(List<BlobKey> pairs)
+		ChunkKey Decrypt(List<ChunkKey> pairs)
 		{
-			foreach (BlobKey pair in pairs)
+			foreach (ChunkKey pair in pairs)
 			{
 				foreach (PrivateKey k in this.keyStorage.PrivateKeys)
 				{
-					BlobKey clear = new BlobKey();
+					ChunkKey clear = new ChunkKey();
 					clear.bytes = k.Decrypt(pair.bytes);
 					return clear;
 				}
@@ -134,13 +134,13 @@ namespace Whisper.Storing
 			return null;
 		}
 
-		bool Decrypt(Blob blob)
+		bool Decrypt(Chunk blob)
 		{
 			if (blob.Keys == null)
 				throw new InvalidDataException("Missing keys");
 			
 			//Decrypt Key
-			BlobKey key = Decrypt(blob.Keys.Keys);
+			ChunkKey key = Decrypt(blob.Keys.Keys);
 			if (key == null)
 				return false;
 			

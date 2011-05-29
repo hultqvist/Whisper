@@ -1,11 +1,11 @@
 using System;
 using System.Security.Cryptography;
 using System.IO;
-using Whisper.Blobing;
+using Whisper.Chunks;
 namespace Whisper
 {
 
-	public class Hash : BinaryBlob
+	public class Hash : BinaryChunk
 	{
 		public readonly byte[] bytes;
 
@@ -74,17 +74,17 @@ namespace Whisper
 
 		#region Blob Reader/Writer
 
-		internal override void WriteBlob(BinaryWriter writer)
+		internal override void WriteChunk(BinaryWriter writer)
 		{
 			writer.Write(bytes);
 		}
 
-		internal override void ReadBlob(BinaryReader reader)
+		internal override void ReadChunk(BinaryReader reader)
 		{
 			throw new NotImplementedException("Use Hash.FromBlob instead");
 		}
 
-		internal static Hash FromBlob(BinaryReader reader)
+		internal static Hash FromChunk(BinaryReader reader)
 		{
 			return new Hash(reader.ReadBytes(32));
 		}

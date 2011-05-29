@@ -4,12 +4,12 @@ using Whisper.Messaging;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace Whisper.Blobing
+namespace Whisper.Chunks
 {
 	/// <summary>
 	/// Basic unit for storing data in transit, on disk or over network.
 	/// </summary>
-	public class Blob
+	public class Chunk
 	{
 		/// <summary>
 		/// Sender selected ID for this blob
@@ -18,7 +18,7 @@ namespace Whisper.Blobing
 		/// <summary>
 		/// Hash of Data
 		/// </summary>
-		public BlobHash BlobHash;
+		public ChunkHash ChunkHash;
 		/// <summary>
 		/// Blob data as stored, can be either cleartext or encrypted.
 		/// </summary>
@@ -36,24 +36,24 @@ namespace Whisper.Blobing
 		/// <summary>
 		/// Keys to decrypt Data
 		/// </summary>
-		public BlobKeys Keys = null;
+		public ChunkKeys Keys = null;
 
 		/// <summary>
 		/// Hash of cleartext data
 		/// </summary>
 		public Hash ClearHash;
 
-		public Blob()
+		public Chunk()
 		{
 		}
 
-		public Blob(byte[] buffer)
+		public Chunk(byte[] buffer)
 		{
 			//Hash data
 			this.Data = buffer;
 
 			this.ClearHash = Hash.ComputeHash(buffer);
-			this.BlobHash = new BlobHash(ClearHash);
+			this.ChunkHash = new ChunkHash(ClearHash);
 		}
 
 		/// <summary>
@@ -67,7 +67,7 @@ namespace Whisper.Blobing
 			if (Keys == null)
 				throw new InvalidOperationException("Must call Encrypt before");
 			
-			BlobKey bk = new BlobKey();
+			ChunkKey bk = new ChunkKey();
 			bk.bytes = key.Encrypt(Keys.RM.Key);
 			Keys.AddKey(bk);
 		}

@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using Whisper;
 using Whisper.Storing;
-using Whisper.Blobing;
+using Whisper.Chunks;
 using Whisper.Messaging;
 
 namespace Test
@@ -24,13 +24,13 @@ namespace Test
 		public void Run()
 		{
 			//Find message
-			ICollection<BlobHash> messages = storage.GetMessageList();
+			ICollection<ChunkHash> messages = storage.GetMessageList();
 			EncryptedStorage es = new EncryptedStorage(storage, keyStorage);
 
-			foreach (BlobHash mid in messages)
+			foreach (ChunkHash mid in messages)
 			{
-				Blob blob = es.ReadBlob(mid);
-				Message message = Message.FromBlob(blob, keyStorage);
+				Chunk chunk = es.ReadChunk(mid);
+				Message message = Message.FromChunk(chunk, keyStorage);
 				if (message == null)
 				{
 					Console.WriteLine("Missing key: " + mid);
@@ -42,7 +42,7 @@ namespace Test
 				{
 					Console.WriteLine("Found TreeMessage " + tm.Name);
 					string targetPath = Path.Combine(target, tm.Name);
-					TreeBlob.Extract(es, tm.TreeID, targetPath);
+					TreeChunk.Extract(es, tm.TreeID, targetPath);
 					continue;
 				}
 
@@ -54,11 +54,11 @@ namespace Test
 					//Prepare new storage
 					Storage remoteStorage = new DiskStorage(rm.To);
 
-					//Send blobs
-					foreach (BlobHash blobHash in rm.Blobs)
+					//Send chunks
+					foreach (ChunkHash chunkHash in rm.Chunks)
 					{
-						Blob b = storage.ReadBlob(blobHash);
-						remoteStorage.WriteBlob(b);
+						Chunk b = storage.ReadChunk(chunkHash);
+						remoteStorage.WriteChunk(b);
 					}
 
 					//Send message

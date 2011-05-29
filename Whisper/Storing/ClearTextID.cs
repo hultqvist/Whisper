@@ -1,5 +1,5 @@
 using System;
-using Whisper.Blobing;
+using Whisper.Chunks;
 namespace Whisper.Storing
 {
 	/// <summary>
@@ -7,7 +7,7 @@ namespace Whisper.Storing
 	/// </summary>
 	public class ClearTextID : IGenerateID
 	{
-		public CustomID GetID(Blob blob)
+		public CustomID GetID(Chunk blob)
 		{
 			return new CustomID(blob.ClearHash);
 		}

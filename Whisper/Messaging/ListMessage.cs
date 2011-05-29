@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Whisper.Blobing;
+using Whisper.Chunks;
 
 namespace Whisper.Messaging
 {
@@ -14,14 +14,14 @@ namespace Whisper.Messaging
 	{
 		public List<TrippleID> List = new List<TrippleID>();
 
-		#region Blob Reader/Writer
+		#region Chunk Reader/Writer
 
-		internal override void WriteBlob(BinaryWriter writer)
+		internal override void WriteChunk(BinaryWriter writer)
 		{
 			throw new NotImplementedException();
 		}
 
-		internal override void ReadBlob(BinaryReader reader)
+		internal override void ReadChunk(BinaryReader reader)
 		{
 			throw new NotImplementedException();
 		}

@@ -12,49 +12,49 @@ namespace Wcp
 		{
 			if (args.Length != 2)
 				throw new HelpException("Missing arguments");
-
+			
 			//Storage
-			Storage storage = new Whisper.Storing.DiskStorage(args[1]);
-
+			Storage storage = Storage.Create(args[1]);
+			
 			//Sender and Recipient keys
 			KeyStorage keyStorage = new KeyStorage();
-
+			
 			//Find message
-			ICollection<BlobHash> messages = storage.GetMessageList();
+			ICollection<ChunkHash> messages = storage.GetMessageList();
 			EncryptedStorage es = new EncryptedStorage(storage, keyStorage);
-
+			
 			//Iterate over all messages
-			foreach (BlobHash mid in messages)
+			foreach (ChunkHash mid in messages)
 			{
 				Console.Write(mid.ToString().Substring(0, 10) + "... ");
-
-				Message message = Message.FromBlob(es.ReadBlob(mid), keyStorage);
-
+				
+				Message message = Message.FromChunk(es.ReadChunk(mid), keyStorage);
+				
 				//No key found
 				if (message == null)
 				{
 					Console.WriteLine("no key");
 					continue;
 				}
-
+				
 				SignedMessage sm = message as SignedMessage;
 				if (sm != null && sm.Signature != null)
 					Console.Write("signed by " + sm.Signature.ToString().Substring(0, 10) + " ");
-
+				
 				TreeMessage tm = message as TreeMessage;
 				if (tm != null)
 				{
 					Console.WriteLine("TreeMessage " + tm.Name);
 					continue;
 				}
-
+				
 				RouteMessage rm = message as RouteMessage;
 				if (rm != null)
 				{
 					Console.WriteLine("RouteMessage to " + rm.To);
 					continue;
 				}
-
+				
 				Console.WriteLine("unknown message type: " + message.GetType().Name);
 			}
 		}

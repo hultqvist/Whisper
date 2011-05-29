@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Whisper.Blobing;
+using Whisper.Chunks;
 using Whisper.Messaging;
 using Whisper.Storing;
 
@@ -10,7 +10,7 @@ namespace Whisper
 	{
 		public Tree()
 		{
-			this.BlobList = new List<BlobHash>();
+			this.BlobList = new List<ChunkHash>();
 		}
 
 		#region Input Parameters
@@ -43,8 +43,8 @@ namespace Whisper
 		#endregion
 
 		#region Output Data
-		public ICollection<BlobHash> BlobList { get; private set; }
-		public Blob tree { get; set; }
+		public ICollection<ChunkHash> BlobList { get; private set; }
+		public Chunk tree { get; set; }
 		#endregion
 
 		/// <summary>
@@ -60,7 +60,7 @@ namespace Whisper
 		/// <returns>
 		/// The <see cref="BlobHash"/> of the TreeMessage
 		/// </returns>
-		public BlobHash Generate()
+		public ChunkHash Generate()
 		{
 			#region Check Parameters
 
@@ -88,14 +88,14 @@ namespace Whisper
 			//Storage preparation done
 			this.storage = s;
 
-			this.tree = TreeBlob.GenerateBlob(this.SourcePath, this.storage, this.BlobList);
+			this.tree = TreeChunk.GenerateBlob(this.SourcePath, this.storage, this.BlobList);
 
 			//TreeMessage
 			TreeMessage tm = new TreeMessage(this.tree.ClearID, this.TargetName);
-			Blob smb = SignedMessage.ToBlob(tm, this.SigningKey);
-			this.storage.WriteBlob(smb);
-			this.BlobList.Add(smb.BlobHash);
-			return smb.BlobHash;
+			Chunk smb = SignedMessage.ToChunk(tm, this.SigningKey);
+			this.storage.WriteChunk(smb);
+			this.BlobList.Add(smb.ChunkHash);
+			return smb.ChunkHash;
 		}
 
 	}

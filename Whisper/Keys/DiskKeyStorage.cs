@@ -100,7 +100,7 @@ namespace Whisper.Keys
 			string keyPath = Path.Combine(this.path, filename);
 			using (BinaryReader br = new BinaryReader(new FileStream(keyPath, FileMode.Open)))
 			{
-				key.ReadBlob(br);
+				key.ReadChunk(br);
 			}
 		}
 	}

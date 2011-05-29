@@ -1,5 +1,5 @@
 using System;
-using Whisper.Blobing;
+using Whisper.Chunks;
 using System.Collections.Generic;
 using Whisper.Messaging;
 namespace Whisper.Storing
@@ -12,27 +12,27 @@ namespace Whisper.Storing
 			this.backend = storage;
 		}
 
-		public override BlobHash GetBlobHash(CustomID id)
+		public override ChunkHash GetCustomHash(CustomID id)
 		{
-			return backend.GetBlobHash(id);
+			return backend.GetCustomHash(id);
 		}
 
-		public override void WriteBlob(Blob blob)
+		public override void WriteChunk(Chunk blob)
 		{
-			backend.WriteBlob(blob);
+			backend.WriteChunk(blob);
 		}
 
-		public override Blob ReadBlob(BlobHash blobHash)
+		public override Chunk ReadChunk(ChunkHash blobHash)
 		{
-			return backend.ReadBlob(blobHash);
+			return backend.ReadChunk(blobHash);
 		}
 
-		public override ICollection<BlobHash> GetMessageList()
+		public override ICollection<ChunkHash> GetMessageList()
 		{
 			return backend.GetMessageList();
 		}
 
-		public override void StoreMessage(BlobHash blobHash)
+		public override void StoreMessage(ChunkHash blobHash)
 		{
 			backend.StoreMessage(blobHash);
 		}

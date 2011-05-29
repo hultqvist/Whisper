@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using Whisper.Blobing;
+using Whisper.Chunks;
 namespace Whisper.Messaging
 {
 	public class TreeMessage : SignedMessage
@@ -23,13 +23,13 @@ namespace Whisper.Messaging
 
 		#region Blob Reader/Writer
 
-		internal override void WriteBlob(BinaryWriter writer)
+		internal override void WriteChunk(BinaryWriter writer)
 		{
-			TreeID.WriteBlob(writer);
+			TreeID.WriteChunk(writer);
 			WriteString(writer, Name);
 		}
 
-		internal override void ReadBlob(BinaryReader reader)
+		internal override void ReadChunk(BinaryReader reader)
 		{
 			TreeID = TrippleID.FromBlob(reader);
 			Name = ReadString(reader);

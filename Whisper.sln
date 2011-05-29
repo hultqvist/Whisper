@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wcp", "Wcp\Wcp.csproj", "{5F56E06E-0DF9-41E0-A278-B2920FE43DD6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhisperServer", "WhisperServer\WhisperServer.csproj", "{3B75859F-BD4F-4D1C-94FC-3042AC9575D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -17,6 +19,10 @@ Global
 		{20B8D0D2-F53D-4102-83EA-928450F3AEC7}.Debug|x86.Build.0 = Debug|x86
 		{20B8D0D2-F53D-4102-83EA-928450F3AEC7}.Release|x86.ActiveCfg = Release|x86
 		{20B8D0D2-F53D-4102-83EA-928450F3AEC7}.Release|x86.Build.0 = Release|x86
+		{3B75859F-BD4F-4D1C-94FC-3042AC9575D1}.Debug|x86.ActiveCfg = Debug|x86
+		{3B75859F-BD4F-4D1C-94FC-3042AC9575D1}.Debug|x86.Build.0 = Debug|x86
+		{3B75859F-BD4F-4D1C-94FC-3042AC9575D1}.Release|x86.ActiveCfg = Release|x86
+		{3B75859F-BD4F-4D1C-94FC-3042AC9575D1}.Release|x86.Build.0 = Release|x86
 		{5F56E06E-0DF9-41E0-A278-B2920FE43DD6}.Debug|x86.ActiveCfg = Debug|x86
 		{5F56E06E-0DF9-41E0-A278-B2920FE43DD6}.Debug|x86.Build.0 = Debug|x86
 		{5F56E06E-0DF9-41E0-A278-B2920FE43DD6}.Release|x86.ActiveCfg = Release|x86

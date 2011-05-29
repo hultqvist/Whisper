@@ -4,12 +4,12 @@ using System.Security.Cryptography;
 using Whisper.Messaging;
 using System.IO;
 
-namespace Whisper.Blobing
+namespace Whisper.Chunks
 {
 	/// <summary>
 	/// Contains all the neccesary data to decrypt a blob.
 	/// </summary>
-	public class BlobKeys : BinaryBlob
+	public class ChunkKeys : BinaryChunk
 	{
 		public RijndaelManaged RM = new RijndaelManaged();
 
@@ -18,35 +18,41 @@ namespace Whisper.Blobing
 			set { RM.IV = value; }
 		}
 
-		public List<BlobKey> Keys = new List<BlobKey>();
+		public List<ChunkKey> Keys = new List<ChunkKey>();
 
-		public BlobKeys()
+		public ChunkKeys()
 		{
 			RM.KeySize = 256;
 			RM.Mode = CipherMode.CBC;
 		}
-		public void AddKey(BlobKey keyPair)
+		public void AddKey(ChunkKey keyPair)
 		{
 			Keys.Add(keyPair);
 		}
 
 		#region Blob Reader/Writer
 
-		internal override void WriteBlob(BinaryWriter writer)
+		internal override void WriteChunk(BinaryWriter writer)
 		{
+			writer.Write((int) Keys.Count);
+			if (Keys.Count == 0)
+				return;
 			writer.Write(IV);
-			foreach (BlobKey pair in Keys)
+			foreach (ChunkKey pair in Keys)
 			{
 				writer.Write(pair.bytes);
 			}
 		}
 
-		internal override void ReadBlob(BinaryReader reader)
+		internal override void ReadChunk(BinaryReader reader)
 		{
+			int count = reader.ReadInt32();
+			if (count == 0)
+				return;
 			IV = reader.ReadBytes(16);
-			while (reader.BaseStream.Length - reader.BaseStream.Position >= 128)
+			for(int n = 0; n < count; n++)
 			{
-				BlobKey pair = new BlobKey();
+				ChunkKey pair = new ChunkKey();
 				pair.bytes = reader.ReadBytes(128);
 				Keys.Add(pair);
 			}

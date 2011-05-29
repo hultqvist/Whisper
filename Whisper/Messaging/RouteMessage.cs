@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Whisper.Blobing;
+using Whisper.Chunks;
 
 namespace Whisper.Messaging
 {
@@ -10,7 +10,7 @@ namespace Whisper.Messaging
 		/// <summary>
 		/// What to send
 		/// </summary>
-		public BlobHash Message { get; set; }
+		public ChunkHash Message { get; set; }
 
 		/// <summary>
 		/// Where to send it
@@ -20,41 +20,41 @@ namespace Whisper.Messaging
 		/// <summary>
 		/// All the blobs going with that message
 		/// </summary>
-		public ICollection<BlobHash> Blobs { get; set; }
+		public ICollection<ChunkHash> Chunks { get; set; }
 
 		public RouteMessage()
 		{
 		}
 
-		public RouteMessage(string to, BlobHash message, BlobHash[] blobs)
+		public RouteMessage(string to, ChunkHash message, ChunkHash[] chunks)
 		{
 			this.To = to;
 			this.Message = message;
-			this.Blobs = blobs;
+			this.Chunks = chunks;
 		}
 
 		#region Blob Reader/Writer
 
-		internal override void WriteBlob(BinaryWriter writer)
+		internal override void WriteChunk(BinaryWriter writer)
 		{
 			WriteString(writer, To);
-			Message.WriteBlob(writer);
-			writer.Write((int) Blobs.Count);
-			foreach (BlobHash hash in Blobs)
+			Message.WriteChunk(writer);
+			writer.Write((int) Chunks.Count);
+			foreach (ChunkHash hash in Chunks)
 			{
-				hash.WriteBlob(writer);
+				hash.WriteChunk(writer);
 			}
 		}
 
-		internal override void ReadBlob(BinaryReader reader)
+		internal override void ReadChunk(BinaryReader reader)
 		{
 			To = ReadString(reader);
-			Message = BlobHash.FromBlob(reader);
-			Blobs = new List<BlobHash>();
+			Message = ChunkHash.FromChunk(reader);
+			Chunks = new List<ChunkHash>();
 			int count = reader.ReadInt32();
 			for (int n = 0; n < count; n++)
 			{
-				Blobs.Add(BlobHash.FromBlob(reader));
+				Chunks.Add(ChunkHash.FromChunk(reader));
 			}
 		}
 		

@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-namespace Whisper.Blobing
+namespace Whisper.Chunks
 {
 	/// <summary>
 	/// Sender generated ID for a blob.
@@ -17,9 +17,9 @@ namespace Whisper.Blobing
 			return new CustomID(Hash.FromString(id));
 		}
 
-		internal static new CustomID FromBlob(BinaryReader reader)
+		internal static new CustomID FromChunk(BinaryReader reader)
 		{
-			return new CustomID(Hash.FromBlob(reader));
+			return new CustomID(Hash.FromChunk(reader));
 		}
 
 	}

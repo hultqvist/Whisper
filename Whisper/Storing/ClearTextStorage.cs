@@ -1,6 +1,6 @@
 using System;
 using Whisper.Storing;
-using Whisper.Blobing;
+using Whisper.Chunks;
 namespace Whisper.Storing
 {
 	/// <summary>
@@ -14,10 +14,10 @@ namespace Whisper.Storing
 		{
 		}
 
-		public override void WriteBlob(Blob blob)
+		public override void WriteChunk(Chunk blob)
 		{
 			blob.CustomID = clearTextID.GetID(blob);
-			base.WriteBlob(blob);
+			base.WriteChunk(blob);
 		}
 	}
 }

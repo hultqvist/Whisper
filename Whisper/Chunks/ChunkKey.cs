@@ -1,10 +1,10 @@
 using System;
-namespace Whisper.Blobing
+namespace Whisper.Chunks
 {
 	/// <summary>
 	/// Encrypted key used to decrypt a blob
 	/// </summary>
-	public class BlobKey
+	public class ChunkKey
 	{
 		/// <summary>
 		/// Encrypted AES key
