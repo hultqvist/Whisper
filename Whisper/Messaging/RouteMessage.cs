@@ -7,6 +7,10 @@ namespace Whisper.Messaging
 {
 	public partial class RouteMessage : Message
 	{
+		public RouteMessage ()
+		{
+			this.Chunks = new List<byte[]>();
+		}
 	}
 }
 

@@ -49,6 +49,7 @@ namespace Whisper.Chunks
 
 			this.ClearHash = ClearHash.ComputeHash(buffer);
 			this.DataHash = ChunkHash.FromHashBytes(this.ClearHash.bytes);
+			this.TrippleID = new TrippleID(this);
 		}
 
 		public override string ToString()

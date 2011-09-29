@@ -43,9 +43,8 @@ namespace Whisper.Chunks
 				}
 			}
 
-			MemoryStream ms = new MemoryStream();
-			Serializer.Write(ms, message);
-			Chunk messageChunk = new Chunk(ms.ToArray());
+			byte[] messageBytes = StreamChunk.SerializeToBytes(message);
+			Chunk messageChunk = new Chunk(messageBytes);
 
 			storage.WriteChunk(messageChunk);
 

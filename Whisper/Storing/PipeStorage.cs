@@ -49,7 +49,8 @@ namespace Whisper.Storing
 		{
 			input.Dispose();
 			output.Dispose();
-			p.Dispose();
+			if (p != null)
+				p.Dispose();
 		}
 
 

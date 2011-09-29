@@ -53,10 +53,12 @@ namespace Test
 				rm.Chunks.Add(ch.bytes);
 			rm.To = receipientName;
 			//Store unencrypted RouteMessage
-			Whisper.Chunks.Chunk rmChunk = Message.ToChunk(rm, senderKey);
+			Whisper.Chunks.Chunk rmChunk = Message.ToChunk(rm); //, senderKey
 			storage.WriteChunk(rmChunk);
 			storage.StoreMessage(rmChunk.DataHash);
 			Console.WriteLine("RouteMessage Stored");
+			storage.Dispose();
+			Console.WriteLine("Storing Test Complete");
 		}
 
 		private static PipeStorage PrepareStorage()
@@ -73,7 +75,14 @@ namespace Test
 				Stream s = server.GetStream();
 				PipeServer ps = new PipeServer(s, s, remoteStorage);
 				Console.WriteLine("Got incoming connection.");
-				ps.Run();
+				try
+				{
+					ps.Run();
+				}
+				catch (IOException ioe)
+				{
+					Console.WriteLine(ioe.Message);
+				}
 			});
 			t.Name = "ServerSide";
 			t.Start();
