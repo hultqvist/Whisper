@@ -1,7 +1,10 @@
 using System;
-using Whisper.Chunks;
-using System.Security.Cryptography;
 using System.IO;
+using System.Security.Cryptography;
+using Whisper.Chunks;
+using Whisper.Keys;
+using ProtocolBuffers;
+
 namespace Whisper.Storing
 {
 	/// <summary>
@@ -11,18 +14,20 @@ namespace Whisper.Storing
 	public class RecipientID : IGenerateID
 	{
 		PublicKey recipient;
+
 		public RecipientID(PublicKey recipient)
 		{
 			this.recipient = recipient;
 		}
 
-		public CustomID GetID(Chunk blob)
+		public CustomID GetID(Chunk chunk)
 		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			recipient.WriteChunk(bw);
-			blob.ClearHash.WriteChunk(bw);
-			return new CustomID(Hash.ComputeHash(ms.ToArray()));
+			using (MemoryStream ms = new MemoryStream())
+			{
+				PublicKey.Serialize(ms, recipient);
+				ProtocolParser.WriteBytes(ms, chunk.ClearHash.bytes);
+				return CustomID.FromBytes(Hash.ComputeHash(ms.ToArray()).bytes);
+			}
 		}
 	}
 }

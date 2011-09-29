@@ -1,0 +1,3 @@
+[submodule "ProtoBuf-CSharpGen"]
+	path = ProtoBuf-CSharpGen
+	url = git@github.com:hultqvist/ProtoBuf-CSharpGen.git

@@ -1,0 +1,70 @@
+//Message structures for the PipeStorage protocol
+
+option namespace = "Whisper.Storing.Pipe";
+
+message chunk_keys
+{
+	option namespace = "Whisper.Chunks";
+
+	required bytes iv = 1;
+	repeated bytes encrypted_keys = 2;
+}
+
+message pipe_header
+{
+	required uint32 type_ID = 1;
+
+	optional uint32 debug_number = 2;
+}
+
+message request_custom_hash
+{
+	required bytes custom_ID = 1;
+}
+
+message reply_custom_hash
+{
+	optional bytes chunk_hash = 1;
+}
+
+message request_read_chunk
+{
+	required bytes chunk_hash = 1;
+}
+
+message reply_read_chunk
+{
+	//Only set if found
+	optional bytes chunk_data = 1;
+	//If found and encrypted
+	optional chunk_keys keys = 2;
+}
+
+message request_write_chunk
+{
+	required bytes chunk_data = 1;
+}
+
+message reply_write_chunk
+{
+}
+
+message request_message_list
+{
+}
+
+message reply_message_list
+{
+	repeated bytes chunk_hash = 1;
+}
+
+message request_store_message
+{
+	required bytes chunk_hash = 1;	
+}
+
+message reply_store_message
+{	 
+}
+
+

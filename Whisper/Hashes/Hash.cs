@@ -2,26 +2,21 @@ using System;
 using System.Security.Cryptography;
 using System.IO;
 using Whisper.Chunks;
+
 namespace Whisper
 {
-
-	public class Hash : BinaryChunk
+	public class Hash
 	{
 		public readonly byte[] bytes;
 
 		#region Constructors and Hash creators
 
-		public Hash(byte[] hash)
+		protected Hash(byte[] hash)
 		{
 			if (hash.Length != 32)
 				throw new ArgumentException("hash must be 32 bytes", "hash");
 			
 			this.bytes = hash;
-		}
-
-		public Hash(Hash hash)
-		{
-			this.bytes = hash.bytes;
 		}
 
 		public static Hash FromString(string id)
@@ -36,10 +31,26 @@ namespace Whisper
 			return new Hash(sha.ComputeHash(data));
 		}
 
+		public static Hash FromHashBytes(byte[] bytes)
+		{
+			if (bytes == null)
+				return null;
+			return new Hash(bytes);
+		}
+
 		#endregion
 
 		public override string ToString()
 		{
+			if (bytes == null)
+				return "!!!NULL Hash!!!";
+			return BitConverter.ToString(bytes).Replace("-", "");
+		}
+
+		public string ToHex()
+		{
+			if (bytes == null)
+				throw new InvalidDataException("bytes is null");
 			return BitConverter.ToString(bytes).Replace("-", "");
 		}
 
@@ -72,24 +83,6 @@ namespace Whisper
 
 		#endregion
 
-		#region Blob Reader/Writer
-
-		internal override void WriteChunk(BinaryWriter writer)
-		{
-			writer.Write(bytes);
-		}
-
-		internal override void ReadChunk(BinaryReader reader)
-		{
-			throw new NotImplementedException("Use Hash.FromBlob instead");
-		}
-
-		internal static Hash FromChunk(BinaryReader reader)
-		{
-			return new Hash(reader.ReadBytes(32));
-		}
-		#endregion
-		
 	}
 }
 

@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Whisper.Chunks;
 using Whisper.Messaging;
 using Whisper.Storing;
+using Whisper.Keys;
 
 namespace Whisper
 {
@@ -10,7 +12,7 @@ namespace Whisper
 	{
 		public Tree()
 		{
-			this.BlobList = new List<ChunkHash>();
+			this.ChunkList = new List<ChunkHash>();
 		}
 
 		#region Input Parameters
@@ -43,22 +45,22 @@ namespace Whisper
 		#endregion
 
 		#region Output Data
-		public ICollection<ChunkHash> BlobList { get; private set; }
+		public ICollection<ChunkHash> ChunkList { get; private set; }
 		public Chunk tree { get; set; }
 		#endregion
 
 		/// <summary>
-		/// Final top storage generated in GenerateTreeBlob from EncryptKeys and Storage
+		/// Final top storage generated in GenerateTreeChunk from EncryptKeys and Storage
 		/// </summary>
 		private Storage storage;
 
 		/// <summary>
 		/// Generate, encrypt and store the tree.
 		/// Generates a treemessage and store it.
-		/// Return the BlobHash of the final tree message.
+		/// Return the ChunkHash of the final tree message.
 		/// </summary>
 		/// <returns>
-		/// The <see cref="BlobHash"/> of the TreeMessage
+		/// The <see cref="ChunkHash"/> of the TreeMessage
 		/// </returns>
 		public ChunkHash Generate()
 		{
@@ -83,19 +85,22 @@ namespace Whisper
 				if(EncryptKeys.Count == 1)
 					id = new RecipientID(EncryptKeys.First());
 				s = new EncryptedStorage(s, null, id);
+				EncryptedStorage es = s as EncryptedStorage;
+				foreach(PublicKey key in EncryptKeys)
+					es.AddKey(key);
 			}
 
 			//Storage preparation done
 			this.storage = s;
 
-			this.tree = TreeChunk.GenerateBlob(this.SourcePath, this.storage, this.BlobList);
+			this.tree = TreeChunk.GenerateChunk(this.SourcePath, this.storage, this.ChunkList);
 
 			//TreeMessage
-			TreeMessage tm = new TreeMessage(this.tree.ClearID, this.TargetName);
-			Chunk smb = SignedMessage.ToChunk(tm, this.SigningKey);
+			TreeMessage tm = new TreeMessage(this.tree.TrippleID, this.TargetName);
+			Chunk smb = Message.ToChunk(tm, this.SigningKey);
 			this.storage.WriteChunk(smb);
-			this.BlobList.Add(smb.ChunkHash);
-			return smb.ChunkHash;
+			this.ChunkList.Add(smb.DataHash);
+			return smb.DataHash;
 		}
 
 	}

@@ -1,9 +1,10 @@
 using System;
-using System.Collections.Generic;
-using Whisper.Storing;
-using Whisper.Chunks;
 using System.IO;
+using System.Collections.Generic;
 using System.Security.Cryptography;
+using Whisper.Chunks;
+using Whisper.Storing;
+using Whisper.Keys;
 
 namespace Whisper.Storing
 {
@@ -20,10 +21,10 @@ namespace Whisper.Storing
 		public List<PublicKey> recipientKeys = new List<PublicKey>();
 
 		/// <summary>
-		/// Encrypts all blobs before sending them to the underlying storage
+		/// Encrypts all chunks before sending them to the underlying storage
 		/// </summary>
 		/// <param name="storage">
-		/// This is where the encrypted blobs are sent
+		/// This is where the encrypted chunks are sent
 		/// </param>
 		/// <param name="keyStorage">
 		/// If decrypting, this is where we look for private keys
@@ -35,16 +36,16 @@ namespace Whisper.Storing
 		}
 
 		/// <summary>
-		/// Encrypts all blobs before sending them to the underlying storage
+		/// Encrypts all chunks before sending them to the underlying storage
 		/// </summary>
 		/// <param name="storage">
-		/// This is where the encrypted blobs are sent
+		/// This is where the encrypted chunks are sent
 		/// </param>
 		/// <param name="keyStorage">
 		/// If decrypting, this is where we look for private keys
 		/// </param>
 		/// <param name="idgenerator">
-		/// Used to generate CustomID for all blobs
+		/// Used to generate CustomID for all chunks
 		/// </param>
 		public EncryptedStorage(Storage storage, KeyStorage keyStorage, IGenerateID idGenerator) : base(storage)
 		{
@@ -52,6 +53,11 @@ namespace Whisper.Storing
 				throw new ArgumentException("idGenerator cannot be null, use other constructor instead");
 			this.idGenerator = idGenerator;
 			this.keyStorage = keyStorage;
+		}
+
+		public override string ToString()
+		{
+			return "Encrypted(" + base.ToString() + ")";
 		}
 
 		/// <summary>
@@ -62,62 +68,62 @@ namespace Whisper.Storing
 			this.recipientKeys.Add(key);
 		}
 
-		public override void WriteChunk(Chunk blob)
+		public override void WriteChunk(Chunk chunk)
 		{
 			if (recipientKeys.Count == 0)
 				throw new InvalidOperationException("EncryptedStorage must have at least one key");
 			
 			//Encrypt
-			Encrypt(blob);
+			Encrypt(chunk);
 			
 			//Generate CustomID
-			blob.CustomID = idGenerator.GetID(blob);
+			chunk.CustomID = idGenerator.GetID(chunk);
 			
 			//Reuse already existsing CustomID
-			ChunkHash hash = GetCustomHash(blob.CustomID);
+			ChunkHash hash = GetCustomHash(chunk.CustomID);
 			if (hash != null)
 			{
-				blob.ChunkHash = hash;
+				chunk.DataHash = hash;
 				return;
 			}
 			
 			foreach (PublicKey k in recipientKeys)
-				blob.AddKey(k);
-			base.WriteChunk(blob);
+				chunk.AddKey(k);
+			base.WriteChunk(chunk);
 		}
 
 		public override Chunk ReadChunk(ChunkHash id)
 		{
-			Chunk blob = base.ReadChunk(id);
+			Chunk chunk = base.ReadChunk(id);
 			
-			if (blob.Keys != null)
-				Decrypt(blob);
+			if (chunk.Keys != null)
+				Decrypt(chunk);
 			
-			return blob;
+			return chunk;
 		}
 
-		void Encrypt(Chunk blob)
+		void Encrypt(Chunk chunk)
 		{
-			if (blob.Keys != null)
+			if (chunk.Keys != null)
 				throw new InvalidOperationException("Can only encrypt once");
 			
 			//Generate key
-			blob.Keys = new ChunkKeys();
-			blob.Keys.RM.GenerateIV();
-			blob.Keys.RM.GenerateKey();
-			
+			chunk.Keys = new ChunkKeys();
+			chunk.Keys.RM.GenerateIV();
+			chunk.Keys.RM.GenerateKey();
+
 			//Encrypt data
 			using (MemoryStream ms = new MemoryStream())
 			{
-				using (CryptoStream cs = new CryptoStream(ms, blob.Keys.RM.CreateEncryptor(), CryptoStreamMode.Write))
+				using (CryptoStream cs = new CryptoStream(ms, chunk.Keys.RM.CreateEncryptor(), CryptoStreamMode.Write))
 				{
-					cs.Write(blob.Data, 0, blob.Data.Length);
+					cs.Write(chunk.Data, 0, chunk.Data.Length);
 				}
-				blob.Data = ms.ToArray();
+				chunk.Data = ms.ToArray();
 			}
 			
 			//Generate Hash
-			blob.ChunkHash = new ChunkHash(Hash.ComputeHash(blob.Data));
+			chunk.DataHash = ChunkHash.ComputeHash(chunk.Data);
 		}
 
 		ChunkKey Decrypt(List<ChunkKey> pairs)
@@ -126,37 +132,41 @@ namespace Whisper.Storing
 			{
 				foreach (PrivateKey k in this.keyStorage.PrivateKeys)
 				{
-					ChunkKey clear = new ChunkKey();
-					clear.bytes = k.Decrypt(pair.bytes);
-					return clear;
+					byte[] clear = k.Decrypt(pair.bytes);
+					if (clear == null)
+						continue;
+
+					ChunkKey key = new ChunkKey();
+					key.bytes = clear;
+					return key;
 				}
 			}
 			return null;
 		}
 
-		bool Decrypt(Chunk blob)
+		bool Decrypt(Chunk chunk)
 		{
-			if (blob.Keys == null)
+			if (chunk.Keys == null)
 				throw new InvalidDataException("Missing keys");
 			
 			//Decrypt Key
-			ChunkKey key = Decrypt(blob.Keys.Keys);
+			ChunkKey key = Decrypt(chunk.Keys.Keys);
 			if (key == null)
 				return false;
 			
-			blob.Keys.RM.Key = key.bytes;
+			chunk.Keys.RM.Key = key.bytes;
 			
 			//Decrypt Data
-			blob.Keys.RM.Mode = CipherMode.CBC;
+			chunk.Keys.RM.Mode = CipherMode.CBC;
 			using (MemoryStream ms = new MemoryStream())
 			{
-				using (CryptoStream cs = new CryptoStream(ms, blob.Keys.RM.CreateDecryptor(), CryptoStreamMode.Write))
+				using (CryptoStream cs = new CryptoStream(ms, chunk.Keys.RM.CreateDecryptor(), CryptoStreamMode.Write))
 				{
-					cs.Write(blob.Data, 0, blob.Data.Length);
+					cs.Write(chunk.Data, 0, chunk.Data.Length);
 				}
-				blob.Data = ms.ToArray();
+				chunk.Data = ms.ToArray();
 			}
-			blob.ClearHash = Hash.ComputeHash(blob.Data);
+			chunk.ClearHash = ClearHash.FromHashBytes(Hash.ComputeHash(chunk.Data).bytes);
 			return true;
 		}
 

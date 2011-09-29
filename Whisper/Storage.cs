@@ -12,8 +12,17 @@ namespace Whisper
 
 		public static Storage Create(string name)
 		{
-			if(name.StartsWith("ssh://"))
-				return new PipeStorage("ssh", name.Substring(6) + " mono whisper.exe --server");
+			if (name.StartsWith("ssh://"))
+				return new PipeStorage("ssh", name.Substring(6) + " mono WhisperServer.exe");
+
+			if (name.StartsWith("pipe:"))
+			{
+				int space = name.IndexOf(' ');
+				if (space < 0)
+					return new PipeStorage(name.Substring(5), "");
+
+				return new PipeStorage(name.Substring(5, space - 5), name.Substring(space + 1));
+			}
 			return new DiskStorage(name);
 		}
 
@@ -44,7 +53,7 @@ namespace Whisper
 		/// <summary>
 		/// Get a list of all available messages
 		/// </summary>
-		public abstract ICollection<ChunkHash> GetMessageList();
+		public abstract List<ChunkHash> GetMessageList();
 
 		/// <summary>
 		/// Put message ChunkHash in special message list

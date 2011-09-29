@@ -2,36 +2,37 @@ using System;
 using System.IO;
 using Whisper;
 using Whisper.Messaging;
+using Whisper.Keys;
+
 namespace Wcp
 {
 	public static class Put
 	{
-		public static void Main(string[] args)
+		public static void Main(string[] args, KeyStorage keyStorage)
 		{
 			//Usage
-			if (args.Length != 3)
+			if (args.Length != 4)
 				throw new HelpException("Missing arguments");
-			string sourcePath = args[0];
-			string storagePath = args[1];
-			string receipientName = args[2];
+			string sourcePath = args[1];
+			string storagePath = args[2];
+			string receipientName = args[3];
 			
 			//Source
 			if (Directory.Exists(sourcePath) == false)
 				throw new HelpException("Source directory not found: " + sourcePath);
-
+			
 			//Storage
 			Storage storage = Storage.Create(storagePath);
 			
 			//Sender and Recipient keys
-			KeyStorage keyStorage = new KeyStorage();
 			PrivateKey senderKey = keyStorage.DefaultKey;
-			PublicKey recipientKey = (PublicKey)keyStorage.FromName(receipientName);
+			PublicKey recipientKey = keyStorage.GetPublic(receipientName);
 			
 			//Send Tree
 			Console.Write("Generating Tree...");
 			Tree tree = new Tree();
 			tree.SourcePath = sourcePath;
-			tree.TargetName = Path.GetFileName(sourcePath);
+			tree.TargetName = Path.GetDirectoryName(sourcePath);
 			tree.Storage.Add(storage);
 			tree.EncryptKeys.Add(recipientKey);
 			tree.SigningKey = senderKey;
@@ -43,12 +44,16 @@ namespace Wcp
 			
 			//RouteMessage
 			RouteMessage rm = new RouteMessage();
-			rm.Chunks = tree.BlobList;
+			rm.MessageChunkHash = treeMessage.bytes;
+			foreach (ChunkHash ch in tree.ChunkList)
+				rm.Chunks.Add(ch.bytes);
 			rm.To = receipientName;
 			//Store unencrypted RouteMessage
-			storage.WriteChunk(SignedMessage.ToChunk(rm, senderKey));
+			Whisper.Chunks.Chunk rmChunk = Message.ToChunk(rm, senderKey);
+			storage.WriteChunk(rmChunk);
+			storage.StoreMessage(rmChunk.DataHash);
 			Console.WriteLine("RouteMessage Stored");
-
+			
 		}
 	}
 }

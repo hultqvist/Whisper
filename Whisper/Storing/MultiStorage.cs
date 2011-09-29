@@ -14,17 +14,16 @@ namespace Whisper.Storing
 
 		public override ChunkHash GetCustomHash(CustomID customID)
 		{
-			foreach (Storage s in storages)
-				throw new System.NotImplementedException();
+			//foreach (Storage s in storages)
 			throw new System.NotImplementedException();
 		}
 
 
-		public override Chunk ReadChunk(ChunkHash blobHash)
+		public override Chunk ReadChunk(ChunkHash chunkHash)
 		{
 			foreach (Storage s in storages)
 			{
-				Chunk b = s.ReadChunk(blobHash);
+				Chunk b = s.ReadChunk(chunkHash);
 				if (b != null)
 					return b;
 			}
@@ -32,14 +31,14 @@ namespace Whisper.Storing
 		}
 
 
-		public override void WriteChunk(Chunk blob)
+		public override void WriteChunk(Chunk chunk)
 		{
 			foreach (Storage s in storages)
-				s.WriteChunk(blob);
+				s.WriteChunk(chunk);
 		}
 
 
-		public override ICollection<ChunkHash> GetMessageList()
+		public override List<ChunkHash> GetMessageList()
 		{
 			List<ChunkHash> list = new List<ChunkHash>();
 			foreach (Storage s in storages)
@@ -51,10 +50,10 @@ namespace Whisper.Storing
 			return list;
 		}
 
-		public override void StoreMessage(ChunkHash blobHash)
+		public override void StoreMessage(ChunkHash chunkHash)
 		{
 			foreach (Storage s in storages)
-				s.StoreMessage(blobHash);
+				s.StoreMessage(chunkHash);
 		}
 
 	}

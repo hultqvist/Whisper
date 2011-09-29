@@ -1,115 +1,161 @@
 using System;
 using System.IO;
 using System.Diagnostics;
-using Whisper.Chunks;
 using System.Collections.Generic;
+using Whisper.Chunks;
+using Whisper.Storing.Pipe;
+using ProtocolBuffers;
 
 namespace Whisper.Storing
 {
 	/// <summary>
-	/// Store into a pipe to another program.
-	/// The other end of the pipe is implemented in project WhisperServer file Server.cs
+	/// Store via a pipe to another program.
+	/// This can be used for direct tcp communication or via ssh
 	/// </summary>
-	public class PipeStorage : Storage
+	public class PipeStorage : Storage, IDisposable
 	{
-		BinaryReader reader;
-		BinaryWriter writer;
+		Stream input;
+		Stream output;
+		Process p;
 
 		public PipeStorage(string command, string arguments)
 		{
-			Process p = new Process();
-			p.StartInfo.FileName = command;
-			p.StartInfo.Arguments = arguments;
-			p.StartInfo.RedirectStandardInput = true;
-			p.StartInfo.RedirectStandardOutput = true;
-			p.Start();
+			ProcessStartInfo psi = new ProcessStartInfo();
+			psi.FileName = command;
+			psi.Arguments = arguments;
+			psi.UseShellExecute = false;
+			psi.RedirectStandardInput = true;
+			psi.RedirectStandardOutput = true;
+			p = Process.Start(psi);
 
-			reader = new BinaryReader(p.StandardOutput.BaseStream);
-			writer = new BinaryWriter(p.StandardInput.BaseStream);
+			input = p.StandardOutput.BaseStream;
+			output = p.StandardInput.BaseStream;
 		}
 
-		private enum PipeProtocol
+		public PipeStorage(Stream input, Stream output)
 		{
-			GetCustomHash,
-			ReadChunk,
-			WriteChunk,
-			GetMessageList,
-			StoreMessage
+			this.input = input;
+			this.output = output;
+		}
+
+		public override string ToString()
+		{
+			if (p == null)
+				return "Pipe";
+			return p.ProcessName;
+		}
+
+		public void Dispose()
+		{
+			input.Dispose();
+			output.Dispose();
+			p.Dispose();
+		}
+
+
+		/// <summary>
+		/// Helper for sending messages
+		/// </summary>
+		private void SendMessage(IPipeMessage message)
+		{
+			PipeHeader h = PipeHeader.Next();
+			h.TypeID = message.TypeID;
+			//Send Header
+#if DEBUG
+			//Console.WriteLine("PipeStorage: Header(" + h.TypeID + ", " + h.DebugNumber + ")");
+#endif
+			ProtocolParser.WriteBytes(output, PipeHeader.SerializeToBytes(h));
+
+			//Send Message
+#if DEBUG
+			//Console.WriteLine("PipeStorage: Message(" + message + ")");
+#endif
+			byte[] messageBytes = GetMessageBytes(message);
+			ProtocolParser.WriteBytes(output, messageBytes);
+		}
+
+		static byte[] GetMessageBytes(IPipeMessage message)
+		{
+			if (message is RequestCustomHash)
+				return RequestCustomHash.SerializeToBytes((RequestCustomHash) message);
+			if (message is RequestMessageList)
+				return RequestMessageList.SerializeToBytes((RequestMessageList) message);
+			if (message is RequestReadChunk)
+				return RequestReadChunk.SerializeToBytes((RequestReadChunk) message);
+			if (message is RequestStoreMessage)
+				return RequestStoreMessage.SerializeToBytes((RequestStoreMessage) message);
+			if (message is RequestWriteChunk)
+				return RequestWriteChunk.SerializeToBytes((RequestWriteChunk) message);
+			throw new NotImplementedException();
 		}
 
 		public override ChunkHash GetCustomHash(CustomID customID)
 		{
-			writer.Write((int) PipeProtocol.GetCustomHash);
-			customID.WriteChunk(writer);
+			//Slightly optimized :)
+			return null;
 
-			int reply = reader.ReadInt32();
+			RequestCustomHash msg = new RequestCustomHash();
+			msg.CustomID = customID.bytes;
+			SendMessage(msg);
 
-			if (reply == 0)
-				return null;
-			if (reply == 1)
-				return new ChunkHash(new Hash(reader.ReadBytes(32)));
+			byte[] rbytes = ProtocolParser.ReadBytes(input);
 
-			throw new InvalidOperationException("Invalid reply");
+			//Console.WriteLine("Got reply " + rbytes.Length);
+
+			ReplyCustomHash reply = ReplyCustomHash.Deserialize(rbytes);
+
+			//Console.WriteLine("Got reply " + reply);
+
+			return ChunkHash.FromHashBytes(reply.ChunkHash);
 		}
 
 		public override Chunk ReadChunk(ChunkHash chunkHash)
 		{
-			//Read Chunk Data
-			writer.Write((int) PipeProtocol.ReadChunk);
-			chunkHash.WriteChunk(writer);
+			RequestReadChunk msg = new RequestReadChunk();
+			msg.ChunkHash = chunkHash.bytes;
+			SendMessage(msg);
 
-			int size = reader.ReadInt32();
-			Chunk c = new Chunk();
-			c.Data = reader.ReadBytes(size);
-			c.ChunkHash = new ChunkHash(Hash.ComputeHash(c.Data));
+			ReplyReadChunk reply = ReplyReadChunk.Deserialize(ProtocolParser.ReadBytes(input));
+			Chunk c = new Chunk(reply.ChunkData);
+			c.DataHash = ChunkHash.FromHashBytes(Hash.ComputeHash(c.Data).bytes);
 			//Verify Hash
-			if (c.ChunkHash.Equals(chunkHash) == false)
+			if (c.DataHash.Equals(chunkHash) == false)
 				throw new InvalidDataException("Hash mismatch: " + chunkHash);
-
-			//Read Chunk Keys
-			ChunkKeys ck = new ChunkKeys();
-			ck.ReadChunk(reader);
-			if (ck.Keys.Count > 0)
-				c.Keys = ck;
 
 			return c;
 		}
 
 		public override void WriteChunk(Chunk chunk)
 		{
-			writer.Write((int) PipeProtocol.WriteChunk);
-			writer.Write((int) chunk.Data.Length);
-			writer.Write(chunk.Data);
+			RequestWriteChunk msg = new RequestWriteChunk();
+			msg.ChunkData = chunk.Data;
+			SendMessage(msg);
 
-			int status = reader.ReadInt32();
-			if (status != 0)
-				throw new InvalidOperationException();
+			ReplyWriteChunk.Deserialize(ProtocolParser.ReadBytes(input));
 		}
 
-		public override ICollection<ChunkHash> GetMessageList()
+		public override List<ChunkHash> GetMessageList()
 		{
-			writer.Write((int) PipeProtocol.GetMessageList);
+			RequestMessageList msg = new RequestMessageList();
+			SendMessage(msg);
 
-			int count = reader.ReadInt32();
-			List<ChunkHash> list = new List<ChunkHash>();
-			for (int n = 0; n < count; n++)
-			{
-				ChunkHash ch = new ChunkHash(Hash.FromChunk(reader));
-				list.Add(ch);
-			}
+			ReplyMessageList reply = ReplyMessageList.Deserialize(ProtocolParser.ReadBytes(input));
+			List<ChunkHash > list = new List<ChunkHash>();
+			foreach (byte[] hash in reply.ChunkHash)
+				list.Add(ChunkHash.FromHashBytes(hash));
+
 			return list;
 		}
 
 		public override void StoreMessage(ChunkHash chunkHash)
 		{
-			writer.Write((int) PipeProtocol.StoreMessage);
-			chunkHash.WriteChunk(writer);
+			RequestStoreMessage msg = new RequestStoreMessage();
+			msg.ChunkHash = chunkHash.bytes;
+			SendMessage(msg);
 
-			int status = reader.ReadInt32();
-			if (status != 0)
-				throw new InvalidOperationException();
+			ReplyStoreMessage.Deserialize(ProtocolParser.ReadBytes(input));
 		}
-
+		
 	}
 }
 

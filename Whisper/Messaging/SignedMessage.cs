@@ -1,12 +1,14 @@
 using System;
+using Whisper.Keys;
+
 namespace Whisper.Messaging
 {
 	/// <summary>
 	/// Signed messages
 	/// </summary>
-	public abstract class SignedMessage : Message
+	public interface SignedMessage
 	{
-		public PublicKey Signature { get; set; }
+		PublicKey Signature { get; set; }
 	}
 }
 

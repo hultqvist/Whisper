@@ -12,29 +12,34 @@ namespace Whisper.Storing
 			this.backend = storage;
 		}
 
+		public override string ToString ()
+		{
+			return backend.ToString();
+		}
+
 		public override ChunkHash GetCustomHash(CustomID id)
 		{
 			return backend.GetCustomHash(id);
 		}
 
-		public override void WriteChunk(Chunk blob)
+		public override void WriteChunk(Chunk chunk)
 		{
-			backend.WriteChunk(blob);
+			backend.WriteChunk(chunk);
 		}
 
-		public override Chunk ReadChunk(ChunkHash blobHash)
+		public override Chunk ReadChunk(ChunkHash chunkHash)
 		{
-			return backend.ReadChunk(blobHash);
+			return backend.ReadChunk(chunkHash);
 		}
 
-		public override ICollection<ChunkHash> GetMessageList()
+		public override List<ChunkHash> GetMessageList()
 		{
 			return backend.GetMessageList();
 		}
 
-		public override void StoreMessage(ChunkHash blobHash)
+		public override void StoreMessage(ChunkHash chunkHash)
 		{
-			backend.StoreMessage(blobHash);
+			backend.StoreMessage(chunkHash);
 		}
 
 	}

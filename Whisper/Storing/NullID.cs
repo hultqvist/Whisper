@@ -4,11 +4,11 @@ using Whisper.Chunks;
 namespace Whisper.Storing
 {
 	/// <summary>
-	/// Only pass the BlobHash
+	/// No custom ID
 	/// </summary>
 	public class NullID : IGenerateID
 	{
-		public CustomID GetID(Chunk blob)
+		public CustomID GetID(Chunk chunk)
 		{
 			return null;
 		}

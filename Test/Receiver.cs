@@ -5,6 +5,7 @@ using Whisper;
 using Whisper.Storing;
 using Whisper.Chunks;
 using Whisper.Messaging;
+using Whisper.Keys;
 
 namespace Test
 {
@@ -42,7 +43,7 @@ namespace Test
 				{
 					Console.WriteLine("Found TreeMessage " + tm.Name);
 					string targetPath = Path.Combine(target, tm.Name);
-					TreeChunk.Extract(es, tm.TreeID, targetPath);
+					TreeChunk.Extract(es, tm.TreeChunkID, targetPath);
 					continue;
 				}
 
@@ -55,14 +56,14 @@ namespace Test
 					Storage remoteStorage = new DiskStorage(rm.To);
 
 					//Send chunks
-					foreach (ChunkHash chunkHash in rm.Chunks)
+					foreach (byte[] chunkHash in rm.Chunks)
 					{
-						Chunk b = storage.ReadChunk(chunkHash);
+						Chunk b = storage.ReadChunk(ChunkHash.FromHashBytes(chunkHash));
 						remoteStorage.WriteChunk(b);
 					}
 
 					//Send message
-					remoteStorage.StoreMessage(rm.Message);
+					remoteStorage.StoreMessage(ChunkHash.FromHashBytes(rm.MessageChunkHash));
 					continue;
 				}
 

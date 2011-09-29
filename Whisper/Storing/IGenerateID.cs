@@ -4,11 +4,11 @@ using Whisper.Chunks;
 namespace Whisper.Storing
 {
 	/// <summary>
-	/// CustomID generator, used in various Storage to add a CustomID to blobs
+	/// CustomID generator, used in various Storage to add a CustomID to chunks
 	/// </summary>
 	public interface IGenerateID
 	{
-		CustomID GetID(Chunk blob);
+		CustomID GetID(Chunk chunk);
 	}
 }
 

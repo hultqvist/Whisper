@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Whisper.Messaging;
 using System.IO;
 using System.Security.Cryptography;
+using Whisper.Keys;
 
 namespace Whisper.Chunks
 {
@@ -11,27 +12,21 @@ namespace Whisper.Chunks
 	/// </summary>
 	public class Chunk
 	{
+
 		/// <summary>
-		/// Sender selected ID for this blob
+		/// Sender selected ID for this chunk
 		/// </summary>
 		public CustomID CustomID;
 		/// <summary>
 		/// Hash of Data
 		/// </summary>
-		public ChunkHash ChunkHash;
+		public ChunkHash DataHash;
 		/// <summary>
-		/// Blob data as stored, can be either cleartext or encrypted.
+		/// Chunk data as stored, can be either cleartext or encrypted.
 		/// </summary>
-		public byte[] Data;
+		public byte[] Data { get; set; }
 
-		private TrippleID clearID;
-		public TrippleID ClearID {
-			get {
-				if (clearID == null)
-					clearID = new TrippleID(this);
-				return clearID;
-			}
-		}
+		public TrippleID TrippleID;
 
 		/// <summary>
 		/// Keys to decrypt Data
@@ -41,7 +36,7 @@ namespace Whisper.Chunks
 		/// <summary>
 		/// Hash of cleartext data
 		/// </summary>
-		public Hash ClearHash;
+		public ClearHash ClearHash;
 
 		public Chunk()
 		{
@@ -52,12 +47,17 @@ namespace Whisper.Chunks
 			//Hash data
 			this.Data = buffer;
 
-			this.ClearHash = Hash.ComputeHash(buffer);
-			this.ChunkHash = new ChunkHash(ClearHash);
+			this.ClearHash = ClearHash.ComputeHash(buffer);
+			this.DataHash = ChunkHash.FromHashBytes(this.ClearHash.bytes);
+		}
+
+		public override string ToString()
+		{
+			return "Chunk(" + Data.Length + " bytes)";
 		}
 
 		/// <summary>
-		/// Add public keys that will be able to decrypt the blob.
+		/// Add public keys that will be able to decrypt the chunk.
 		/// </summary>
 		/// <param name="key">
 		/// A <see cref="Key"/>
@@ -73,7 +73,7 @@ namespace Whisper.Chunks
 		}
 
 		/// <summary>
-		/// Verify the ClearID.ClearHash against blob data.
+		/// Verify the ClearID.ClearHash against chunk data.
 		/// The data is assumed to be decrypted, otherwise the verification will fail.
 		/// </summary>
 		public bool Verify(TrippleID id)

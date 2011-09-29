@@ -1,23 +1,22 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using Whisper;
 using Whisper.Storing;
 using Whisper.Messaging;
-using System.IO;
+using Whisper.Keys;
+
 namespace Wcp
 {
 	public static class List
 	{
-		public static void Main(string[] args)
+		public static void Main(string[] args, KeyStorage keyStorage)
 		{
 			if (args.Length != 2)
 				throw new HelpException("Missing arguments");
 			
 			//Storage
 			Storage storage = Storage.Create(args[1]);
-			
-			//Sender and Recipient keys
-			KeyStorage keyStorage = new KeyStorage();
 			
 			//Find message
 			ICollection<ChunkHash> messages = storage.GetMessageList();

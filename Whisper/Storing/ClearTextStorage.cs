@@ -14,10 +14,10 @@ namespace Whisper.Storing
 		{
 		}
 
-		public override void WriteChunk(Chunk blob)
+		public override void WriteChunk(Chunk chunk)
 		{
-			blob.CustomID = clearTextID.GetID(blob);
-			base.WriteChunk(blob);
+			chunk.CustomID = clearTextID.GetID(chunk);
+			base.WriteChunk(chunk);
 		}
 	}
 }

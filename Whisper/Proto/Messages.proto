@@ -1,0 +1,77 @@
+option namespace = "Whisper.Proto";
+
+message tripple_ID
+{
+	option namespace = "Whisper.Chunks";
+	option triggers = true;
+
+	required bytes chunk_hash_bytes = 1 [access=protected];
+	optional bytes custom_id_bytes = 2 [access=protected];
+	optional bytes clear_hash_bytes = 3 [access=protected];
+}
+
+message stream_chunk
+{
+	option namespace = "Whisper.Chunks";
+
+	required uint64 size = 1;
+	repeated tripple_ID chunks = 2;
+}
+
+message tree_file
+{
+	option namespace = "Whisper.Chunks";
+
+	required string name = 1;
+	required tripple_ID tree_chunk_ID = 2;
+}
+
+message tree_chunk
+{
+	option namespace = "Whisper.Chunks";
+
+	repeated tree_file directories = 1;
+	repeated tree_file files = 2;
+}
+
+//Chunk Messages
+
+message message_header
+{
+	option namespace = "Whisper.Messaging";
+	
+	required uint32 message_id = 1;
+	optional bytes signature = 2;
+}
+
+//MessageID = 1
+message tree_message
+{
+	option namespace = "Whisper.Messaging";
+	
+	required string name = 1;
+	required tripple_ID tree_chunk_ID = 2;
+}
+
+//MessageID = 2
+message route_message
+{
+	option namespace = "Whisper.Messaging";
+	
+	// What to send
+	required bytes message_chunk_hash = 1;
+
+	/// Where to send it
+	required string to = 2;
+
+	/// All the chunks going with that message
+	repeated bytes chunks = 3;
+}
+
+//MessageID = 3
+message list_message
+{
+	option namespace = "Whisper.Messaging";
+	
+	repeated tripple_ID list = 1;
+}

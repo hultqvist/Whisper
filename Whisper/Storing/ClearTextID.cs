@@ -7,9 +7,9 @@ namespace Whisper.Storing
 	/// </summary>
 	public class ClearTextID : IGenerateID
 	{
-		public CustomID GetID(Chunk blob)
+		public CustomID GetID(Chunk chunk)
 		{
-			return new CustomID(blob.ClearHash);
+			return CustomID.FromBytes(chunk.ClearHash.bytes);
 		}
 	}
 }

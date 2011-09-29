@@ -10,15 +10,14 @@ namespace WhisperServer
 		public static void Main(string[] args)
 		{
 			Console.Error.WriteLine("Hello from remote Whisper Server");
-			
+
 			string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "WhisperStorage");
 			DiskStorage storage = new DiskStorage(path);
-			using (Stream stdin = Console.OpenStandardInput())
-				using (Stream stdout = Console.OpenStandardOutput())
-				{
-					Server s = new Server(stdin, stdout, storage);
-					s.Run();
-				}
+			Stream stdin = Console.OpenStandardInput();
+			Stream stdout = Console.OpenStandardOutput();
+			//stdout = new FileStream("ServerOut", FileMode.Create);
+			PipeServer s = new PipeServer(stdin, stdout, storage);
+			s.Run();
 
 			Console.Error.WriteLine("Bye bye!");
 		}

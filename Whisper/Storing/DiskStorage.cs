@@ -5,11 +5,12 @@ using Whisper.Storing;
 using System.Collections.Generic;
 using Whisper.Messaging;
 using System.Text;
+using ProtocolBuffers;
 
 namespace Whisper.Storing
 {
 	/// <summary>
-	/// Manage blob storage on disk.
+	/// Manage chunk storage on disk.
 	/// Can be local, removable devices or other network based file sharing services.
 	/// </summary>
 	public class DiskStorage : Storage
@@ -31,36 +32,58 @@ namespace Whisper.Storing
 			Directory.CreateDirectory(messageRoot);
 		}
 
+		public override string ToString ()
+		{
+			return root;
+		}
+
 		public override ChunkHash GetCustomHash(CustomID id)
 		{
 			string idPath = Path.Combine(idRoot, id.ToString() + ".id");
 			if (File.Exists(idPath) == false)
 				return null;
 			byte[] hash = File.ReadAllBytes(idPath);
-			return new ChunkHash(new Hash(hash));
+			return ChunkHash.FromHashBytes(hash);
 		}
 
-		public override void WriteChunk(Chunk blob)
+		private string GetPath(ChunkHash hash)
+		{
+			string hex = hash.ToHex();
+#if DEBUG
+			if(hex.Length != 64) //32 bytes
+				throw new InvalidDataException();
+#endif
+			string path = dataRoot;
+			//FAT32 has a file per folder limit of slightly below 16 bits
+			//Total 32 bytes = 64 characters hex
+			path = Path.Combine(path, hex.Substring(0, 2));
+			path = Path.Combine(path, hex.Substring(0, 4));
+			path = Path.Combine(path, hex.Substring(0, 6));
+			path = Path.Combine(path, hex);
+			return path;
+		}
+
+		public override void WriteChunk(Chunk chunk)
 		{
 			//Data
-			string dataPath = Path.Combine(dataRoot, blob.ChunkHash.ToString());
-			File.WriteAllBytes(dataPath, blob.Data);
-			
+			string dataPath = GetPath(chunk.DataHash);
+			Directory.CreateDirectory(Path.GetDirectoryName(dataPath));
+			File.WriteAllBytes(dataPath, chunk.Data);
+
 			//Keys
-			if (blob.Keys != null)
+			if (chunk.Keys != null)
 			{
 				using (FileStream stream = new FileStream(dataPath + ".keys", FileMode.Create))
 				{
-					BinaryWriter bw = new BinaryWriter(stream);
-					blob.Keys.WriteChunk(bw);
+					ChunkKeys.Serialize(stream, chunk.Keys);
 				}
 			}
 
 			//ID
-			if (blob.CustomID != null)
+			if (chunk.CustomID != null)
 			{
-				string idPath = Path.Combine(idRoot, blob.CustomID.ToString() + ".id");
-				File.WriteAllBytes(idPath, blob.ChunkHash.bytes);
+				string idPath = Path.Combine(idRoot, chunk.CustomID.ToString() + ".id");
+				File.WriteAllBytes(idPath, chunk.DataHash.bytes);
 			}
 		}
 
@@ -69,11 +92,11 @@ namespace Whisper.Storing
 			Chunk chunk = new Chunk();
 			
 			//Read Data
-			string dataPath = Path.Combine(dataRoot, chunkHash.ToString());
+			string dataPath = GetPath(chunkHash);
 			chunk.Data = File.ReadAllBytes(dataPath);
 			//Verify Hash
-			chunk.ChunkHash = new ChunkHash(Hash.ComputeHash(chunk.Data));
-			if (chunk.ChunkHash.Equals(chunkHash) == false)
+			chunk.DataHash = ChunkHash.FromHashBytes(Hash.ComputeHash(chunk.Data).bytes);
+			if (chunk.DataHash.Equals(chunkHash) == false)
 				throw new InvalidDataException("Hash mismatch: " + chunkHash);
 			
 			//Read keys
@@ -82,13 +105,11 @@ namespace Whisper.Storing
 			{
 				using (FileStream stream = new FileStream(dataPath + ".keys", FileMode.Open))
 				{
-					BinaryReader br = new BinaryReader(stream);
-					chunk.Keys = new ChunkKeys();
-					chunk.Keys.ReadChunk(br);
+					chunk.Keys = ChunkKeys.Deserialize<ChunkKeys>(stream);
 				}
 			}
 			else
-				chunk.ClearHash = new Hash(chunkHash);
+				chunk.ClearHash = ClearHash.FromHashBytes(chunkHash.bytes);
 
 			return chunk;
 		}
@@ -99,9 +120,9 @@ namespace Whisper.Storing
 			File.WriteAllBytes(path, new byte[0]);
 		}
 
-		public override ICollection<ChunkHash> GetMessageList()
+		public override List<ChunkHash> GetMessageList()
 		{
-			List<ChunkHash> list = new List<ChunkHash>();
+			List<ChunkHash > list = new List<ChunkHash>();
 			string[] files = Directory.GetFiles(messageRoot);
 			
 			foreach (string file in files)

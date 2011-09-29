@@ -5,26 +5,26 @@ using Whisper;
 using Whisper.Chunks;
 using Whisper.Messaging;
 using Whisper.Storing;
+using Whisper.Keys;
 
 namespace Wcp
 {
 	public static class Get
 	{
-		public static void Main(string[] args)
+		public static void Main(string[] args, KeyStorage keyStorage)
 		{
 			if (args.Length != 4)
 				throw new HelpException("Missing arguments");
 			
 			//Storage
 			Storage storage = Storage.Create(args[1]);
-			KeyStorage keyStorage = KeyStorage.Default;
-			storage = new EncryptedStorage(storage, keyStorage, new RecipientID(keyStorage.DefaultKey));
+			storage = new EncryptedStorage(storage, keyStorage, new RecipientID(keyStorage.DefaultKey.PublicKey));
 			
 			//Find message
 			Chunk chunk = null;
 			if (args[2].Length == 64)
 			{
-				ChunkHash id = new ChunkHash(Hash.FromString(args[2]));
+				ChunkHash id = ChunkHash.FromHashBytes(Hash.FromString(args[2]).bytes);
 				chunk = storage.ReadChunk(id);
 			} else
 			{
@@ -51,7 +51,7 @@ namespace Wcp
 			
 			Console.WriteLine("Found TreeMessage " + tm.Name);
 			string targetPath = Path.Combine(args[3], tm.Name);
-			TreeChunk.Extract(storage, tm.TreeID, targetPath);
+			TreeChunk.Extract(storage, tm.TreeChunkID, targetPath);
 		}
 		
 	}
