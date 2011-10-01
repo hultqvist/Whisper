@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	/// <summary>
 	/// This header is sent before every message to determine the type of the message
@@ -72,6 +72,10 @@ namespace Whisper.Storing.Pipe
 
 	public partial class ReplyMessageList
 	{
+		public ReplyMessageList ()
+		{
+			this.ChunkHash = new List<byte[]>();	
+		}
 	}
 
 	public partial class RequestStoreMessage : IPipeMessage

@@ -1,8 +1,8 @@
 using System;
 using Whisper.Chunks;
 using System.Collections.Generic;
-using Whisper.Messaging;
-namespace Whisper.Storing
+using Whisper.Messages;
+namespace Whisper.Storages
 {
 	public class StorageFilter : Storage
 	{

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Whisper;
 using ProtocolBuffers;
+using System.Text;
 
 namespace Whisper.Keys
 {
@@ -16,23 +17,23 @@ namespace Whisper.Keys
 		/// <summary>
 		/// Default to ~/.config/Whisper/Keys/ on linux
 		/// </summary>
-		public DiskKeyStorage()
+		public DiskKeyStorage ()
 		{
-			path = Path.Combine(Path.Combine(
-				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+			path = Path.Combine (Path.Combine (
+				Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData),
 				"Whisper"), "Keys");
-			Directory.CreateDirectory(path);
+			Directory.CreateDirectory (path);
 		}
 
-		public DiskKeyStorage(string path)
+		public DiskKeyStorage (string path)
 		{
 			this.path = path;
-			Directory.CreateDirectory(path);
+			Directory.CreateDirectory (path);
 		}
 
 		public override PrivateKey DefaultKey {
-			get { return GetPrivate("Default"); }
-			set { throw new NotImplementedException(); }
+			get { return GetPrivate ("Default"); }
+			set { throw new NotImplementedException (); }
 		}
 
 		private IEnumerable<PublicKey> publicKeys = null;
@@ -41,7 +42,7 @@ namespace Whisper.Keys
 		public override IEnumerable<PublicKey> PublicKeys {
 			get {
 				if (publicKeys == null)
-					publicKeys = GetPublicKeys();
+					publicKeys = GetPublicKeys ();
 				return publicKeys;
 			}
 		}
@@ -49,114 +50,75 @@ namespace Whisper.Keys
 		public override IEnumerable<PrivateKey> PrivateKeys {
 			get {
 				if (privateKeys == null)
-					privateKeys = GetPrivateKeys();
+					privateKeys = GetPrivateKeys ();
 				return privateKeys;
 			}
 		}
 
-		public override void Add(string name, IKey key)
+		public override void Add (string name, IKey key)
 		{
-			string keyPath = Path.Combine(this.path, name);
+			string keyPath = Path.Combine (this.path, name);
 
-			if (File.Exists(keyPath + privateSuffix) || File.Exists(keyPath + publicSuffix))
-				throw new ArgumentException("Key with that name already exists");
+			if (File.Exists (keyPath + privateSuffix) || File.Exists (keyPath + publicSuffix))
+				throw new ArgumentException ("Key with that name already exists");
 
-			WriteKey(key, name);
+			WriteKey (key, name);
 		}
 
-		public override PublicKey GetPublic(string name)
+		public override PublicKey GetPublic (string name)
 		{
-			//Determine if we have a private or public key
-			string keyPath = Path.Combine(this.path, name);
-			if (File.Exists(keyPath + publicSuffix))
-			{
-				return ReadPublicKey(name);
-			}
-			return null;
+			string keyPath = Path.Combine (this.path, name + publicSuffix);
+			PublicKey key = new PublicKey (File.ReadAllText (keyPath, Encoding.UTF8));
+			key.Name = name;
+			return key;
 		}
 
-		public override PrivateKey GetPrivate(string name)
+		public override PrivateKey GetPrivate (string name)
 		{
-			//Determine if we have a private or public key
-			string keyPath = Path.Combine(this.path, name);
-			if (File.Exists(keyPath + privateSuffix))
-			{
-				return ReadPrivateKey(name);
-			}
-			return null;
+			string keyPath = Path.Combine (this.path, name + privateSuffix);
+			PrivateKey key = new PrivateKey (File.ReadAllText (keyPath, Encoding.UTF8));
+			key.Name = name;
+			return key;
 		}
 
-		private IEnumerable<PublicKey> GetPublicKeys()
+		private IEnumerable<PublicKey> GetPublicKeys ()
 		{
-			string[] files = Directory.GetFiles(this.path, "*" + publicSuffix);
-			List<PublicKey > keys = new List<PublicKey>();
-			foreach (string name in files)
-			{
-				PublicKey key = ReadPublicKey(Path.GetFileNameWithoutExtension(name));
-				keys.Add(key);
+			string[] files = Directory.GetFiles (this.path, "*" + publicSuffix);
+			List<PublicKey > keys = new List<PublicKey> ();
+			foreach (string name in files) {
+				PublicKey key = GetPublic (Path.GetFileNameWithoutExtension (name));
+				keys.Add (key);
 			}
 
 			return keys;
 		}
 
-		private IEnumerable<PrivateKey> GetPrivateKeys()
+		private IEnumerable<PrivateKey> GetPrivateKeys ()
 		{
-			string[] files = Directory.GetFiles(this.path, "*" + privateSuffix);
-			List<PrivateKey > keys = new List<PrivateKey>();
-			foreach (string name in files)
-			{
-				PrivateKey key = ReadPrivateKey(Path.GetFileNameWithoutExtension(name));
-				keys.Add(key);
+			string[] files = Directory.GetFiles (this.path, "*" + privateSuffix);
+			List<PrivateKey > keys = new List<PrivateKey> ();
+			foreach (string name in files) {
+				PrivateKey key = GetPrivate (Path.GetFileNameWithoutExtension (name));
+				keys.Add (key);
 			}
 
 			return keys;
 		}
 
-		private PublicKey ReadPublicKey(string name)
+		public void WriteKey (IKey key, string name)
 		{
-			string keyPath = Path.Combine(this.path, name + publicSuffix);
-			using (Stream s = new FileStream(keyPath, FileMode.Open))
-			{
-				NamedPublicKey key = PublicKey.Deserialize<NamedPublicKey>(s);
-				key.Name = name;
-				return key;
-			}
-		}
-
-		private PrivateKey ReadPrivateKey(string name)
-		{
-			string keyPath = Path.Combine(this.path, name + privateSuffix);
-			using (Stream s = new FileStream(keyPath, FileMode.Open))
-			{
-				NamedPrivateKey key = new NamedPrivateKey();
-				key.Name = name;
-				Serializer.Read(s, key);
-				return key;
-			}
-		}
-
-		public void WriteKey(IKey key, string name)
-		{
-			string keyPath = Path.Combine(this.path, name);
+			string keyPath = Path.Combine (this.path, name);
 
 			//Saving private part of key
-			if (key is PrivateKey)
-			{
+			if (key is PrivateKey) {
 				PrivateKey priv = key as PrivateKey;
+				
+				File.WriteAllText (keyPath + privateSuffix, priv.ToXml (), Encoding.UTF8);
 
-				using (FileStream s = new FileStream(keyPath + privateSuffix, FileMode.CreateNew))
-					Serializer.Write(s, priv);
-
-				//This is a minor workaround until the protobuf-net library serialize the object as publickey only, ignoring private parameters.
+				File.WriteAllText (keyPath + publicSuffix, priv.PublicKey.ToXml (), Encoding.UTF8);
+			} else {
 				//Saving Public part of the key
-				using (FileStream s = new FileStream(keyPath + publicSuffix, FileMode.CreateNew))
-					Serializer.Write(s, priv.PublicKey);
-			}
-			else
-			{
-				//Saving Public part of the key
-				using (FileStream s = new FileStream(keyPath + publicSuffix, FileMode.CreateNew))
-					Serializer.Write(s, (PublicKey) key);
+				File.WriteAllText (keyPath + publicSuffix, key.ToXml (), Encoding.UTF8);
 			}
 
 		}

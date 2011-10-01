@@ -1,7 +1,7 @@
 using System;
-using Whisper.Storing;
+using Whisper.Storages;
 using Whisper.Chunks;
-namespace Whisper.Storing
+namespace Whisper.Storages
 {
 	/// <summary>
 	/// Store the data in cleartext

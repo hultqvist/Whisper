@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using Whisper;
 using Whisper.Chunks;
-using Whisper.Messaging;
-using Whisper.Storing;
+using Whisper.Messages;
+using Whisper.Storages;
 using Whisper.Keys;
 
 namespace Wcp

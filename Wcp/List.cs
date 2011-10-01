@@ -2,59 +2,55 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using Whisper;
-using Whisper.Storing;
-using Whisper.Messaging;
+using Whisper.Storages;
+using Whisper.Messages;
 using Whisper.Keys;
 
 namespace Wcp
 {
 	public static class List
 	{
-		public static void Main(string[] args, KeyStorage keyStorage)
+		public static void Main (string[] args, KeyStorage keyStorage)
 		{
 			if (args.Length != 2)
-				throw new HelpException("Missing arguments");
+				throw new HelpException ("Missing arguments");
 			
 			//Storage
-			Storage storage = Storage.Create(args[1]);
+			Storage storage = Storage.Create (args [1]);
 			
 			//Find message
-			ICollection<ChunkHash> messages = storage.GetMessageList();
-			EncryptedStorage es = new EncryptedStorage(storage, keyStorage);
+			ICollection<ChunkHash > messages = storage.GetMessageList ();
+			EncryptedStorage es = new EncryptedStorage (storage, keyStorage);
 			
 			//Iterate over all messages
-			foreach (ChunkHash mid in messages)
-			{
-				Console.Write(mid.ToString().Substring(0, 10) + "... ");
+			foreach (ChunkHash mid in messages) {
+				Console.Write (mid.ToString ().Substring (0, 10) + "... ");
 				
-				Message message = Message.FromChunk(es.ReadChunk(mid), keyStorage);
+				Message message = Message.FromChunk (es.ReadChunk (mid), keyStorage);
 				
 				//No key found
-				if (message == null)
-				{
-					Console.WriteLine("no key");
+				if (message == null) {
+					Console.WriteLine ("no key");
 					continue;
 				}
 				
 				SignedMessage sm = message as SignedMessage;
 				if (sm != null && sm.Signature != null)
-					Console.Write("signed by " + sm.Signature.ToString().Substring(0, 10) + " ");
+					Console.Write ("signed by " + sm.Signature.ToString ().Substring (0, 10) + " ");
 				
 				TreeMessage tm = message as TreeMessage;
-				if (tm != null)
-				{
-					Console.WriteLine("TreeMessage " + tm.Name);
+				if (tm != null) {
+					Console.WriteLine ("TreeMessage " + tm.Name);
 					continue;
 				}
 				
 				RouteMessage rm = message as RouteMessage;
-				if (rm != null)
-				{
-					Console.WriteLine("RouteMessage to " + rm.To);
+				if (rm != null) {
+					Console.WriteLine ("RouteMessage to " + rm.To);
 					continue;
 				}
 				
-				Console.WriteLine("unknown message type: " + message.GetType().Name);
+				Console.WriteLine ("unknown message type: " + message.GetType ().Name);
 			}
 		}
 	}

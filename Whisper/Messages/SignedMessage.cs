@@ -1,7 +1,7 @@
 using System;
 using Whisper.Keys;
 
-namespace Whisper.Messaging
+namespace Whisper.Messages
 {
 	/// <summary>
 	/// Signed messages

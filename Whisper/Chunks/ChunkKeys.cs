@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
-using Whisper.Messaging;
+using Whisper.Messages;
 using System.IO;
-using Whisper.Storing;
+using Whisper.Storages;
 
 namespace Whisper.Chunks
 {
@@ -12,18 +12,16 @@ namespace Whisper.Chunks
 	/// </summary>
 	public partial class ChunkKeys
 	{
-		public RijndaelManaged RM = new RijndaelManaged() { KeySize = 256, Mode = CipherMode.CBC};
+		public RijndaelManaged RM = new RijndaelManaged () { KeySize = 256, Mode = CipherMode.CBC};
 
 		public byte[] IV {
 			get { return RM.IV; }
 			set { RM.IV = value; }
 		}
-
-		public List<ChunkKey> Keys = new List<ChunkKey>();
-
-		public void AddKey(ChunkKey keyPair)
+		
+		public ChunkKeys ()
 		{
-			Keys.Add(keyPair);
+			this.EncryptedKeys = new List<byte[]> ();
 		}
 	}
 }

@@ -7,38 +7,19 @@ namespace Whisper.Keys
 {
 	public partial class PublicKey : IKey
 	{
+		public string Name { get; set; }
+		
 		private RSACryptoServiceProvider rsa;
 
-		public PublicKey(byte[] modulus, byte[] exponent)
+		public PublicKey(string xml)
 		{
-			RSAParameters rp = new RSAParameters();
-			rp.Modulus = modulus;
-			rp.Exponent = exponent;
 			rsa = new RSACryptoServiceProvider();
-			rsa.ImportParameters(rp);
+			rsa.FromXmlString(xml);
 		}
-
-		/// <summary>
-		/// For serialization only
-		/// </summary>
-		protected PublicKey()
+		
+		public string ToXml()
 		{
-		}
-
-		protected void BeforeSerialize()
-		{
-			RSAParameters rp = rsa.ExportParameters(false);
-			this.Modulus = rp.Modulus;
-			this.Exponent = rp.Exponent;
-		}
-
-		protected void AfterDeserialize()
-		{
-			RSAParameters rp = new RSAParameters();
-			rp.Modulus = this.Modulus;
-			rp.Exponent = this.Exponent;
-			rsa = new RSACryptoServiceProvider();
-			rsa.ImportParameters(rp);
+			return rsa.ToXmlString(false);
 		}
 
 		public byte[] Encrypt(byte[] data)
@@ -61,7 +42,7 @@ namespace Whisper.Keys
 			ms.Write(rsaParameters.Modulus, 0, rsaParameters.Modulus.Length);
 			ms.Write(rsaParameters.Exponent, 0, rsaParameters.Exponent.Length);
 			Hash hash = Hash.ComputeHash(ms.ToArray());
-			return hash.ToString();
+			return "(public) " + Name + " " + hash.ToString();
 		}
 	}
 }

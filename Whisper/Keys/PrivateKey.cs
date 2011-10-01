@@ -6,90 +6,70 @@ namespace Whisper.Keys
 {
 	public partial class PrivateKey : IKey
 	{
+		public string Name { get; set; }
+
 		RSACryptoServiceProvider rsa;
-
+		
+		public static PrivateKey Generate ()
+		{
+			return new Whisper.Keys.PrivateKey ();
+		}
+		
 		/// <summary>
-		/// Create a new key pair
+		/// Generates a new key
 		/// </summary>
-		public PrivateKey(bool generate)
+		private PrivateKey ()
 		{
-			rsa = new RSACryptoServiceProvider();
-			rsa.ExportParameters(true);
+			rsa = new RSACryptoServiceProvider ();
+			rsa.ExportParameters (true);
 		}
-
-		/// <summary>
-		/// For testing only
-		/// </summary>
-		public PrivateKey(string xmlParameters)
+		
+		public PrivateKey (string xml)
 		{
-			rsa.FromXmlString(xmlParameters);
+			rsa = new RSACryptoServiceProvider ();
+			rsa.FromXmlString (xml);
 		}
-
-		/// <summary>
-		/// For serialization only
-		/// </summary>
-		protected PrivateKey()
+		
+		public string ToXml ()
 		{
+			return rsa.ToXmlString (true);
 		}
-
-		protected void BeforeSerialize()
-		{
-			RSAParameters rp = rsa.ExportParameters(false);
-			this.Modulus = rp.Modulus;
-			this.Exponent = rp.Exponent;
-			this.P = rp.P;
-			this.Q = rp.Q;
-		}
-
-		protected void AfterDeserialize()
-		{
-			RSAParameters rp = new RSAParameters();
-			rp.Modulus = this.Modulus;
-			rp.Exponent = this.Exponent;
-			rp.P = this.P;
-			rp.Q = this.Q;
-			rsa = new RSACryptoServiceProvider();
-			rsa.ImportParameters(rp);
-		}
-
+		
 		PublicKey _pubkey = null;
 
 		public PublicKey PublicKey {
 			get {
 				if (_pubkey == null)
-					_pubkey = new PublicKey(this.Modulus, this.Exponent);
+					_pubkey = new PublicKey (rsa.ToXmlString (false));
 				return _pubkey;
 			}
 		}
 
-		public byte[] Decrypt(byte[] data)
+		public byte[] Decrypt (byte[] data)
 		{
-			try
-			{
-				return rsa.Decrypt(data, false);
-			}
-			catch (CryptographicException)
-			{
+			try {
+				return rsa.Decrypt (data, false);
+			} catch (CryptographicException ce) {
 				return null;
 			}
 		}
 
-		public byte[] Sign(byte[] data)
+		public byte[] Sign (byte[] data)
 		{
-			return rsa.SignData(data, new SHA256Managed());
+			return rsa.SignData (data, new SHA256Managed ());
 		}
 
 		/// <summary>
 		/// The SHA1 fingerprint of the RSA public key
 		/// </summary>
-		public override string ToString()
+		public override string ToString ()
 		{
-			RSAParameters rsaParameters = rsa.ExportParameters(false);
-			MemoryStream ms = new MemoryStream();
-			ms.Write(rsaParameters.Modulus, 0, rsaParameters.Modulus.Length);
-			ms.Write(rsaParameters.Exponent, 0, rsaParameters.Exponent.Length);
-			Hash hash = Hash.ComputeHash(ms.ToArray());
-			return hash.ToString();
+			RSAParameters rsaParameters = rsa.ExportParameters (false);
+			MemoryStream ms = new MemoryStream ();
+			ms.Write (rsaParameters.Modulus, 0, rsaParameters.Modulus.Length);
+			ms.Write (rsaParameters.Exponent, 0, rsaParameters.Exponent.Length);
+			Hash hash = Hash.ComputeHash (ms.ToArray ());
+			return "(private) " + Name + " " + hash.ToString ();
 		}
 	}
 }

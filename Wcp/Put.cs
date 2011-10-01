@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using Whisper;
-using Whisper.Messaging;
+using Whisper.Messages;
 using Whisper.Keys;
 
 namespace Wcp
@@ -49,7 +49,7 @@ namespace Wcp
 				rm.Chunks.Add(ch.bytes);
 			rm.To = receipientName;
 			//Store unencrypted RouteMessage
-			Whisper.Chunks.Chunk rmChunk = Message.ToChunk(rm, senderKey);
+			Whisper.Chunks.Chunk rmChunk = Message.ToChunk(rm);
 			storage.WriteChunk(rmChunk);
 			storage.StoreMessage(rmChunk.DataHash);
 			Console.WriteLine("RouteMessage Stored");

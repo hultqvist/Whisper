@@ -4,8 +4,9 @@ using System.Security.Cryptography;
 using Whisper.Chunks;
 using Whisper.Keys;
 using ProtocolBuffers;
+using System.Text;
 
-namespace Whisper.Storing
+namespace Whisper.Storages
 {
 	/// <summary>
 	/// Always generates the same CustomID for one specific recipient and cleartext data.
@@ -14,17 +15,20 @@ namespace Whisper.Storing
 	public class RecipientID : IGenerateID
 	{
 		PublicKey recipient;
-
+		byte[] keyBuffer;
+		
 		public RecipientID(PublicKey recipient)
 		{
 			this.recipient = recipient;
+			keyBuffer = Encoding.ASCII.GetBytes(recipient.ToXml());
 		}
 
 		public CustomID GetID(Chunk chunk)
 		{
+			
 			using (MemoryStream ms = new MemoryStream())
 			{
-				PublicKey.Serialize(ms, recipient);
+				ms.Write(keyBuffer, 0, keyBuffer.Length);
 				ProtocolParser.WriteBytes(ms, chunk.ClearHash.bytes);
 				return CustomID.FromBytes(Hash.ComputeHash(ms.ToArray()).bytes);
 			}

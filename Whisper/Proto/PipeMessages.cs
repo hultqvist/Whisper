@@ -13,12 +13,12 @@ namespace Whisper.Chunks
 {
 	public partial class ChunkKeys
 	{
-		public byte[] Iv { get; set; }
+		//public byte[] IV { get; set; }	//Implemented by user elsewhere
 		public List<byte[]> EncryptedKeys { get; set; }
 	}
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class PipeHeader
 	{
@@ -27,7 +27,7 @@ namespace Whisper.Storing.Pipe
 	}
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class RequestCustomHash
 	{
@@ -35,7 +35,7 @@ namespace Whisper.Storing.Pipe
 	}
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class ReplyCustomHash
 	{
@@ -43,7 +43,7 @@ namespace Whisper.Storing.Pipe
 	}
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class RequestReadChunk
 	{
@@ -51,7 +51,7 @@ namespace Whisper.Storing.Pipe
 	}
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class ReplyReadChunk
 	{
@@ -60,29 +60,30 @@ namespace Whisper.Storing.Pipe
 	}
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class RequestWriteChunk
 	{
 		public byte[] ChunkData { get; set; }
+		public Whisper.Chunks.ChunkKeys Keys { get; set; }
 	}
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class ReplyWriteChunk
 	{
 	}
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class RequestMessageList
 	{
 	}
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class ReplyMessageList
 	{
@@ -90,7 +91,7 @@ namespace Whisper.Storing.Pipe
 	}
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class RequestStoreMessage
 	{
@@ -98,7 +99,7 @@ namespace Whisper.Storing.Pipe
 	}
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class ReplyStoreMessage
 	{

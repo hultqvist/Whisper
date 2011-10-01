@@ -1,13 +1,13 @@
 using System;
 using System.IO;
 using Whisper.Chunks;
-using Whisper.Storing;
+using Whisper.Storages;
 using System.Collections.Generic;
-using Whisper.Messaging;
+using Whisper.Messages;
 using System.Text;
 using ProtocolBuffers;
 
-namespace Whisper.Storing
+namespace Whisper.Storages
 {
 	/// <summary>
 	/// Manage chunk storage on disk.

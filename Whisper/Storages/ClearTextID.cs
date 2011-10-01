@@ -1,6 +1,6 @@
 using System;
 using Whisper.Chunks;
-namespace Whisper.Storing
+namespace Whisper.Storages
 {
 	/// <summary>
 	/// Generates CustomID that equals the cleartext hash

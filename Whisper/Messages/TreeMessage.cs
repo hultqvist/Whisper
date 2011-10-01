@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using Whisper.Chunks;
-namespace Whisper.Messaging
+namespace Whisper.Messages
 {
 	public partial class TreeMessage : Message
 	{

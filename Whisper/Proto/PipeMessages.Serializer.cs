@@ -55,24 +55,19 @@ namespace Whisper.Chunks
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.Iv = ProtocolParser.ReadBytes(stream);
-							break;
-						case 18: //Field 2 LengthDelimited
-							instance.EncryptedKeys.Add(ProtocolParser.ReadBytes(stream));
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.IV = ProtocolParser.ReadBytes(stream);
+					break;
+				case 18: //Field 2 LengthDelimited
+					instance.EncryptedKeys.Add(ProtocolParser.ReadBytes(stream));
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -101,10 +96,10 @@ namespace Whisper.Chunks
 	
 		public static void Serialize(Stream stream, ChunkKeys instance)
 		{
-			if(instance.Iv == null)
-				throw new ArgumentNullException("Iv", "Required by proto specification.");
+			if(instance.IV == null)
+				throw new ArgumentNullException("IV", "Required by proto specification.");
 			ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(1, Wire.LengthDelimited));
-			ProtocolParser.WriteBytes(stream, instance.Iv);
+			ProtocolParser.WriteBytes(stream, instance.IV);
 			if(instance.EncryptedKeys != null)
 			{
 				foreach(byte[] i2 in instance.EncryptedKeys)
@@ -128,7 +123,7 @@ namespace Whisper.Chunks
 	
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class PipeHeader
 	{
@@ -145,49 +140,44 @@ namespace Whisper.Storing.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storing.Pipe.PipeHeader, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.PipeHeader, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storing.Pipe.PipeHeader, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.PipeHeader, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storing.Pipe.PipeHeader instance)
+		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.PipeHeader instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.PipeHeader Deserialize(Stream stream, Whisper.Storing.Pipe.PipeHeader instance)
+		public static Whisper.Storages.Pipe.PipeHeader Deserialize(Stream stream, Whisper.Storages.Pipe.PipeHeader instance)
 		{
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 8: //Field 1 Varint
-							instance.TypeID = ProtocolParser.ReadUInt32(stream);
-							break;
-						case 16: //Field 2 Varint
-							instance.DebugNumber = ProtocolParser.ReadUInt32(stream);
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 8: //Field 1 Varint
+					instance.TypeID = ProtocolParser.ReadUInt32(stream);
+					break;
+				case 16: //Field 2 Varint
+					instance.DebugNumber = ProtocolParser.ReadUInt32(stream);
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -207,7 +197,7 @@ namespace Whisper.Storing.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storing.Pipe.PipeHeader Read(byte[] buffer, Whisper.Storing.Pipe.PipeHeader instance)
+		public static Whisper.Storages.Pipe.PipeHeader Read(byte[] buffer, Whisper.Storages.Pipe.PipeHeader instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -234,7 +224,7 @@ namespace Whisper.Storing.Pipe
 	
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class RequestCustomHash
 	{
@@ -251,46 +241,41 @@ namespace Whisper.Storing.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storing.Pipe.RequestCustomHash, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.RequestCustomHash, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storing.Pipe.RequestCustomHash, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.RequestCustomHash, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storing.Pipe.RequestCustomHash instance)
+		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.RequestCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.RequestCustomHash Deserialize(Stream stream, Whisper.Storing.Pipe.RequestCustomHash instance)
+		public static Whisper.Storages.Pipe.RequestCustomHash Deserialize(Stream stream, Whisper.Storages.Pipe.RequestCustomHash instance)
 		{
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.CustomID = ProtocolParser.ReadBytes(stream);
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.CustomID = ProtocolParser.ReadBytes(stream);
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -310,7 +295,7 @@ namespace Whisper.Storing.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storing.Pipe.RequestCustomHash Read(byte[] buffer, Whisper.Storing.Pipe.RequestCustomHash instance)
+		public static Whisper.Storages.Pipe.RequestCustomHash Read(byte[] buffer, Whisper.Storages.Pipe.RequestCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -337,7 +322,7 @@ namespace Whisper.Storing.Pipe
 	
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class ReplyCustomHash
 	{
@@ -354,46 +339,41 @@ namespace Whisper.Storing.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storing.Pipe.ReplyCustomHash, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.ReplyCustomHash, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storing.Pipe.ReplyCustomHash, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.ReplyCustomHash, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storing.Pipe.ReplyCustomHash instance)
+		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.ReplyCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyCustomHash Deserialize(Stream stream, Whisper.Storing.Pipe.ReplyCustomHash instance)
+		public static Whisper.Storages.Pipe.ReplyCustomHash Deserialize(Stream stream, Whisper.Storages.Pipe.ReplyCustomHash instance)
 		{
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.ChunkHash = ProtocolParser.ReadBytes(stream);
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.ChunkHash = ProtocolParser.ReadBytes(stream);
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -413,7 +393,7 @@ namespace Whisper.Storing.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyCustomHash Read(byte[] buffer, Whisper.Storing.Pipe.ReplyCustomHash instance)
+		public static Whisper.Storages.Pipe.ReplyCustomHash Read(byte[] buffer, Whisper.Storages.Pipe.ReplyCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -441,7 +421,7 @@ namespace Whisper.Storing.Pipe
 	
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class RequestReadChunk
 	{
@@ -458,46 +438,41 @@ namespace Whisper.Storing.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storing.Pipe.RequestReadChunk, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.RequestReadChunk, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storing.Pipe.RequestReadChunk, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.RequestReadChunk, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storing.Pipe.RequestReadChunk instance)
+		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.RequestReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.RequestReadChunk Deserialize(Stream stream, Whisper.Storing.Pipe.RequestReadChunk instance)
+		public static Whisper.Storages.Pipe.RequestReadChunk Deserialize(Stream stream, Whisper.Storages.Pipe.RequestReadChunk instance)
 		{
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.ChunkHash = ProtocolParser.ReadBytes(stream);
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.ChunkHash = ProtocolParser.ReadBytes(stream);
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -517,7 +492,7 @@ namespace Whisper.Storing.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storing.Pipe.RequestReadChunk Read(byte[] buffer, Whisper.Storing.Pipe.RequestReadChunk instance)
+		public static Whisper.Storages.Pipe.RequestReadChunk Read(byte[] buffer, Whisper.Storages.Pipe.RequestReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -544,7 +519,7 @@ namespace Whisper.Storing.Pipe
 	
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class ReplyReadChunk
 	{
@@ -561,52 +536,47 @@ namespace Whisper.Storing.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storing.Pipe.ReplyReadChunk, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.ReplyReadChunk, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storing.Pipe.ReplyReadChunk, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.ReplyReadChunk, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storing.Pipe.ReplyReadChunk instance)
+		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.ReplyReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyReadChunk Deserialize(Stream stream, Whisper.Storing.Pipe.ReplyReadChunk instance)
+		public static Whisper.Storages.Pipe.ReplyReadChunk Deserialize(Stream stream, Whisper.Storages.Pipe.ReplyReadChunk instance)
 		{
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.ChunkData = ProtocolParser.ReadBytes(stream);
-							break;
-						case 18: //Field 2 LengthDelimited
-							if(instance.Keys == null)
-								instance.Keys = Whisper.Chunks.ChunkKeys.Deserialize(ProtocolParser.ReadBytes(stream));
-							else
-								instance.Keys = Serializer.Read(ProtocolParser.ReadBytes(stream), instance.Keys);
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.ChunkData = ProtocolParser.ReadBytes(stream);
+					break;
+				case 18: //Field 2 LengthDelimited
+					if(instance.Keys == null)
+						instance.Keys = Whisper.Chunks.ChunkKeys.Deserialize(ProtocolParser.ReadBytes(stream));
+					else
+						instance.Keys = Serializer.Read(ProtocolParser.ReadBytes(stream), instance.Keys);
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -626,7 +596,7 @@ namespace Whisper.Storing.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyReadChunk Read(byte[] buffer, Whisper.Storing.Pipe.ReplyReadChunk instance)
+		public static Whisper.Storages.Pipe.ReplyReadChunk Read(byte[] buffer, Whisper.Storages.Pipe.ReplyReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -663,7 +633,7 @@ namespace Whisper.Storing.Pipe
 	
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class RequestWriteChunk
 	{
@@ -680,46 +650,47 @@ namespace Whisper.Storing.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storing.Pipe.RequestWriteChunk, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.RequestWriteChunk, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storing.Pipe.RequestWriteChunk, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.RequestWriteChunk, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storing.Pipe.RequestWriteChunk instance)
+		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.RequestWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.RequestWriteChunk Deserialize(Stream stream, Whisper.Storing.Pipe.RequestWriteChunk instance)
+		public static Whisper.Storages.Pipe.RequestWriteChunk Deserialize(Stream stream, Whisper.Storages.Pipe.RequestWriteChunk instance)
 		{
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.ChunkData = ProtocolParser.ReadBytes(stream);
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.ChunkData = ProtocolParser.ReadBytes(stream);
+					break;
+				case 18: //Field 2 LengthDelimited
+					if(instance.Keys == null)
+						instance.Keys = Whisper.Chunks.ChunkKeys.Deserialize(ProtocolParser.ReadBytes(stream));
+					else
+						instance.Keys = Serializer.Read(ProtocolParser.ReadBytes(stream), instance.Keys);
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -739,7 +710,7 @@ namespace Whisper.Storing.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storing.Pipe.RequestWriteChunk Read(byte[] buffer, Whisper.Storing.Pipe.RequestWriteChunk instance)
+		public static Whisper.Storages.Pipe.RequestWriteChunk Read(byte[] buffer, Whisper.Storages.Pipe.RequestWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -752,6 +723,15 @@ namespace Whisper.Storing.Pipe
 				throw new ArgumentNullException("ChunkData", "Required by proto specification.");
 			ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(1, Wire.LengthDelimited));
 			ProtocolParser.WriteBytes(stream, instance.ChunkData);
+			if(instance.Keys != null)
+			{
+				ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(2, Wire.LengthDelimited));
+				using(MemoryStream ms2 = new MemoryStream())
+				{
+					Whisper.Chunks.ChunkKeys.Serialize(ms2, instance.Keys);
+					ProtocolParser.WriteBytes(stream, ms2.ToArray());
+				}
+			}
 		}
 		
 		public static byte[] SerializeToBytes(RequestWriteChunk instance)
@@ -766,7 +746,7 @@ namespace Whisper.Storing.Pipe
 	
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class ReplyWriteChunk
 	{
@@ -783,43 +763,38 @@ namespace Whisper.Storing.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storing.Pipe.ReplyWriteChunk, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.ReplyWriteChunk, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storing.Pipe.ReplyWriteChunk, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.ReplyWriteChunk, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storing.Pipe.ReplyWriteChunk instance)
+		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.ReplyWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyWriteChunk Deserialize(Stream stream, Whisper.Storing.Pipe.ReplyWriteChunk instance)
+		public static Whisper.Storages.Pipe.ReplyWriteChunk Deserialize(Stream stream, Whisper.Storages.Pipe.ReplyWriteChunk instance)
 		{
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -839,7 +814,7 @@ namespace Whisper.Storing.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyWriteChunk Read(byte[] buffer, Whisper.Storing.Pipe.ReplyWriteChunk instance)
+		public static Whisper.Storages.Pipe.ReplyWriteChunk Read(byte[] buffer, Whisper.Storages.Pipe.ReplyWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -862,7 +837,7 @@ namespace Whisper.Storing.Pipe
 	
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class RequestMessageList
 	{
@@ -879,43 +854,38 @@ namespace Whisper.Storing.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storing.Pipe.RequestMessageList, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.RequestMessageList, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storing.Pipe.RequestMessageList, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.RequestMessageList, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storing.Pipe.RequestMessageList instance)
+		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.RequestMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.RequestMessageList Deserialize(Stream stream, Whisper.Storing.Pipe.RequestMessageList instance)
+		public static Whisper.Storages.Pipe.RequestMessageList Deserialize(Stream stream, Whisper.Storages.Pipe.RequestMessageList instance)
 		{
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -935,7 +905,7 @@ namespace Whisper.Storing.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storing.Pipe.RequestMessageList Read(byte[] buffer, Whisper.Storing.Pipe.RequestMessageList instance)
+		public static Whisper.Storages.Pipe.RequestMessageList Read(byte[] buffer, Whisper.Storages.Pipe.RequestMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -958,7 +928,7 @@ namespace Whisper.Storing.Pipe
 	
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class ReplyMessageList
 	{
@@ -975,48 +945,43 @@ namespace Whisper.Storing.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storing.Pipe.ReplyMessageList, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.ReplyMessageList, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storing.Pipe.ReplyMessageList, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.ReplyMessageList, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storing.Pipe.ReplyMessageList instance)
+		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.ReplyMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyMessageList Deserialize(Stream stream, Whisper.Storing.Pipe.ReplyMessageList instance)
+		public static Whisper.Storages.Pipe.ReplyMessageList Deserialize(Stream stream, Whisper.Storages.Pipe.ReplyMessageList instance)
 		{
 			if(instance.ChunkHash == null)
 				instance.ChunkHash = new List<byte[]>();
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.ChunkHash.Add(ProtocolParser.ReadBytes(stream));
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.ChunkHash.Add(ProtocolParser.ReadBytes(stream));
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -1036,7 +1001,7 @@ namespace Whisper.Storing.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyMessageList Read(byte[] buffer, Whisper.Storing.Pipe.ReplyMessageList instance)
+		public static Whisper.Storages.Pipe.ReplyMessageList Read(byte[] buffer, Whisper.Storages.Pipe.ReplyMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -1068,7 +1033,7 @@ namespace Whisper.Storing.Pipe
 	
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class RequestStoreMessage
 	{
@@ -1085,46 +1050,41 @@ namespace Whisper.Storing.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storing.Pipe.RequestStoreMessage, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.RequestStoreMessage, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storing.Pipe.RequestStoreMessage, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.RequestStoreMessage, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storing.Pipe.RequestStoreMessage instance)
+		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.RequestStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.RequestStoreMessage Deserialize(Stream stream, Whisper.Storing.Pipe.RequestStoreMessage instance)
+		public static Whisper.Storages.Pipe.RequestStoreMessage Deserialize(Stream stream, Whisper.Storages.Pipe.RequestStoreMessage instance)
 		{
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.ChunkHash = ProtocolParser.ReadBytes(stream);
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.ChunkHash = ProtocolParser.ReadBytes(stream);
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -1144,7 +1104,7 @@ namespace Whisper.Storing.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storing.Pipe.RequestStoreMessage Read(byte[] buffer, Whisper.Storing.Pipe.RequestStoreMessage instance)
+		public static Whisper.Storages.Pipe.RequestStoreMessage Read(byte[] buffer, Whisper.Storages.Pipe.RequestStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -1171,7 +1131,7 @@ namespace Whisper.Storing.Pipe
 	
 
 }
-namespace Whisper.Storing.Pipe
+namespace Whisper.Storages.Pipe
 {
 	public partial class ReplyStoreMessage
 	{
@@ -1188,43 +1148,38 @@ namespace Whisper.Storing.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storing.Pipe.ReplyStoreMessage, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.ReplyStoreMessage, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storing.Pipe.ReplyStoreMessage, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.ReplyStoreMessage, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storing.Pipe.ReplyStoreMessage instance)
+		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.ReplyStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyStoreMessage Deserialize(Stream stream, Whisper.Storing.Pipe.ReplyStoreMessage instance)
+		public static Whisper.Storages.Pipe.ReplyStoreMessage Deserialize(Stream stream, Whisper.Storages.Pipe.ReplyStoreMessage instance)
 		{
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -1244,7 +1199,7 @@ namespace Whisper.Storing.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyStoreMessage Read(byte[] buffer, Whisper.Storing.Pipe.ReplyStoreMessage instance)
+		public static Whisper.Storages.Pipe.ReplyStoreMessage Read(byte[] buffer, Whisper.Storages.Pipe.ReplyStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -1292,211 +1247,211 @@ namespace ProtocolBuffers
 		
 
 		
-		public static Whisper.Storing.Pipe.PipeHeader Read (Stream stream, Whisper.Storing.Pipe.PipeHeader instance)
+		public static Whisper.Storages.Pipe.PipeHeader Read (Stream stream, Whisper.Storages.Pipe.PipeHeader instance)
 		{
-			return Whisper.Storing.Pipe.PipeHeader.Deserialize(stream, instance);
+			return Whisper.Storages.Pipe.PipeHeader.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.PipeHeader Read(byte[] buffer, Whisper.Storing.Pipe.PipeHeader instance)
+		public static Whisper.Storages.Pipe.PipeHeader Read(byte[] buffer, Whisper.Storages.Pipe.PipeHeader instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storing.Pipe.PipeHeader.Deserialize (ms, instance);
+				Whisper.Storages.Pipe.PipeHeader.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storing.Pipe.PipeHeader instance)
+		public static void Write(Stream stream, Whisper.Storages.Pipe.PipeHeader instance)
 		{
-			Whisper.Storing.Pipe.PipeHeader.Serialize(stream, instance);
+			Whisper.Storages.Pipe.PipeHeader.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storing.Pipe.RequestCustomHash Read (Stream stream, Whisper.Storing.Pipe.RequestCustomHash instance)
+		public static Whisper.Storages.Pipe.RequestCustomHash Read (Stream stream, Whisper.Storages.Pipe.RequestCustomHash instance)
 		{
-			return Whisper.Storing.Pipe.RequestCustomHash.Deserialize(stream, instance);
+			return Whisper.Storages.Pipe.RequestCustomHash.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.RequestCustomHash Read(byte[] buffer, Whisper.Storing.Pipe.RequestCustomHash instance)
+		public static Whisper.Storages.Pipe.RequestCustomHash Read(byte[] buffer, Whisper.Storages.Pipe.RequestCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storing.Pipe.RequestCustomHash.Deserialize (ms, instance);
+				Whisper.Storages.Pipe.RequestCustomHash.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storing.Pipe.RequestCustomHash instance)
+		public static void Write(Stream stream, Whisper.Storages.Pipe.RequestCustomHash instance)
 		{
-			Whisper.Storing.Pipe.RequestCustomHash.Serialize(stream, instance);
+			Whisper.Storages.Pipe.RequestCustomHash.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storing.Pipe.ReplyCustomHash Read (Stream stream, Whisper.Storing.Pipe.ReplyCustomHash instance)
+		public static Whisper.Storages.Pipe.ReplyCustomHash Read (Stream stream, Whisper.Storages.Pipe.ReplyCustomHash instance)
 		{
-			return Whisper.Storing.Pipe.ReplyCustomHash.Deserialize(stream, instance);
+			return Whisper.Storages.Pipe.ReplyCustomHash.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyCustomHash Read(byte[] buffer, Whisper.Storing.Pipe.ReplyCustomHash instance)
+		public static Whisper.Storages.Pipe.ReplyCustomHash Read(byte[] buffer, Whisper.Storages.Pipe.ReplyCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storing.Pipe.ReplyCustomHash.Deserialize (ms, instance);
+				Whisper.Storages.Pipe.ReplyCustomHash.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storing.Pipe.ReplyCustomHash instance)
+		public static void Write(Stream stream, Whisper.Storages.Pipe.ReplyCustomHash instance)
 		{
-			Whisper.Storing.Pipe.ReplyCustomHash.Serialize(stream, instance);
+			Whisper.Storages.Pipe.ReplyCustomHash.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storing.Pipe.RequestReadChunk Read (Stream stream, Whisper.Storing.Pipe.RequestReadChunk instance)
+		public static Whisper.Storages.Pipe.RequestReadChunk Read (Stream stream, Whisper.Storages.Pipe.RequestReadChunk instance)
 		{
-			return Whisper.Storing.Pipe.RequestReadChunk.Deserialize(stream, instance);
+			return Whisper.Storages.Pipe.RequestReadChunk.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.RequestReadChunk Read(byte[] buffer, Whisper.Storing.Pipe.RequestReadChunk instance)
+		public static Whisper.Storages.Pipe.RequestReadChunk Read(byte[] buffer, Whisper.Storages.Pipe.RequestReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storing.Pipe.RequestReadChunk.Deserialize (ms, instance);
+				Whisper.Storages.Pipe.RequestReadChunk.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storing.Pipe.RequestReadChunk instance)
+		public static void Write(Stream stream, Whisper.Storages.Pipe.RequestReadChunk instance)
 		{
-			Whisper.Storing.Pipe.RequestReadChunk.Serialize(stream, instance);
+			Whisper.Storages.Pipe.RequestReadChunk.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storing.Pipe.ReplyReadChunk Read (Stream stream, Whisper.Storing.Pipe.ReplyReadChunk instance)
+		public static Whisper.Storages.Pipe.ReplyReadChunk Read (Stream stream, Whisper.Storages.Pipe.ReplyReadChunk instance)
 		{
-			return Whisper.Storing.Pipe.ReplyReadChunk.Deserialize(stream, instance);
+			return Whisper.Storages.Pipe.ReplyReadChunk.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyReadChunk Read(byte[] buffer, Whisper.Storing.Pipe.ReplyReadChunk instance)
+		public static Whisper.Storages.Pipe.ReplyReadChunk Read(byte[] buffer, Whisper.Storages.Pipe.ReplyReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storing.Pipe.ReplyReadChunk.Deserialize (ms, instance);
+				Whisper.Storages.Pipe.ReplyReadChunk.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storing.Pipe.ReplyReadChunk instance)
+		public static void Write(Stream stream, Whisper.Storages.Pipe.ReplyReadChunk instance)
 		{
-			Whisper.Storing.Pipe.ReplyReadChunk.Serialize(stream, instance);
+			Whisper.Storages.Pipe.ReplyReadChunk.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storing.Pipe.RequestWriteChunk Read (Stream stream, Whisper.Storing.Pipe.RequestWriteChunk instance)
+		public static Whisper.Storages.Pipe.RequestWriteChunk Read (Stream stream, Whisper.Storages.Pipe.RequestWriteChunk instance)
 		{
-			return Whisper.Storing.Pipe.RequestWriteChunk.Deserialize(stream, instance);
+			return Whisper.Storages.Pipe.RequestWriteChunk.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.RequestWriteChunk Read(byte[] buffer, Whisper.Storing.Pipe.RequestWriteChunk instance)
+		public static Whisper.Storages.Pipe.RequestWriteChunk Read(byte[] buffer, Whisper.Storages.Pipe.RequestWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storing.Pipe.RequestWriteChunk.Deserialize (ms, instance);
+				Whisper.Storages.Pipe.RequestWriteChunk.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storing.Pipe.RequestWriteChunk instance)
+		public static void Write(Stream stream, Whisper.Storages.Pipe.RequestWriteChunk instance)
 		{
-			Whisper.Storing.Pipe.RequestWriteChunk.Serialize(stream, instance);
+			Whisper.Storages.Pipe.RequestWriteChunk.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storing.Pipe.ReplyWriteChunk Read (Stream stream, Whisper.Storing.Pipe.ReplyWriteChunk instance)
+		public static Whisper.Storages.Pipe.ReplyWriteChunk Read (Stream stream, Whisper.Storages.Pipe.ReplyWriteChunk instance)
 		{
-			return Whisper.Storing.Pipe.ReplyWriteChunk.Deserialize(stream, instance);
+			return Whisper.Storages.Pipe.ReplyWriteChunk.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyWriteChunk Read(byte[] buffer, Whisper.Storing.Pipe.ReplyWriteChunk instance)
+		public static Whisper.Storages.Pipe.ReplyWriteChunk Read(byte[] buffer, Whisper.Storages.Pipe.ReplyWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storing.Pipe.ReplyWriteChunk.Deserialize (ms, instance);
+				Whisper.Storages.Pipe.ReplyWriteChunk.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storing.Pipe.ReplyWriteChunk instance)
+		public static void Write(Stream stream, Whisper.Storages.Pipe.ReplyWriteChunk instance)
 		{
-			Whisper.Storing.Pipe.ReplyWriteChunk.Serialize(stream, instance);
+			Whisper.Storages.Pipe.ReplyWriteChunk.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storing.Pipe.RequestMessageList Read (Stream stream, Whisper.Storing.Pipe.RequestMessageList instance)
+		public static Whisper.Storages.Pipe.RequestMessageList Read (Stream stream, Whisper.Storages.Pipe.RequestMessageList instance)
 		{
-			return Whisper.Storing.Pipe.RequestMessageList.Deserialize(stream, instance);
+			return Whisper.Storages.Pipe.RequestMessageList.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.RequestMessageList Read(byte[] buffer, Whisper.Storing.Pipe.RequestMessageList instance)
+		public static Whisper.Storages.Pipe.RequestMessageList Read(byte[] buffer, Whisper.Storages.Pipe.RequestMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storing.Pipe.RequestMessageList.Deserialize (ms, instance);
+				Whisper.Storages.Pipe.RequestMessageList.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storing.Pipe.RequestMessageList instance)
+		public static void Write(Stream stream, Whisper.Storages.Pipe.RequestMessageList instance)
 		{
-			Whisper.Storing.Pipe.RequestMessageList.Serialize(stream, instance);
+			Whisper.Storages.Pipe.RequestMessageList.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storing.Pipe.ReplyMessageList Read (Stream stream, Whisper.Storing.Pipe.ReplyMessageList instance)
+		public static Whisper.Storages.Pipe.ReplyMessageList Read (Stream stream, Whisper.Storages.Pipe.ReplyMessageList instance)
 		{
-			return Whisper.Storing.Pipe.ReplyMessageList.Deserialize(stream, instance);
+			return Whisper.Storages.Pipe.ReplyMessageList.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyMessageList Read(byte[] buffer, Whisper.Storing.Pipe.ReplyMessageList instance)
+		public static Whisper.Storages.Pipe.ReplyMessageList Read(byte[] buffer, Whisper.Storages.Pipe.ReplyMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storing.Pipe.ReplyMessageList.Deserialize (ms, instance);
+				Whisper.Storages.Pipe.ReplyMessageList.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storing.Pipe.ReplyMessageList instance)
+		public static void Write(Stream stream, Whisper.Storages.Pipe.ReplyMessageList instance)
 		{
-			Whisper.Storing.Pipe.ReplyMessageList.Serialize(stream, instance);
+			Whisper.Storages.Pipe.ReplyMessageList.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storing.Pipe.RequestStoreMessage Read (Stream stream, Whisper.Storing.Pipe.RequestStoreMessage instance)
+		public static Whisper.Storages.Pipe.RequestStoreMessage Read (Stream stream, Whisper.Storages.Pipe.RequestStoreMessage instance)
 		{
-			return Whisper.Storing.Pipe.RequestStoreMessage.Deserialize(stream, instance);
+			return Whisper.Storages.Pipe.RequestStoreMessage.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.RequestStoreMessage Read(byte[] buffer, Whisper.Storing.Pipe.RequestStoreMessage instance)
+		public static Whisper.Storages.Pipe.RequestStoreMessage Read(byte[] buffer, Whisper.Storages.Pipe.RequestStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storing.Pipe.RequestStoreMessage.Deserialize (ms, instance);
+				Whisper.Storages.Pipe.RequestStoreMessage.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storing.Pipe.RequestStoreMessage instance)
+		public static void Write(Stream stream, Whisper.Storages.Pipe.RequestStoreMessage instance)
 		{
-			Whisper.Storing.Pipe.RequestStoreMessage.Serialize(stream, instance);
+			Whisper.Storages.Pipe.RequestStoreMessage.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storing.Pipe.ReplyStoreMessage Read (Stream stream, Whisper.Storing.Pipe.ReplyStoreMessage instance)
+		public static Whisper.Storages.Pipe.ReplyStoreMessage Read (Stream stream, Whisper.Storages.Pipe.ReplyStoreMessage instance)
 		{
-			return Whisper.Storing.Pipe.ReplyStoreMessage.Deserialize(stream, instance);
+			return Whisper.Storages.Pipe.ReplyStoreMessage.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storing.Pipe.ReplyStoreMessage Read(byte[] buffer, Whisper.Storing.Pipe.ReplyStoreMessage instance)
+		public static Whisper.Storages.Pipe.ReplyStoreMessage Read(byte[] buffer, Whisper.Storages.Pipe.ReplyStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storing.Pipe.ReplyStoreMessage.Deserialize (ms, instance);
+				Whisper.Storages.Pipe.ReplyStoreMessage.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storing.Pipe.ReplyStoreMessage instance)
+		public static void Write(Stream stream, Whisper.Storages.Pipe.ReplyStoreMessage instance)
 		{
-			Whisper.Storing.Pipe.ReplyStoreMessage.Serialize(stream, instance);
+			Whisper.Storages.Pipe.ReplyStoreMessage.Serialize(stream, instance);
 		}
 		
 

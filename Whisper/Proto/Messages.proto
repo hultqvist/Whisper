@@ -38,7 +38,7 @@ message tree_chunk
 
 message message_header
 {
-	option namespace = "Whisper.Messaging";
+	option namespace = "Whisper.Messages";
 	
 	required uint32 message_id = 1;
 	optional bytes signature = 2;
@@ -47,7 +47,7 @@ message message_header
 //MessageID = 1
 message tree_message
 {
-	option namespace = "Whisper.Messaging";
+	option namespace = "Whisper.Messages";
 	
 	required string name = 1;
 	required tripple_ID tree_chunk_ID = 2;
@@ -56,7 +56,7 @@ message tree_message
 //MessageID = 2
 message route_message
 {
-	option namespace = "Whisper.Messaging";
+	option namespace = "Whisper.Messages";
 	
 	// What to send
 	required bytes message_chunk_hash = 1;
@@ -71,7 +71,7 @@ message route_message
 //MessageID = 3
 message list_message
 {
-	option namespace = "Whisper.Messaging";
+	option namespace = "Whisper.Messages";
 	
 	repeated tripple_ID list = 1;
 }

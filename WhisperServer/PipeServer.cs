@@ -3,8 +3,8 @@ using System.IO;
 using System.Threading;
 using System.Collections.Generic;
 using Whisper;
-using Whisper.Storing;
-using Whisper.Storing.Pipe;
+using Whisper.Storages;
+using Whisper.Storages.Pipe;
 using Whisper.Chunks;
 using ProtocolBuffers;
 
@@ -16,7 +16,7 @@ namespace WhisperServer
 		readonly Stream output;
 		readonly Storage storage;
 
-		public PipeServer(Stream sin, Stream sout, Storage storage)
+		public PipeServer (Stream sin, Stream sout, Storage storage)
 		{
 			this.input = sin;
 			this.output = sout;
@@ -29,15 +29,18 @@ namespace WhisperServer
 		DateTime nextReport = DateTime.Now;
 #endif
 
-		public void Run()
+		public void Run ()
 		{
-			while (true)
-			{
-				ReceiveMessage();
+			try {
+				while (true) {
+					ReceiveMessage ();
+				}
+			} catch (EndOfStreamException) {
+				Console.WriteLine ("End of stream");
 			}
 		}
 
-		public void ReceiveMessage()
+		public void ReceiveMessage ()
 		{
 #if DEBUG_SERVER_PROFILING
 			if(nextReport < DateTime.Now)
@@ -48,7 +51,12 @@ namespace WhisperServer
 
 			DateTime start = DateTime.Now;
 #endif
-			PipeHeader head = PipeHeader.Deserialize(ProtocolParser.ReadBytes(input));
+			PipeHeader head;
+			try {
+				head = PipeHeader.Deserialize (ProtocolParser.ReadBytes (input));
+			} catch (IOException ioe) {
+				throw new EndOfStreamException ("At next header", ioe);
+			}
 #if DEBUG_SERVER_PROFILING
 			if(waiting.Ticks == 0)
 				waiting = new TimeSpan(1);
@@ -56,96 +64,95 @@ namespace WhisperServer
 				waiting = waiting + (DateTime.Now - start);
 			start = DateTime.Now;
 #endif
-			if (head == null)
-			{
-				Console.Error.WriteLine("Null header");
+			if (head == null) {
+				Console.Error.WriteLine ("Null header");
 				return;
 			}
 
 #if DEBUG
-			//Console.WriteLine("PipeServer: Header(" + head.TypeID+", " + head.DebugNumber+")");
+			Console.WriteLine("Header(" + head.TypeID + ", " + head.DebugNumber + ")");
 #endif
 
-			switch (head.TypeID)
-			{
+			switch (head.TypeID) {
 			case 1:
-				ProcessGetCustomHash();
+				ProcessGetCustomHash ();
 				break;
 			case 2:
-				ProcessReadChunk();
+				ProcessReadChunk ();
 				break;
 			case 3:
-				ProcessWriteChunk();
+				ProcessWriteChunk ();
 				break;
 			case 4:
-				ProcessMessageList();
+				ProcessMessageList ();
 				break;
 			case 5:
-				ProcessStoreMessage();
+				ProcessStoreMessage ();
 				break;
 			default:
-				throw new InvalidDataException("Unknown message type");
+				throw new InvalidDataException ("Unknown message type");
 			}
 
-			output.Flush();
+			output.Flush ();
 #if DEBUG_SERVER_PROFILING
 			processing = processing + (DateTime.Now - start);
 #endif
 		}
 
-		void ProcessGetCustomHash()
+		void ProcessGetCustomHash ()
 		{
-			RequestCustomHash request = RequestCustomHash.Deserialize(ProtocolParser.ReadBytes(input));
-#if DEBUG
-			//Console.WriteLine("PipeServer: " + request);
-#endif
-			ReplyCustomHash reply = new ReplyCustomHash();
-			ChunkHash ch = storage.GetCustomHash(CustomID.FromBytes(request.CustomID));
+			RequestCustomHash request = RequestCustomHash.Deserialize (ProtocolParser.ReadBytes (input));
+
+			ReplyCustomHash reply = new ReplyCustomHash ();
+			ChunkHash ch = storage.GetCustomHash (CustomID.FromBytes (request.CustomID));
 			if (ch == null)
 				reply.ChunkHash = null;
 			else
 				reply.ChunkHash = ch.bytes;
 			//Console.Error.WriteLine("PipeServer: Sending: " + reply);
-			byte[] rbytes = ReplyCustomHash.SerializeToBytes(reply);
+			byte[] rbytes = ReplyCustomHash.SerializeToBytes (reply);
 			//Console.Error.WriteLine("PipeServer: Sending: " + rbytes.Length + ", " + BitConverter.ToString(rbytes));
-			ProtocolParser.WriteBytes(output, rbytes);
+			ProtocolParser.WriteBytes (output, rbytes);
 		}
 
-		void ProcessReadChunk()
+		void ProcessReadChunk ()
 		{
-			RequestReadChunk request = RequestReadChunk.Deserialize(ProtocolParser.ReadBytes(input));
-			ReplyReadChunk reply = new ReplyReadChunk();
-			reply.ChunkData = storage.ReadChunk(ChunkHash.FromHashBytes(request.ChunkHash)).Data;
-
-			ProtocolParser.WriteBytes(output, ReplyReadChunk.SerializeToBytes(reply));
+			RequestReadChunk request = RequestReadChunk.Deserialize (ProtocolParser.ReadBytes (input));
+			ReplyReadChunk reply = new ReplyReadChunk ();
+			Chunk c = storage.ReadChunk (ChunkHash.FromHashBytes (request.ChunkHash));
+			reply.ChunkData = c.Data;
+			reply.Keys = c.Keys;
+			
+			ProtocolParser.WriteBytes (output, ReplyReadChunk.SerializeToBytes (reply));
 		}
 
-		void ProcessWriteChunk()
+		void ProcessWriteChunk ()
 		{
-			RequestWriteChunk request = RequestWriteChunk.Deserialize(ProtocolParser.ReadBytes(input));
-			ReplyWriteChunk reply = new ReplyWriteChunk();
-			Chunk chunk = new Chunk(request.ChunkData);
-			storage.WriteChunk(chunk);
+			RequestWriteChunk request = RequestWriteChunk.Deserialize (ProtocolParser.ReadBytes (input));
+			ReplyWriteChunk reply = new ReplyWriteChunk ();
+			Chunk chunk = new Chunk (request.ChunkData);
+			chunk.Keys = request.Keys;
+			storage.WriteChunk (chunk);
 
-			ProtocolParser.WriteBytes(output, ReplyWriteChunk.SerializeToBytes(reply));
+			ProtocolParser.WriteBytes (output, ReplyWriteChunk.SerializeToBytes (reply));
 		}
 
-		void ProcessMessageList()
+		void ProcessMessageList ()
 		{
-			RequestMessageList.Deserialize(ProtocolParser.ReadBytes(input));
-			ReplyMessageList reply = new ReplyMessageList();
-			List<ChunkHash > list = storage.GetMessageList();
+			RequestMessageList.Deserialize (ProtocolParser.ReadBytes (input));
+			ReplyMessageList reply = new ReplyMessageList ();
+			List<ChunkHash > list = storage.GetMessageList ();
 			foreach (ChunkHash ch in list)
-				reply.ChunkHash.Add(ch.bytes);
-			ProtocolParser.WriteBytes(output, ReplyMessageList.SerializeToBytes(reply));
+				reply.ChunkHash.Add (ch.bytes);
+			ProtocolParser.WriteBytes (output, ReplyMessageList.SerializeToBytes (reply));
 		}
 
-		void ProcessStoreMessage()
+		void ProcessStoreMessage ()
 		{
-			RequestStoreMessage request = RequestStoreMessage.Deserialize(ProtocolParser.ReadBytes(input));
-			ReplyStoreMessage reply = new ReplyStoreMessage();
-			storage.StoreMessage(ChunkHash.FromHashBytes(request.ChunkHash));
-			ProtocolParser.WriteBytes(output, ReplyStoreMessage.SerializeToBytes(reply));
+			RequestStoreMessage request = RequestStoreMessage.Deserialize (ProtocolParser.ReadBytes (input));
+			ReplyStoreMessage reply = new ReplyStoreMessage ();
+			storage.StoreMessage (ChunkHash.FromHashBytes (request.ChunkHash));
+			ProtocolParser.WriteBytes (output, ReplyStoreMessage.SerializeToBytes (reply));
 		}
 	}
 }

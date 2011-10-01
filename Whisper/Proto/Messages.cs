@@ -49,7 +49,7 @@ namespace Whisper.Chunks
 	}
 
 }
-namespace Whisper.Messaging
+namespace Whisper.Messages
 {
 	public partial class MessageHeader
 	{
@@ -58,7 +58,7 @@ namespace Whisper.Messaging
 	}
 
 }
-namespace Whisper.Messaging
+namespace Whisper.Messages
 {
 	public partial class TreeMessage
 	{
@@ -67,7 +67,7 @@ namespace Whisper.Messaging
 	}
 
 }
-namespace Whisper.Messaging
+namespace Whisper.Messages
 {
 	public partial class RouteMessage
 	{
@@ -77,7 +77,7 @@ namespace Whisper.Messaging
 	}
 
 }
-namespace Whisper.Messaging
+namespace Whisper.Messages
 {
 	public partial class ListMessage
 	{

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Whisper.Chunks;
-namespace Whisper.Storing
+namespace Whisper.Storages
 {
 	public class MultiStorage : Storage
 	{

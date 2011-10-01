@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using Whisper.Storing;
+using Whisper.Storages;
 using Whisper.Chunks;
 using ProtocolBuffers;
 

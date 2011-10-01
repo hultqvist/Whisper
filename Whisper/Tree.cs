@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Whisper.Chunks;
-using Whisper.Messaging;
-using Whisper.Storing;
+using Whisper.Messages;
+using Whisper.Storages;
 using Whisper.Keys;
 
 namespace Whisper

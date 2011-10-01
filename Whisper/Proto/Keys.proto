@@ -2,18 +2,18 @@
 
 option namespace = "Whisper.Keys";
 
-message public_key
-{
-	option triggers = true;
-	required bytes modulus = 1;
-	required bytes exponent = 2;
-}
-
-message private_key
-{
-	option triggers = true;
-	required bytes modulus = 1 [access=protected];
-	required bytes exponent = 2 [access=protected];
-	required bytes p = 3 [access=protected];
-	required bytes q = 4 [access=protected];
-}
+//message public_key
+//{
+//	option triggers = true;
+//	required bytes modulus = 1;
+//	required bytes exponent = 2;
+//}
+//
+//message private_key
+//{
+//	option triggers = true;
+//	required bytes modulus = 1 [access=protected];
+//	required bytes exponent = 2 [access=protected];
+//	required bytes p = 3 [access=protected];
+//	required bytes q = 4 [access=protected];
+//}

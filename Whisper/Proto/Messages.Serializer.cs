@@ -53,27 +53,22 @@ namespace Whisper.Chunks
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.ChunkHashBytes = ProtocolParser.ReadBytes(stream);
-							break;
-						case 18: //Field 2 LengthDelimited
-							instance.CustomIdBytes = ProtocolParser.ReadBytes(stream);
-							break;
-						case 26: //Field 3 LengthDelimited
-							instance.ClearHashBytes = ProtocolParser.ReadBytes(stream);
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.ChunkHashBytes = ProtocolParser.ReadBytes(stream);
+					break;
+				case 18: //Field 2 LengthDelimited
+					instance.CustomIdBytes = ProtocolParser.ReadBytes(stream);
+					break;
+				case 26: //Field 3 LengthDelimited
+					instance.ClearHashBytes = ProtocolParser.ReadBytes(stream);
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -177,24 +172,19 @@ namespace Whisper.Chunks
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 8: //Field 1 Varint
-							instance.Size = ProtocolParser.ReadUInt64(stream);;
-							break;
-						case 18: //Field 2 LengthDelimited
-							instance.Chunks.Add(Whisper.Chunks.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream)));
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 8: //Field 1 Varint
+					instance.Size = ProtocolParser.ReadUInt64(stream);;
+					break;
+				case 18: //Field 2 LengthDelimited
+					instance.Chunks.Add(Whisper.Chunks.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream)));
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -294,27 +284,22 @@ namespace Whisper.Chunks
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.Name = ProtocolParser.ReadString(stream);
-							break;
-						case 18: //Field 2 LengthDelimited
-							if(instance.TreeChunkID == null)
-								instance.TreeChunkID = Whisper.Chunks.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream));
-							else
-								instance.TreeChunkID = Serializer.Read(ProtocolParser.ReadBytes(stream), instance.TreeChunkID);
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.Name = ProtocolParser.ReadString(stream);
+					break;
+				case 18: //Field 2 LengthDelimited
+					if(instance.TreeChunkID == null)
+						instance.TreeChunkID = Whisper.Chunks.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream));
+					else
+						instance.TreeChunkID = Serializer.Read(ProtocolParser.ReadBytes(stream), instance.TreeChunkID);
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -415,24 +400,19 @@ namespace Whisper.Chunks
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.Directories.Add(Whisper.Chunks.TreeFile.Deserialize(ProtocolParser.ReadBytes(stream)));
-							break;
-						case 18: //Field 2 LengthDelimited
-							instance.Files.Add(Whisper.Chunks.TreeFile.Deserialize(ProtocolParser.ReadBytes(stream)));
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.Directories.Add(Whisper.Chunks.TreeFile.Deserialize(ProtocolParser.ReadBytes(stream)));
+					break;
+				case 18: //Field 2 LengthDelimited
+					instance.Files.Add(Whisper.Chunks.TreeFile.Deserialize(ProtocolParser.ReadBytes(stream)));
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -501,7 +481,7 @@ namespace Whisper.Chunks
 	
 
 }
-namespace Whisper.Messaging
+namespace Whisper.Messages
 {
 	public partial class MessageHeader
 	{
@@ -518,49 +498,44 @@ namespace Whisper.Messaging
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Messaging.MessageHeader, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Messages.MessageHeader, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Messaging.MessageHeader, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Messages.MessageHeader, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Messaging.MessageHeader instance)
+		public static void Deserialize (byte[] buffer, Whisper.Messages.MessageHeader instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Messaging.MessageHeader Deserialize(Stream stream, Whisper.Messaging.MessageHeader instance)
+		public static Whisper.Messages.MessageHeader Deserialize(Stream stream, Whisper.Messages.MessageHeader instance)
 		{
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 8: //Field 1 Varint
-							instance.MessageId = ProtocolParser.ReadUInt32(stream);
-							break;
-						case 18: //Field 2 LengthDelimited
-							instance.Signature = ProtocolParser.ReadBytes(stream);
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 8: //Field 1 Varint
+					instance.MessageId = ProtocolParser.ReadUInt32(stream);
+					break;
+				case 18: //Field 2 LengthDelimited
+					instance.Signature = ProtocolParser.ReadBytes(stream);
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -580,7 +555,7 @@ namespace Whisper.Messaging
 			return instance;
 		}
 		
-		public static Whisper.Messaging.MessageHeader Read(byte[] buffer, Whisper.Messaging.MessageHeader instance)
+		public static Whisper.Messages.MessageHeader Read(byte[] buffer, Whisper.Messages.MessageHeader instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -610,7 +585,7 @@ namespace Whisper.Messaging
 	
 
 }
-namespace Whisper.Messaging
+namespace Whisper.Messages
 {
 	public partial class TreeMessage
 	{
@@ -627,52 +602,47 @@ namespace Whisper.Messaging
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Messaging.TreeMessage, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Messages.TreeMessage, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Messaging.TreeMessage, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Messages.TreeMessage, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Messaging.TreeMessage instance)
+		public static void Deserialize (byte[] buffer, Whisper.Messages.TreeMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Messaging.TreeMessage Deserialize(Stream stream, Whisper.Messaging.TreeMessage instance)
+		public static Whisper.Messages.TreeMessage Deserialize(Stream stream, Whisper.Messages.TreeMessage instance)
 		{
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.Name = ProtocolParser.ReadString(stream);
-							break;
-						case 18: //Field 2 LengthDelimited
-							if(instance.TreeChunkID == null)
-								instance.TreeChunkID = Whisper.Chunks.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream));
-							else
-								instance.TreeChunkID = Serializer.Read(ProtocolParser.ReadBytes(stream), instance.TreeChunkID);
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.Name = ProtocolParser.ReadString(stream);
+					break;
+				case 18: //Field 2 LengthDelimited
+					if(instance.TreeChunkID == null)
+						instance.TreeChunkID = Whisper.Chunks.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream));
+					else
+						instance.TreeChunkID = Serializer.Read(ProtocolParser.ReadBytes(stream), instance.TreeChunkID);
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -692,7 +662,7 @@ namespace Whisper.Messaging
 			return instance;
 		}
 		
-		public static Whisper.Messaging.TreeMessage Read(byte[] buffer, Whisper.Messaging.TreeMessage instance)
+		public static Whisper.Messages.TreeMessage Read(byte[] buffer, Whisper.Messages.TreeMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -727,7 +697,7 @@ namespace Whisper.Messaging
 	
 
 }
-namespace Whisper.Messaging
+namespace Whisper.Messages
 {
 	public partial class RouteMessage
 	{
@@ -744,54 +714,49 @@ namespace Whisper.Messaging
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Messaging.RouteMessage, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Messages.RouteMessage, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Messaging.RouteMessage, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Messages.RouteMessage, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Messaging.RouteMessage instance)
+		public static void Deserialize (byte[] buffer, Whisper.Messages.RouteMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Messaging.RouteMessage Deserialize(Stream stream, Whisper.Messaging.RouteMessage instance)
+		public static Whisper.Messages.RouteMessage Deserialize(Stream stream, Whisper.Messages.RouteMessage instance)
 		{
 			if(instance.Chunks == null)
 				instance.Chunks = new List<byte[]>();
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.MessageChunkHash = ProtocolParser.ReadBytes(stream);
-							break;
-						case 18: //Field 2 LengthDelimited
-							instance.To = ProtocolParser.ReadString(stream);
-							break;
-						case 26: //Field 3 LengthDelimited
-							instance.Chunks.Add(ProtocolParser.ReadBytes(stream));
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.MessageChunkHash = ProtocolParser.ReadBytes(stream);
+					break;
+				case 18: //Field 2 LengthDelimited
+					instance.To = ProtocolParser.ReadString(stream);
+					break;
+				case 26: //Field 3 LengthDelimited
+					instance.Chunks.Add(ProtocolParser.ReadBytes(stream));
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -811,7 +776,7 @@ namespace Whisper.Messaging
 			return instance;
 		}
 		
-		public static Whisper.Messaging.RouteMessage Read(byte[] buffer, Whisper.Messaging.RouteMessage instance)
+		public static Whisper.Messages.RouteMessage Read(byte[] buffer, Whisper.Messages.RouteMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -851,7 +816,7 @@ namespace Whisper.Messaging
 	
 
 }
-namespace Whisper.Messaging
+namespace Whisper.Messages
 {
 	public partial class ListMessage
 	{
@@ -868,48 +833,43 @@ namespace Whisper.Messaging
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Messaging.ListMessage, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Messages.ListMessage, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Messaging.ListMessage, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Messages.ListMessage, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Messaging.ListMessage instance)
+		public static void Deserialize (byte[] buffer, Whisper.Messages.ListMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Messaging.ListMessage Deserialize(Stream stream, Whisper.Messaging.ListMessage instance)
+		public static Whisper.Messages.ListMessage Deserialize(Stream stream, Whisper.Messages.ListMessage instance)
 		{
 			if(instance.List == null)
 				instance.List = new List<Whisper.Chunks.TrippleID>();
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
-				try {
-						//Optimize reading keys for short field numbers
-						int keyByte = stream.ReadByte ();
-						if (keyByte == -1)
-							break;
-						//Optimized reading of known fields with field ID < 16
-						switch (keyByte) {
-						case 10: //Field 1 LengthDelimited
-							instance.List.Add(Whisper.Chunks.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream)));
-							break;
-						default:
-							key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-							break;
-						}
-				} catch (IOException) {
+				int keyByte = stream.ReadByte ();
+				if (keyByte == -1)
+					break;
+				//Optimized reading of known fields with field ID < 16
+				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.List.Add(Whisper.Chunks.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream)));
+					break;
+				default:
+					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
 				}
 		
@@ -929,7 +889,7 @@ namespace Whisper.Messaging
 			return instance;
 		}
 		
-		public static Whisper.Messaging.ListMessage Read(byte[] buffer, Whisper.Messaging.ListMessage instance)
+		public static Whisper.Messages.ListMessage Read(byte[] buffer, Whisper.Messages.ListMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -1047,78 +1007,78 @@ namespace ProtocolBuffers
 		
 
 		
-		public static Whisper.Messaging.MessageHeader Read (Stream stream, Whisper.Messaging.MessageHeader instance)
+		public static Whisper.Messages.MessageHeader Read (Stream stream, Whisper.Messages.MessageHeader instance)
 		{
-			return Whisper.Messaging.MessageHeader.Deserialize(stream, instance);
+			return Whisper.Messages.MessageHeader.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Messaging.MessageHeader Read(byte[] buffer, Whisper.Messaging.MessageHeader instance)
+		public static Whisper.Messages.MessageHeader Read(byte[] buffer, Whisper.Messages.MessageHeader instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Messaging.MessageHeader.Deserialize (ms, instance);
+				Whisper.Messages.MessageHeader.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Messaging.MessageHeader instance)
+		public static void Write(Stream stream, Whisper.Messages.MessageHeader instance)
 		{
-			Whisper.Messaging.MessageHeader.Serialize(stream, instance);
+			Whisper.Messages.MessageHeader.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Messaging.TreeMessage Read (Stream stream, Whisper.Messaging.TreeMessage instance)
+		public static Whisper.Messages.TreeMessage Read (Stream stream, Whisper.Messages.TreeMessage instance)
 		{
-			return Whisper.Messaging.TreeMessage.Deserialize(stream, instance);
+			return Whisper.Messages.TreeMessage.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Messaging.TreeMessage Read(byte[] buffer, Whisper.Messaging.TreeMessage instance)
+		public static Whisper.Messages.TreeMessage Read(byte[] buffer, Whisper.Messages.TreeMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Messaging.TreeMessage.Deserialize (ms, instance);
+				Whisper.Messages.TreeMessage.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Messaging.TreeMessage instance)
+		public static void Write(Stream stream, Whisper.Messages.TreeMessage instance)
 		{
-			Whisper.Messaging.TreeMessage.Serialize(stream, instance);
+			Whisper.Messages.TreeMessage.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Messaging.RouteMessage Read (Stream stream, Whisper.Messaging.RouteMessage instance)
+		public static Whisper.Messages.RouteMessage Read (Stream stream, Whisper.Messages.RouteMessage instance)
 		{
-			return Whisper.Messaging.RouteMessage.Deserialize(stream, instance);
+			return Whisper.Messages.RouteMessage.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Messaging.RouteMessage Read(byte[] buffer, Whisper.Messaging.RouteMessage instance)
+		public static Whisper.Messages.RouteMessage Read(byte[] buffer, Whisper.Messages.RouteMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Messaging.RouteMessage.Deserialize (ms, instance);
+				Whisper.Messages.RouteMessage.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Messaging.RouteMessage instance)
+		public static void Write(Stream stream, Whisper.Messages.RouteMessage instance)
 		{
-			Whisper.Messaging.RouteMessage.Serialize(stream, instance);
+			Whisper.Messages.RouteMessage.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Messaging.ListMessage Read (Stream stream, Whisper.Messaging.ListMessage instance)
+		public static Whisper.Messages.ListMessage Read (Stream stream, Whisper.Messages.ListMessage instance)
 		{
-			return Whisper.Messaging.ListMessage.Deserialize(stream, instance);
+			return Whisper.Messages.ListMessage.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Messaging.ListMessage Read(byte[] buffer, Whisper.Messaging.ListMessage instance)
+		public static Whisper.Messages.ListMessage Read(byte[] buffer, Whisper.Messages.ListMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Messaging.ListMessage.Deserialize (ms, instance);
+				Whisper.Messages.ListMessage.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Messaging.ListMessage instance)
+		public static void Write(Stream stream, Whisper.Messages.ListMessage instance)
 		{
-			Whisper.Messaging.ListMessage.Serialize(stream, instance);
+			Whisper.Messages.ListMessage.Serialize(stream, instance);
 		}
 		
 

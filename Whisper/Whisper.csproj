@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -15,7 +15,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\Debug</OutputPath>
+    <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\Release</OutputPath>
+    <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -38,61 +38,57 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="HexParser.cs" />
-    <Compile Include="Storing\DiskStorage.cs" />
-    <Compile Include="Storing\EncryptedStorage.cs" />
-    <Compile Include="Storing\ClearTextStorage.cs" />
-    <Compile Include="Storing\StorageFilter.cs" />
-    <Compile Include="Storing\MultiStorage.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Storing\ClearTextID.cs" />
-    <Compile Include="Storing\IGenerateID.cs" />
-    <Compile Include="Storing\RecipientID.cs" />
-    <Compile Include="Storing\SenderID.cs" />
-    <Compile Include="Storing\NullID.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="Tree.cs" />
     <Compile Include="Keys\DiskKeyStorage.cs" />
     <Compile Include="Chunks\Chunk.cs" />
     <Compile Include="Chunks\StreamChunk.cs" />
     <Compile Include="Chunks\TreeChunk.cs" />
-    <Compile Include="Messaging\ListMessage.cs" />
-    <Compile Include="Messaging\RouteMessage.cs" />
-    <Compile Include="Messaging\SignedMessage.cs" />
-    <Compile Include="Messaging\Message.cs" />
-    <Compile Include="Messaging\TreeMessage.cs" />
     <Compile Include="Keys\KeyStorage.cs" />
     <Compile Include="Keys\PrivateKey.cs" />
     <Compile Include="Keys\PublicKey.cs" />
     <Compile Include="Keys\MemoryKeyStorage.cs" />
-    <Compile Include="Keys\NamedPublicKey.cs" />
-    <Compile Include="Keys\NamedPrivateKey.cs" />
     <Compile Include="Proto\Keys.cs" />
     <Compile Include="Proto\PipeMessages.cs" />
     <Compile Include="Proto\ProtocolParser.cs" />
     <Compile Include="Chunks\ChunkKeys.cs" />
-    <Compile Include="Chunks\ChunkKey.cs" />
     <Compile Include="Proto\Keys.Serializer.cs" />
     <Compile Include="Proto\PipeMessages.Serializer.cs" />
-    <Compile Include="Storing\PipeStorage.cs" />
     <Compile Include="Proto\Messages.cs" />
     <Compile Include="Proto\Messages.Serializer.cs" />
-    <Compile Include="Storing\Pipe\PipeMessages.cs" />
     <Compile Include="Chunks\TrippleID.cs" />
     <Compile Include="Keys\IKey.cs" />
     <Compile Include="Hashes\ClearHash.cs" />
     <Compile Include="Hashes\Hash.cs" />
     <Compile Include="Hashes\ChunkHash.cs" />
     <Compile Include="Hashes\CustomID.cs" />
+    <Compile Include="Storages\DiskStorage.cs" />
+    <Compile Include="Storages\EncryptedStorage.cs" />
+    <Compile Include="Storages\ClearTextStorage.cs" />
+    <Compile Include="Storages\StorageFilter.cs" />
+    <Compile Include="Storages\MultiStorage.cs" />
+    <Compile Include="Storages\ClearTextID.cs" />
+    <Compile Include="Storages\IGenerateID.cs" />
+    <Compile Include="Storages\RecipientID.cs" />
+    <Compile Include="Storages\SenderID.cs" />
+    <Compile Include="Storages\NullID.cs" />
+    <Compile Include="Messages\ListMessage.cs" />
+    <Compile Include="Storages\PipeStorage.cs" />
+    <Compile Include="Storages\Pipe\PipeMessages.cs" />
+    <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\RouteMessage.cs" />
+    <Compile Include="Messages\SignedMessage.cs" />
+    <Compile Include="Messages\TreeMessage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Storing\" />
     <Folder Include="Keys\" />
     <Folder Include="Chunks\" />
-    <Folder Include="Messaging\" />
-    <Folder Include="Storing\Pipe\" />
     <Folder Include="Proto\" />
     <Folder Include="Hashes\" />
+    <Folder Include="Storages\" />
+    <Folder Include="Storages\Pipe\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

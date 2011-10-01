@@ -5,7 +5,7 @@ namespace Whisper
 {
 	/// <summary>
 	/// Sender generated ID for a chunk.
-	/// See classes in Whisper.Storing for examples.
+	/// See classes in Whisper.Storages for examples.
 	/// </summary>
 	public class CustomID
 	{

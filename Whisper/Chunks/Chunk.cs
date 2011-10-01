@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Whisper.Messaging;
+using Whisper.Messages;
 using System.IO;
 using System.Security.Cryptography;
 using Whisper.Keys;
@@ -55,22 +55,6 @@ namespace Whisper.Chunks
 		public override string ToString()
 		{
 			return "Chunk(" + Data.Length + " bytes)";
-		}
-
-		/// <summary>
-		/// Add public keys that will be able to decrypt the chunk.
-		/// </summary>
-		/// <param name="key">
-		/// A <see cref="Key"/>
-		/// </param>
-		public void AddKey(PublicKey key)
-		{
-			if (Keys == null)
-				throw new InvalidOperationException("Must call Encrypt before");
-			
-			ChunkKey bk = new ChunkKey();
-			bk.bytes = key.Encrypt(Keys.RM.Key);
-			Keys.AddKey(bk);
 		}
 
 		/// <summary>
