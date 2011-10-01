@@ -5,9 +5,9 @@ namespace Whisper.Messages
 {
 	public partial class TreeMessage : Message
 	{
-		public TreeMessage(TrippleID tree, string name)
+		public TreeMessage(Chunk tree, string name)
 		{
-			this.TreeChunkID = tree;
+			this.TreeChunkID = new TrippleID(tree);
 			this.Name = name;
 		}
 

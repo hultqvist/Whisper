@@ -66,7 +66,7 @@ namespace Whisper.Storages
 		public override void WriteChunk(Chunk chunk)
 		{
 			//Data
-			string dataPath = GetPath(chunk.DataHash);
+			string dataPath = GetPath(chunk.ChunkHash);
 			Directory.CreateDirectory(Path.GetDirectoryName(dataPath));
 			File.WriteAllBytes(dataPath, chunk.Data);
 
@@ -83,7 +83,7 @@ namespace Whisper.Storages
 			if (chunk.CustomID != null)
 			{
 				string idPath = Path.Combine(idRoot, chunk.CustomID.ToString() + ".id");
-				File.WriteAllBytes(idPath, chunk.DataHash.bytes);
+				File.WriteAllBytes(idPath, chunk.ChunkHash.bytes);
 			}
 		}
 
@@ -95,8 +95,8 @@ namespace Whisper.Storages
 			string dataPath = GetPath(chunkHash);
 			chunk.Data = File.ReadAllBytes(dataPath);
 			//Verify Hash
-			chunk.DataHash = ChunkHash.FromHashBytes(Hash.ComputeHash(chunk.Data).bytes);
-			if (chunk.DataHash.Equals(chunkHash) == false)
+			chunk.ChunkHash = ChunkHash.FromHashBytes(Hash.ComputeHash(chunk.Data).bytes);
+			if (chunk.ChunkHash.Equals(chunkHash) == false)
 				throw new InvalidDataException("Hash mismatch: " + chunkHash);
 			
 			//Read keys

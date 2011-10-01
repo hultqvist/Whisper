@@ -42,7 +42,7 @@ namespace Wcp
 			
 			storage.WriteChunk (c);
 			
-			Chunk c2 = storage.ReadChunk (c.DataHash);
+			Chunk c2 = storage.ReadChunk (c.ChunkHash);
 			
 			for (int n = 0; n < buffer.Length; n++)
 				if (buffer [n] != c2.Data [n])

@@ -120,9 +120,9 @@ namespace Whisper.Storages
 			ReplyReadChunk reply = ReplyReadChunk.Deserialize (ProtocolParser.ReadBytes (input));
 			Chunk c = new Chunk (reply.ChunkData);
 			c.Keys = reply.Keys;
-			c.DataHash = ChunkHash.FromHashBytes (Hash.ComputeHash (c.Data).bytes);
+			c.ChunkHash = ChunkHash.FromHashBytes (Hash.ComputeHash (c.Data).bytes);
 			//Verify Hash
-			if (c.DataHash.Equals (chunkHash) == false)
+			if (c.ChunkHash.Equals (chunkHash) == false)
 				throw new InvalidDataException ("Hash mismatch: " + chunkHash);
 
 			return c;

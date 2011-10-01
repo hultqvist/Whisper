@@ -20,13 +20,11 @@ namespace Whisper.Chunks
 		/// <summary>
 		/// Hash of Data
 		/// </summary>
-		public ChunkHash DataHash;
+		public ChunkHash ChunkHash;
 		/// <summary>
 		/// Chunk data as stored, can be either cleartext or encrypted.
 		/// </summary>
 		public byte[] Data { get; set; }
-
-		public TrippleID TrippleID;
 
 		/// <summary>
 		/// Keys to decrypt Data
@@ -48,8 +46,7 @@ namespace Whisper.Chunks
 			this.Data = buffer;
 
 			this.ClearHash = ClearHash.ComputeHash(buffer);
-			this.DataHash = ChunkHash.FromHashBytes(this.ClearHash.bytes);
-			this.TrippleID = new TrippleID(this);
+			this.ChunkHash = ChunkHash.FromHashBytes(this.ClearHash.bytes);
 		}
 
 		public override string ToString()

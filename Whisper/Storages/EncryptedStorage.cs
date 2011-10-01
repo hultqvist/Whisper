@@ -83,7 +83,7 @@ namespace Whisper.Storages
 			if (chunk.CustomID != null) {
 				ChunkHash hash = GetCustomHash (chunk.CustomID);
 				if (hash != null) {
-					chunk.DataHash = hash;
+					chunk.ChunkHash = hash;
 					return;
 				}
 			}
@@ -126,7 +126,7 @@ namespace Whisper.Storages
 			}
 			
 			//Generate Hash
-			chunk.DataHash = ChunkHash.ComputeHash (chunk.Data);
+			chunk.ChunkHash = ChunkHash.ComputeHash (chunk.Data);
 		}
 		
 		/// <summary>

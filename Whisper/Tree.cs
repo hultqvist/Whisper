@@ -10,9 +10,9 @@ namespace Whisper
 {
 	public class Tree
 	{
-		public Tree()
+		public Tree ()
 		{
-			this.ChunkList = new List<ChunkHash>();
+			this.ChunkList = new List<ChunkHash> ();
 		}
 
 		#region Input Parameters
@@ -24,28 +24,34 @@ namespace Whisper
 		/// Set to sign the TreeMessage
 		/// </summary>
 		public PrivateKey SigningKey { get; set; }
+
 		private ICollection<PublicKey> _encryptKeys = null;
+
 		public ICollection<PublicKey> EncryptKeys {
 			get {
 				if (_encryptKeys == null)
-					_encryptKeys = new List<PublicKey>();
+					_encryptKeys = new List<PublicKey> ();
 				return _encryptKeys;
 			}
 			set { _encryptKeys = value; }
 		}
+
 		private ICollection<Storage> _storage = null;
+
 		public ICollection<Storage> Storage {
 			get {
 				if (_storage == null)
-					_storage = new List<Storage>();
+					_storage = new List<Storage> ();
 				return _storage;
 			}
 			set { _storage = value; }
 		}
+
 		#endregion
 
 		#region Output Data
 		public ICollection<ChunkHash> ChunkList { get; private set; }
+
 		public Chunk tree { get; set; }
 		#endregion
 
@@ -62,45 +68,44 @@ namespace Whisper
 		/// <returns>
 		/// The <see cref="ChunkHash"/> of the TreeMessage
 		/// </returns>
-		public ChunkHash Generate()
+		public ChunkHash Generate ()
 		{
 			#region Check Parameters
 
 			if (Storage.Count == 0)
-				throw new ArgumentException("this.Storage must contain at least one storage");
+				throw new ArgumentException ("this.Storage must contain at least one storage");
 
 			#endregion
 
 			//Prepare Storage
 			Storage s;
 			if (this.Storage.Count == 1)
-				s = this.Storage.First();
+				s = this.Storage.First ();
 			else
-				s = new MultiStorage(this.Storage);
+				s = new MultiStorage (this.Storage);
 
 			//Prepare encryption
-			if(EncryptKeys.Count > 0)
-			{
+			if (EncryptKeys.Count > 0) {
 				IGenerateID id = null;
-				if(EncryptKeys.Count == 1)
-					id = new RecipientID(EncryptKeys.First());
-				s = new EncryptedStorage(s, null, id);
+				if (EncryptKeys.Count == 1)
+					id = new RecipientID (EncryptKeys.First ());
+				s = new EncryptedStorage (s, null, id);
 				EncryptedStorage es = s as EncryptedStorage;
-				foreach(PublicKey key in EncryptKeys)
-					es.AddKey(key);
+				foreach (PublicKey key in EncryptKeys)
+					es.AddKey (key);
 			}
 
 			//Storage preparation done
 			this.storage = s;
 
-			this.tree = TreeChunk.GenerateChunk(this.SourcePath, this.storage, this.ChunkList);
+			this.tree = TreeChunk.GenerateChunk (this.SourcePath, this.storage, this.ChunkList);
 
 			//TreeMessage
-			TreeMessage tm = new TreeMessage(this.tree.TrippleID, this.TargetName);
-			Chunk smb = Message.ToChunk(tm, this.SigningKey);
-			this.storage.WriteChunk(smb);
-			this.ChunkList.Add(smb.DataHash);
-			return smb.DataHash;
+			TreeMessage tm = new TreeMessage (this.tree, this.TargetName);
+			Chunk smb = Message.ToChunk (tm, this.SigningKey);
+			this.storage.WriteChunk (smb);
+			this.ChunkList.Add (smb.ChunkHash);
+			return smb.ChunkHash;
 		}
 
 	}

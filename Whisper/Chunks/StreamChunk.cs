@@ -52,7 +52,7 @@ namespace Whisper.Chunks
 			{
 				foreach (TrippleID cid in message.Chunks)
 					chunkList.Add(cid.ChunkHash);
-				chunkList.Add(messageChunk.DataHash);
+				chunkList.Add(messageChunk.ChunkHash);
 			}
 			
 			return messageChunk;

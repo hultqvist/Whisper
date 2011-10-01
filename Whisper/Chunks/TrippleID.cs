@@ -25,7 +25,7 @@ namespace Whisper.Chunks
 
 		public TrippleID(Chunk chunk)
 		{
-			this.ChunkHash = chunk.DataHash;
+			this.ChunkHash = chunk.ChunkHash;
 			this.CustomID = chunk.CustomID;
 			this.ClearHash = chunk.ClearHash;
 		}

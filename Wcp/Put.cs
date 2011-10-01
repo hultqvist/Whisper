@@ -51,7 +51,7 @@ namespace Wcp
 			//Store unencrypted RouteMessage
 			Whisper.Chunks.Chunk rmChunk = Message.ToChunk(rm);
 			storage.WriteChunk(rmChunk);
-			storage.StoreMessage(rmChunk.DataHash);
+			storage.StoreMessage(rmChunk.ChunkHash);
 			Console.WriteLine("RouteMessage Stored");
 			
 		}

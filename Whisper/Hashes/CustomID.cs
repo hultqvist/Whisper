@@ -38,7 +38,11 @@ namespace Whisper
 				return null;
 			return customID.bytes;
 		}
-
+		
+		public override string ToString ()
+		{
+			return BitConverter.ToString(bytes).Replace("-", "");
+		}
 	}
 }
 

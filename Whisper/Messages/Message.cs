@@ -13,6 +13,8 @@ namespace Whisper.Messages
 	/// </summary>
 	public abstract class Message
 	{
+		public PublicKey Signature { get; set; }
+		
 		#region Static Chunk Readers and Writers
 
 		public static Chunk ToChunk (Message m)
@@ -38,7 +40,7 @@ namespace Whisper.Messages
 
 				if (signatureKey != null)
 					header.Signature = signatureKey.Sign (messageData);
-
+				
 				ProtocolParser.WriteBytes (ms, MessageHeader.SerializeToBytes (header));
 				ProtocolParser.WriteBytes (ms, messageData);
 
@@ -98,7 +100,7 @@ namespace Whisper.Messages
 				if (header.Signature != null) {
 					foreach (PublicKey key in keyStorage.PublicKeys) {
 						if (key.Verify (messageBytes, header.Signature)) {
-							((SignedMessage)message).Signature = key;
+							message.Signature = key;
 							break;
 						}
 					}

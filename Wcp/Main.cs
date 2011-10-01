@@ -18,9 +18,10 @@ namespace Wcp
 			{
 				string storageString = "Storage/";
 				//string storageString = "tcp:";
+				args = new string[]{ "test", storageString, "Bob"};
 				args = new string[]{ "put", "Source/", storageString, "Bob" };
 				args = new string[]{ "list", storageString };
-				args = new string[]{ "test", storageString, "Bob"};
+				args = new string[]{ "get", storageString, "C3", "Target/"};
 			}
 #endif
 			try {
