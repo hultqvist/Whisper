@@ -1,15 +1,16 @@
 using System;
 using Whisper.Chunks;
+
 namespace Whisper.Storages
 {
 	/// <summary>
-	/// Generates CustomID that equals the cleartext hash
+	/// No custom ID.
 	/// </summary>
-	public class ClearTextID : IGenerateID
+	public class NullID : IGenerateID
 	{
 		public CustomID GetID(Chunk chunk)
 		{
-			return CustomID.FromBytes(chunk.ClearHash.bytes);
+			return null;
 		}
 	}
 }

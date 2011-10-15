@@ -35,7 +35,7 @@ namespace Wcp
 				}
 				
 				if (message.Signature != null)
-					Console.Write ("signed by " + message.Signature.ToString ().Substring (0, 10) + " ");
+					Console.Write ("(signed by " + message.Signature.Name + ") ");
 				
 				TreeMessage tm = message as TreeMessage;
 				if (tm != null) {

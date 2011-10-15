@@ -8,7 +8,7 @@ using Whisper.Storages.Pipe;
 using Whisper.Chunks;
 using ProtocolBuffers;
 
-namespace WhisperServer
+namespace Wcp
 {
 	public class PipeServer
 	{
@@ -28,6 +28,14 @@ namespace WhisperServer
 		TimeSpan processing = new TimeSpan();
 		DateTime nextReport = DateTime.Now;
 #endif
+
+		public static void Run (Storage storage)
+		{
+			Stream stdin = Console.OpenStandardInput ();
+			Stream stdout = Console.OpenStandardOutput ();
+			PipeServer s = new PipeServer (stdin, stdout, storage);
+			s.Run ();
+		}
 
 		public void Run ()
 		{

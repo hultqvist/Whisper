@@ -20,7 +20,7 @@ namespace Whisper
 					throw new ArgumentException ("Missing target path");
 				string host = name.Substring (6, pathsep - 6);
 				string path = name.Substring (pathsep + 1);
-				return new PipeStorage ("ssh", host + " WhisperServer.exe " + path);
+				return new PipeStorage ("ssh", host + " wcp.exe " + path);
 			}
 
 			if (name == "tcp:") {

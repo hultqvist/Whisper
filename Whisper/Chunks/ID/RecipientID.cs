@@ -10,7 +10,9 @@ namespace Whisper.Storages
 {
 	/// <summary>
 	/// Always generates the same CustomID for one specific recipient and cleartext data.
-	/// This will optimize traffic and storage when multiple users are sending the same data to a recipient.
+	/// Pro: Sender does not have to send data if already sent by another sender.
+	/// Con: Storage knows that senders are sending the same data.
+	/// Con: Storage working with sender can know what other data other senders are sending to receiver.
 	/// </summary>
 	public class RecipientID : IGenerateID
 	{

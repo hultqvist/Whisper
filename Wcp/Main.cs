@@ -11,48 +11,31 @@ namespace Wcp
 {
 	class MainClass
 	{
-		public static void Main (string[] args)
+		public static void Main(string[] args)
 		{
-#if DEBUG
-			if(args.Length == 0)
+			try
 			{
-				string storageString = "Storage/";
-				//string storageString = "tcp:";
-				args = new string[]{ "test", storageString, "Bob"};
-				args = new string[]{ "put", "Source/", storageString, "Bob" };
-				args = new string[]{ "list", storageString };
-				args = new string[]{ "get", storageString, "C3", "Target/"};
-			}
-#endif
-			try {
+#if DEBUG_SERVER
+				ParseCommand(new string[]{ "tcp", "Storage/" });
+#elif DEBUG
 				if (args.Length == 0)
-					throw new HelpException ("Missing command argument");
+				{
+					//string storageString = "Storage/";
+					//ParseCommand(new string[]{ "test", storageString, "Bob"});
 
-				KeyStorage keyStorage = KeyStorage.Default;
-
-				switch (args [0].ToLower ()) {
-				case "list":
-					List.Main (args, keyStorage);
-					break;
-				case "put":
-					Put.Main (args, keyStorage);
-					break;
-				case "get":
-					Get.Main (args, keyStorage);
-					break;
-				case "keys":
-					Keys.Main (args, keyStorage);
-					break;
-				case "test":
-					Test.Main (args, keyStorage);
-					break;
-				default:
-					throw new HelpException ("Unknown command: " + args [0]);
+					//ParseCommand(new string[]{ "put", "Source/", "tcp:", "Bob" });
+					ParseCommand(new string[]{ "list", "tcp:" });
+					ParseCommand(new string[]{ "get", "tcp:", "C6", "Target/"});
 				}
-				Console.WriteLine ("All done");
-			} catch (HelpException he) {
-				Console.Error.WriteLine ("Error: {0}", he.Message);
-				Console.WriteLine (@"
+#endif
+#if !DEBUG
+				ParseCommand(args);
+#endif
+			}
+			catch (HelpException he)
+			{
+				Console.Error.WriteLine("Error: {0}", he.Message);
+				Console.WriteLine(@"
 Usage: wcf.exe <command> [...]
 Where command is:
 	put <source directory> <storage path> <recipient name>
@@ -64,5 +47,41 @@ Where command is:
 			}
 		}
 		
+		public static void ParseCommand(string[] args)
+		{
+			if (args.Length == 0)
+				throw new HelpException("Missing command argument");
+
+			KeyStorage keyStorage = KeyStorage.Default;
+
+			switch (args[0].ToLower())
+			{
+			case "list":
+				List.Main(args, keyStorage);
+				break;
+			case "put":
+				Put.Main(args, keyStorage);
+				break;
+			case "get":
+				Get.Main(args, keyStorage);
+				break;
+			case "keys":
+				Keys.Main(args, keyStorage);
+				break;
+			case "pipe":
+				Storage ps = Storage.Create(args[1]);
+				PipeServer.Run(ps);
+				break;
+			case "tcp":
+				Storage ts = Storage.Create(args[1]);
+				TcpServer.Run(ts);
+				break;
+			case "test":
+				Test.Main(args, keyStorage);
+				break;
+			default:
+				throw new HelpException("Unknown command: " + args[0]);
+			}
+		}
 	}
 }

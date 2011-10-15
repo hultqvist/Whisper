@@ -10,7 +10,10 @@ using System.Text;
 namespace Whisper.Storages
 {
 	/// <summary>
-	/// Generates the same CustomID given a senderKey and the cleartext hash
+	/// Generates the same CustomID given a senderKey and the cleartext hash.
+	/// Pro: Sender only has to send one copy to storage for multiple recepient.
+	/// Con: Storage knows that the recepients are receiving the same data.
+	/// Con: Receiver working with storage can tell who else got the same data.
 	/// </summary>
 	public class SenderID : IGenerateID
 	{

@@ -5,7 +5,7 @@ using Whisper.Storages;
 using Whisper;
 using System.Threading;
 
-namespace WhisperServer
+namespace Wcp
 {
 	public static class TcpServer
 	{
