@@ -14,12 +14,10 @@ namespace Whisper.Storages
 	/// </summary>
 	public class SenderID : IGenerateID
 	{
-		PrivateKey sender;
 		byte[] keyBuffer;
 		
 		public SenderID (PrivateKey senderKey)
 		{
-			this.sender = senderKey;
 			keyBuffer = Encoding.ASCII.GetBytes (senderKey.ToXml ());
 		}
 

@@ -1,16 +1,17 @@
 using System;
 using Whisper.Storages;
 using Whisper.Chunks;
+
 namespace Whisper.Storages
 {
 	/// <summary>
 	/// Store the data in cleartext
 	/// </summary>
-	public class ClearTextStorage : StorageFilter
+	public class ClearTextStorageX : StorageFilter
 	{
 		private readonly IGenerateID clearTextID = new ClearTextID();
 
-		public ClearTextStorage(Storage storage) : base(storage)
+		public ClearTextStorageX(Storage storage) : base(storage)
 		{
 		}
 

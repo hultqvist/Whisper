@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Whisper.Chunks;
 namespace Whisper.Storages
 {
+	/// <summary>
+	/// This storage redirects all read and write requests to multiple other storages.
+	/// </summary>
 	public class MultiStorage : Storage
 	{
 		readonly IEnumerable<Storage> storages;

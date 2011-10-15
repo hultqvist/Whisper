@@ -9,7 +9,7 @@ using Whisper.Keys;
 namespace Whisper.Storages
 {
 	/// <summary>
-	/// Encrypt all data before being stored on backend
+	/// Encrypt all data before being passed to the backend storage
 	/// </summary>
 	public class EncryptedStorage : StorageFilter
 	{

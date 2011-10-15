@@ -49,7 +49,7 @@ namespace Whisper.Keys
 		{
 			try {
 				return rsa.Decrypt (data, false);
-			} catch (CryptographicException ce) {
+			} catch (CryptographicException) {
 				return null;
 			}
 		}

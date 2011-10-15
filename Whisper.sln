@@ -27,7 +27,7 @@ Global
 		{5F56E06E-0DF9-41E0-A278-B2920FE43DD6}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Whisper\Whisper.csproj
+		StartupItem = Wcp\Wcp.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = PrefixedHierarchical

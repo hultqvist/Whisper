@@ -10,8 +10,7 @@ using ProtocolBuffers;
 namespace Whisper.Storages
 {
 	/// <summary>
-	/// Manage chunk storage on disk.
-	/// Can be local, removable devices or other network based file sharing services.
+	/// Store chunks on lokal filesystem
 	/// </summary>
 	public class DiskStorage : Storage
 	{
