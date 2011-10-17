@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whisper", "Whisper\Whisper.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wcp", "Wcp\Wcp.csproj", "{5F56E06E-0DF9-41E0-A278-B2920FE43DD6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watcher", "Watcher\Watcher.csproj", "{1C3F0FE7-B45E-42B4-991B-93AE658CE206}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,6 +14,12 @@ Global
 		DebugServer|Any CPU = DebugServer|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C3F0FE7-B45E-42B4-991B-93AE658CE206}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C3F0FE7-B45E-42B4-991B-93AE658CE206}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C3F0FE7-B45E-42B4-991B-93AE658CE206}.DebugServer|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C3F0FE7-B45E-42B4-991B-93AE658CE206}.DebugServer|Any CPU.Build.0 = Debug|Any CPU
+		{1C3F0FE7-B45E-42B4-991B-93AE658CE206}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C3F0FE7-B45E-42B4-991B-93AE658CE206}.Release|Any CPU.Build.0 = Release|Any CPU
 		{20B8D0D2-F53D-4102-83EA-928450F3AEC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{20B8D0D2-F53D-4102-83EA-928450F3AEC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20B8D0D2-F53D-4102-83EA-928450F3AEC7}.DebugServer|Any CPU.ActiveCfg = Debug|Any CPU
