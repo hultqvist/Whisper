@@ -9,7 +9,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Whisper</RootNamespace>
     <AssemblyName>Whisper</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,6 +32,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="BouncyCastle.CryptoExt">
+      <HintPath>BouncyCastle.CryptoExt.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="Chunks\ID\RecipientID.cs" />
     <Compile Include="Chunks\ID\SenderID.cs" />
     <Compile Include="Storages\Storage.cs" />
+    <Compile Include="Keys\Pgp.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
