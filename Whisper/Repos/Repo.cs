@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Whisper.Storages;
+using Whisper.Repos;
 using Whisper.Chunks;
 using Whisper.Messages;
 using System.Net.Sockets;
@@ -8,11 +8,17 @@ using System.Net;
 
 namespace Whisper
 {
-	public abstract class Storage
+	/// <summary>
+	/// Base class for chunk storage
+	/// </summary>
+	public abstract class Repo
 	{
 		#region Static Helpers
 
-		public static Storage Create (string name)
+		/// <summary>
+		/// Create repo from name/address
+		/// </summary>
+		public static Repo Create (string name)
 		{
 			if (name.StartsWith ("ssh://")) {
 				int pathsep = name.IndexOf ("/", 6);
@@ -20,24 +26,24 @@ namespace Whisper
 					throw new ArgumentException ("Missing target path");
 				string host = name.Substring (6, pathsep - 6);
 				string path = name.Substring (pathsep + 1);
-				return new PipeStorage ("ssh", host + " wcp.exe " + path);
+				return new PipeRepo ("ssh", host + " wcp.exe " + path);
 			}
 
 			if (name == "tcp:") {
 				TcpClient tcp = new TcpClient();
-				tcp.Connect(IPAddress.Loopback, PipeStorage.DefaultTcpPort);
+				tcp.Connect(IPAddress.Loopback, PipeRepo.DefaultTcpPort);
 				NetworkStream s = tcp.GetStream();
-				return new PipeStorage (s, s);
+				return new PipeRepo (s, s);
 			}
 
 			if (name.StartsWith ("pipe:")) {
 				int space = name.IndexOf (' ');
 				if (space < 0)
-					return new PipeStorage (name.Substring (5), "");
+					return new PipeRepo (name.Substring (5), "");
 
-				return new PipeStorage (name.Substring (5, space - 5), name.Substring (space + 1));
+				return new PipeRepo (name.Substring (5, space - 5), name.Substring (space + 1));
 			}
-			return new DiskStorage (name);
+			return new DiskRepo (name);
 		}
 
 		#endregion

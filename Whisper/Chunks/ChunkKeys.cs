@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using Whisper.Messages;
 using System.IO;
-using Whisper.Storages;
+using Whisper.Repos;
 
 namespace Whisper.Chunks
 {

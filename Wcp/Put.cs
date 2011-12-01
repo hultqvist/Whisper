@@ -6,6 +6,9 @@ using Whisper.Keys;
 
 namespace Wcp
 {
+	/// <summary>
+	/// Store a lokal file tree into a repo
+	/// </summary>
 	public static class Put
 	{
 		public static void Main(string[] args, KeyStorage keyStorage)
@@ -22,7 +25,7 @@ namespace Wcp
 				throw new HelpException("Source directory not found: " + sourcePath);
 			
 			//Storage
-			Storage storage = Storage.Create(storagePath);
+			Repo storage = Repo.Create(storagePath);
 			
 			//Sender and Recipient keys
 			PrivateKey senderKey = keyStorage.DefaultKey;
@@ -33,7 +36,7 @@ namespace Wcp
 			Tree tree = new Tree();
 			tree.SourcePath = sourcePath;
 			tree.TargetName = Path.GetDirectoryName(sourcePath);
-			tree.Storage.Add(storage);
+			tree.Repo.Add(storage);
 			tree.EncryptKeys.Add(recipientKey);
 			tree.SigningKey = senderKey;
 			ChunkHash treeMessage = tree.Generate();

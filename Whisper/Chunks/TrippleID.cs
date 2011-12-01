@@ -15,7 +15,7 @@ namespace Whisper.Chunks
 		/// </summary>
 		public ChunkHash ChunkHash { get; set; }
 		/// <summary>
-		/// Sender choosen id, see Whisper.Storages.*ID for examples
+		/// Sender choosen id, see Whisper.Repos.*ID for examples
 		/// </summary>
 		public CustomID CustomID { get; set; }
 		/// <summary>

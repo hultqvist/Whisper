@@ -3,17 +3,17 @@ using System.IO;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using Whisper.Chunks;
-using Whisper.Storages;
+using Whisper.Repos;
 using Whisper.Keys;
 
-namespace Whisper.Storages
+namespace Whisper.Repos
 {
 	/// <summary>
-	/// Encrypt all data before being passed to the backend storage
+	/// Encrypt all data before being passed to the backend repo
 	/// </summary>
-	public class EncryptedStorage : Storage
+	public class EncryptedRepo : Repo
 	{
-		private readonly Storage storage;
+		private readonly Repo backend;
 		private readonly IGenerateID idGenerator;
 		private readonly KeyStorage keyStorage;
 		/// <summary>
@@ -24,23 +24,20 @@ namespace Whisper.Storages
 		/// <summary>
 		/// Encrypts all chunks before sending them to the underlying storage
 		/// </summary>
-		/// <param name="storage">
+		/// <param name="backendRepo">
 		/// This is where the encrypted chunks are sent
 		/// </param>
 		/// <param name="keyStorage">
 		/// If decrypting, this is where we look for private keys
 		/// </param>
-		public EncryptedStorage(Storage storage, KeyStorage keyStorage)
+		public EncryptedRepo(Repo backendRepo, KeyStorage keyStorage) : this(backendRepo, keyStorage, null)
 		{
-			this.storage = storage;
-			this.idGenerator = new NullID();
-			this.keyStorage = keyStorage;
 		}
 
 		/// <summary>
 		/// Encrypts all chunks before sending them to the underlying storage
 		/// </summary>
-		/// <param name="storage">
+		/// <param name="backendRepo">
 		/// This is where the encrypted chunks are sent
 		/// </param>
 		/// <param name="keyStorage">
@@ -49,12 +46,13 @@ namespace Whisper.Storages
 		/// <param name="idgenerator">
 		/// Used to generate CustomID for all chunks
 		/// </param>
-		public EncryptedStorage(Storage storage, KeyStorage keyStorage, IGenerateID idGenerator)
+		public EncryptedRepo(Repo backendRepo, KeyStorage keyStorage, IGenerateID idGenerator)
 		{
-			this.storage = storage;
+			this.backend = backendRepo;
 			if (idGenerator == null)
-				throw new ArgumentException("idGenerator cannot be null, use other constructor instead");
-			this.idGenerator = idGenerator;
+				this.idGenerator = new NullID();
+			else
+				this.idGenerator = idGenerator;
 			this.keyStorage = keyStorage;
 		}
 
@@ -67,17 +65,17 @@ namespace Whisper.Storages
 
 		public override List<ChunkHash> GetMessageList()
 		{
-			return storage.GetMessageList();
+			return backend.GetMessageList();
 		}
 
 		public override void StoreMessage(ChunkHash chunkHash)
 		{
-			storage.StoreMessage(chunkHash);
+			backend.StoreMessage(chunkHash);
 		}
 
 		public override ChunkHash GetCustomHash(CustomID customID)
 		{
-			return storage.GetCustomHash(customID);
+			return backend.GetCustomHash(customID);
 		}
 		#endregion
 
@@ -111,12 +109,12 @@ namespace Whisper.Storages
 				}
 			}
 			
-			storage.WriteChunk(chunk);
+			backend.WriteChunk(chunk);
 		}
 
 		public override Chunk ReadChunk(ChunkHash id)
 		{
-			Chunk chunk = storage.ReadChunk(id);
+			Chunk chunk = backend.ReadChunk(id);
 			
 			if (chunk.Keys != null)
 				Decrypt(chunk);

@@ -2,12 +2,15 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using Whisper;
-using Whisper.Storages;
+using Whisper.Repos;
 using Whisper.Messages;
 using Whisper.Keys;
 
 namespace Wcp
 {
+	/// <summary>
+	/// List all available messages in a storage
+	/// </summary>
 	public static class List
 	{
 		public static void Main (string[] args, KeyStorage keyStorage)
@@ -16,11 +19,11 @@ namespace Wcp
 				throw new HelpException ("Missing arguments");
 			
 			//Storage
-			Storage storage = Storage.Create (args [1]);
+			Repo storage = Repo.Create (args [1]);
 			
 			//Find message
 			ICollection<ChunkHash > messages = storage.GetMessageList ();
-			EncryptedStorage es = new EncryptedStorage (storage, keyStorage);
+			EncryptedRepo es = new EncryptedRepo (storage, keyStorage);
 			
 			//Iterate over all messages
 			foreach (ChunkHash mid in messages) {

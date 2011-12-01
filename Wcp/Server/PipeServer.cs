@@ -3,8 +3,8 @@ using System.IO;
 using System.Threading;
 using System.Collections.Generic;
 using Whisper;
-using Whisper.Storages;
-using Whisper.Storages.Pipe;
+using Whisper.Repos;
+using Whisper.Repos.Pipe;
 using Whisper.Chunks;
 using ProtocolBuffers;
 
@@ -14,9 +14,9 @@ namespace Wcp
 	{
 		readonly Stream input;
 		readonly Stream output;
-		readonly Storage storage;
+		readonly Repo storage;
 
-		public PipeServer (Stream sin, Stream sout, Storage storage)
+		public PipeServer (Stream sin, Stream sout, Repo storage)
 		{
 			this.input = sin;
 			this.output = sout;
@@ -29,7 +29,7 @@ namespace Wcp
 		DateTime nextReport = DateTime.Now;
 #endif
 
-		public static void Run (Storage storage)
+		public static void Run (Repo storage)
 		{
 			Stream stdin = Console.OpenStandardInput ();
 			Stream stdout = Console.OpenStandardOutput ();

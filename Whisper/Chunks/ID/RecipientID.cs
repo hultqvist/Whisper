@@ -6,7 +6,7 @@ using Whisper.Keys;
 using ProtocolBuffers;
 using System.Text;
 
-namespace Whisper.Storages
+namespace Whisper.Repos
 {
 	/// <summary>
 	/// Always generates the same CustomID for one specific recipient and cleartext data.

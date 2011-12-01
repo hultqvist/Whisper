@@ -1,7 +1,7 @@
 using System;
 using Whisper.Chunks;
 
-namespace Whisper.Storages
+namespace Whisper.Repos
 {
 	/// <summary>
 	/// CustomID generator, used by Storages to add a CustomID to chunks.

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using Whisper.Storages;
+using Whisper.Repos;
 using Whisper.Chunks;
 using System.Text;
 using ProtocolBuffers;
@@ -16,7 +16,7 @@ namespace Whisper.Chunks
 			this.Files = new List<TreeFile> ();
 		}
 
-		public static Chunk GenerateChunk (string path, Storage storage, ICollection<ChunkHash> chunkList)
+		public static Chunk GenerateChunk (string path, Repo storage, ICollection<ChunkHash> chunkList)
 		{
 			string fullPath = Path.GetFullPath (path);
 			TreeChunk tree = new TreeChunk ();
@@ -47,7 +47,7 @@ namespace Whisper.Chunks
 			return treeChunk;
 		}
 
-		public static void Extract (Storage store, TrippleID id, string targetPath)
+		public static void Extract (Repo store, TrippleID id, string targetPath)
 		{
 			Directory.CreateDirectory (targetPath);
 			

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using Whisper.Storages;
+using Whisper.Repos;
 using Whisper.Chunks;
 using ProtocolBuffers;
 
@@ -20,7 +20,7 @@ namespace Whisper.Chunks
 		/// <summary>
 		/// Read file at path, split the contents in chunks and store them together with a StreamChunk.
 		/// </summary>
-		public static Chunk GenerateChunk(string path, Storage storage, ICollection<ChunkHash> chunkList)
+		public static Chunk GenerateChunk(string path, Repo storage, ICollection<ChunkHash> chunkList)
 		{
 			StreamChunk message = new StreamChunk();
 
@@ -58,7 +58,7 @@ namespace Whisper.Chunks
 			return messageChunk;
 		}
 
-		public static void Extract(Storage store, TrippleID fileCID, string targetPath)
+		public static void Extract(Repo store, TrippleID fileCID, string targetPath)
 		{
 			Chunk chunk = store.ReadChunk(fileCID.ChunkHash);
 			if (chunk.Verify(fileCID) == false)

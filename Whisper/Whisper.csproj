@@ -63,12 +63,7 @@
     <Compile Include="Hashes\Hash.cs" />
     <Compile Include="Hashes\ChunkHash.cs" />
     <Compile Include="Hashes\CustomID.cs" />
-    <Compile Include="Storages\DiskStorage.cs" />
-    <Compile Include="Storages\EncryptedStorage.cs" />
-    <Compile Include="Storages\MultiStorage.cs" />
     <Compile Include="Messages\ListMessage.cs" />
-    <Compile Include="Storages\PipeStorage.cs" />
-    <Compile Include="Storages\Pipe\PipeMessages.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\RouteMessage.cs" />
     <Compile Include="Messages\SignedMessage.cs" />
@@ -77,8 +72,13 @@
     <Compile Include="Chunks\ID\NullID.cs" />
     <Compile Include="Chunks\ID\RecipientID.cs" />
     <Compile Include="Chunks\ID\SenderID.cs" />
-    <Compile Include="Storages\Storage.cs" />
     <Compile Include="Keys\Pgp.cs" />
+    <Compile Include="Repos\Pipe\PipeMessages.cs" />
+    <Compile Include="Repos\DiskRepo.cs" />
+    <Compile Include="Repos\EncryptedRepo.cs" />
+    <Compile Include="Repos\MultiRepo.cs" />
+    <Compile Include="Repos\PipeRepo.cs" />
+    <Compile Include="Repos\Repo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -86,9 +86,9 @@
     <Folder Include="Chunks\" />
     <Folder Include="Proto\" />
     <Folder Include="Hashes\" />
-    <Folder Include="Storages\" />
-    <Folder Include="Storages\Pipe\" />
     <Folder Include="Chunks\ID\" />
+    <Folder Include="Repos\" />
+    <Folder Include="Repos\Pipe\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

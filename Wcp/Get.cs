@@ -4,11 +4,14 @@ using System.IO;
 using Whisper;
 using Whisper.Chunks;
 using Whisper.Messages;
-using Whisper.Storages;
+using Whisper.Repos;
 using Whisper.Keys;
 
 namespace Wcp
 {
+	/// <summary>
+	/// Get a file tree message from given chunk and extracts it into a local directory.
+	/// </summary>
 	public static class Get
 	{
 		public static void Main(string[] args, KeyStorage keyStorage)
@@ -17,8 +20,8 @@ namespace Wcp
 				throw new HelpException("Missing arguments");
 			
 			//Storage
-			Storage storage = Storage.Create(args[1]);
-			storage = new EncryptedStorage(storage, keyStorage, new RecipientID(keyStorage.DefaultKey.PublicKey));
+			Repo storage = Repo.Create(args[1]);
+			storage = new EncryptedRepo(storage, keyStorage, new RecipientID(keyStorage.DefaultKey.PublicKey));
 			
 			//Find message
 			Chunk chunk = null;

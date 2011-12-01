@@ -7,7 +7,7 @@ using Whisper.Keys;
 using ProtocolBuffers;
 using System.Text;
 
-namespace Whisper.Storages
+namespace Whisper.Repos
 {
 	/// <summary>
 	/// Generates the same CustomID given a senderKey and the cleartext hash.

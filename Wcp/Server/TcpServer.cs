@@ -1,7 +1,7 @@
 using System;
 using System.Net.Sockets;
 using System.Net;
-using Whisper.Storages;
+using Whisper.Repos;
 using Whisper;
 using System.Threading;
 
@@ -9,9 +9,9 @@ namespace Wcp
 {
 	public static class TcpServer
 	{
-		public static void Run (Storage storage)
+		public static void Run (Repo storage)
 		{
-			TcpListener listener = new TcpListener (IPAddress.Loopback, PipeStorage.DefaultTcpPort);
+			TcpListener listener = new TcpListener (IPAddress.Loopback, PipeRepo.DefaultTcpPort);
 			listener.Start ();
 			Console.WriteLine ("Listening on " + listener.LocalEndpoint);
 			

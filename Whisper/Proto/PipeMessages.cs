@@ -18,7 +18,7 @@ namespace Whisper.Chunks
 	}
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class PipeHeader
 	{
@@ -27,7 +27,7 @@ namespace Whisper.Storages.Pipe
 	}
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class RequestCustomHash
 	{
@@ -35,7 +35,7 @@ namespace Whisper.Storages.Pipe
 	}
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class ReplyCustomHash
 	{
@@ -43,7 +43,7 @@ namespace Whisper.Storages.Pipe
 	}
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class RequestReadChunk
 	{
@@ -51,7 +51,7 @@ namespace Whisper.Storages.Pipe
 	}
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class ReplyReadChunk
 	{
@@ -60,7 +60,7 @@ namespace Whisper.Storages.Pipe
 	}
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class RequestWriteChunk
 	{
@@ -69,21 +69,21 @@ namespace Whisper.Storages.Pipe
 	}
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class ReplyWriteChunk
 	{
 	}
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class RequestMessageList
 	{
 	}
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class ReplyMessageList
 	{
@@ -91,7 +91,7 @@ namespace Whisper.Storages.Pipe
 	}
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class RequestStoreMessage
 	{
@@ -99,7 +99,7 @@ namespace Whisper.Storages.Pipe
 	}
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class ReplyStoreMessage
 	{

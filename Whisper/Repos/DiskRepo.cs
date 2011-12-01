@@ -1,25 +1,25 @@
 using System;
 using System.IO;
 using Whisper.Chunks;
-using Whisper.Storages;
+using Whisper.Repos;
 using System.Collections.Generic;
 using Whisper.Messages;
 using System.Text;
 using ProtocolBuffers;
 
-namespace Whisper.Storages
+namespace Whisper.Repos
 {
 	/// <summary>
 	/// Store chunks on lokal filesystem
 	/// </summary>
-	public class DiskStorage : Storage
+	public class DiskRepo : Repo
 	{
 		private readonly string root;
 		private readonly string idRoot;
 		private readonly string dataRoot;
 		private readonly string messageRoot;
 
-		public DiskStorage(string path)
+		public DiskRepo(string path)
 		{
 			root = path;
 			idRoot = Path.Combine(path, "id");

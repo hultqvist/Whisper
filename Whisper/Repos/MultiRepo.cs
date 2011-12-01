@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using Whisper.Chunks;
-namespace Whisper.Storages
+namespace Whisper.Repos
 {
 	/// <summary>
 	/// This storage redirects all read and write requests to multiple other storages.
 	/// </summary>
-	public class MultiStorage : Storage
+	public class MultiRepo : Repo
 	{
-		readonly IEnumerable<Storage> storages;
+		readonly IEnumerable<Repo> storages;
 
-		public MultiStorage(IEnumerable<Storage> storages)
+		public MultiRepo(IEnumerable<Repo> storages)
 		{
 			this.storages = storages;
 		}
@@ -24,7 +24,7 @@ namespace Whisper.Storages
 
 		public override Chunk ReadChunk(ChunkHash chunkHash)
 		{
-			foreach (Storage s in storages)
+			foreach (Repo s in storages)
 			{
 				Chunk b = s.ReadChunk(chunkHash);
 				if (b != null)
@@ -36,7 +36,7 @@ namespace Whisper.Storages
 
 		public override void WriteChunk(Chunk chunk)
 		{
-			foreach (Storage s in storages)
+			foreach (Repo s in storages)
 				s.WriteChunk(chunk);
 		}
 
@@ -44,7 +44,7 @@ namespace Whisper.Storages
 		public override List<ChunkHash> GetMessageList()
 		{
 			List<ChunkHash> list = new List<ChunkHash>();
-			foreach (Storage s in storages)
+			foreach (Repo s in storages)
 			{
 				var sl = s.GetMessageList();
 				foreach (ChunkHash bh in sl)
@@ -55,7 +55,7 @@ namespace Whisper.Storages
 
 		public override void StoreMessage(ChunkHash chunkHash)
 		{
-			foreach (Storage s in storages)
+			foreach (Repo s in storages)
 				s.StoreMessage(chunkHash);
 		}
 

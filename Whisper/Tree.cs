@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Whisper.Chunks;
 using Whisper.Messages;
-using Whisper.Storages;
+using Whisper.Repos;
 using Whisper.Keys;
 
 namespace Whisper
@@ -36,15 +36,15 @@ namespace Whisper
 			set { _encryptKeys = value; }
 		}
 
-		private ICollection<Storage> _storage = null;
+		private ICollection<Repo> _repo = null;
 
-		public ICollection<Storage> Storage {
+		public ICollection<Repo> Repo {
 			get {
-				if (_storage == null)
-					_storage = new List<Storage> ();
-				return _storage;
+				if (_repo == null)
+					_repo = new List<Repo> ();
+				return _repo;
 			}
-			set { _storage = value; }
+			set { _repo = value; }
 		}
 
 		#endregion
@@ -56,9 +56,9 @@ namespace Whisper
 		#endregion
 
 		/// <summary>
-		/// Final top storage generated in GenerateTreeChunk from EncryptKeys and Storage
+		/// Final top repo generated in GenerateTreeChunk by nesting EncryptKeys and Storage
 		/// </summary>
-		private Storage storage;
+		private Repo repo;
 
 		/// <summary>
 		/// Generate, encrypt and store the tree.
@@ -72,38 +72,38 @@ namespace Whisper
 		{
 			#region Check Parameters
 
-			if (Storage.Count == 0)
+			if (Repo.Count == 0)
 				throw new ArgumentException ("this.Storage must contain at least one storage");
 
 			#endregion
 
 			//Prepare Storage
-			Storage s;
-			if (this.Storage.Count == 1)
-				s = this.Storage.First ();
+			Repo s;
+			if (this.Repo.Count == 1)
+				s = this.Repo.First ();
 			else
-				s = new MultiStorage (this.Storage);
+				s = new MultiRepo (this.Repo);
 
 			//Prepare encryption
 			if (EncryptKeys.Count > 0) {
 				IGenerateID id = null;
 				if (EncryptKeys.Count == 1)
 					id = new RecipientID (EncryptKeys.First ());
-				s = new EncryptedStorage (s, null, id);
-				EncryptedStorage es = s as EncryptedStorage;
+				s = new EncryptedRepo (s, null, id);
+				EncryptedRepo es = s as EncryptedRepo;
 				foreach (PublicKey key in EncryptKeys)
 					es.AddKey (key);
 			}
 
 			//Storage preparation done
-			this.storage = s;
+			this.repo = s;
 
-			this.tree = TreeChunk.GenerateChunk (this.SourcePath, this.storage, this.ChunkList);
+			this.tree = TreeChunk.GenerateChunk (this.SourcePath, this.repo, this.ChunkList);
 
 			//TreeMessage
 			TreeMessage tm = new TreeMessage (this.tree, this.TargetName);
 			Chunk smb = Message.ToChunk (tm, this.SigningKey);
-			this.storage.WriteChunk (smb);
+			this.repo.WriteChunk (smb);
 			this.ChunkList.Add (smb.ChunkHash);
 			return smb.ChunkHash;
 		}

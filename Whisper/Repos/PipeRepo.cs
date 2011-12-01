@@ -3,16 +3,16 @@ using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
 using Whisper.Chunks;
-using Whisper.Storages.Pipe;
+using Whisper.Repos.Pipe;
 using ProtocolBuffers;
 
-namespace Whisper.Storages
+namespace Whisper.Repos
 {
 	/// <summary>
 	/// Store via a pipe to another program.
 	/// This can be used for direct tcp communication or via ssh
 	/// </summary>
-	public class PipeStorage : Storage, IDisposable
+	public class PipeRepo : Repo, IDisposable
 	{
 		/// <summary>
 		/// This is at the moment choosen randomly.
@@ -22,7 +22,7 @@ namespace Whisper.Storages
 		Stream output;
 		Process p;
 
-		public PipeStorage (string command, string arguments)
+		public PipeRepo (string command, string arguments)
 		{
 			ProcessStartInfo psi = new ProcessStartInfo ();
 			psi.FileName = command;
@@ -36,7 +36,7 @@ namespace Whisper.Storages
 			output = p.StandardInput.BaseStream;
 		}
 
-		public PipeStorage (Stream input, Stream output)
+		public PipeRepo (Stream input, Stream output)
 		{
 			this.input = input;
 			this.output = output;

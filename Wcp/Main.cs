@@ -69,11 +69,11 @@ Where command is:
 				Keys.Main(args, keyStorage);
 				break;
 			case "pipe":
-				Storage ps = Storage.Create(args[1]);
+				Repo ps = Repo.Create(args[1]);
 				PipeServer.Run(ps);
 				break;
 			case "tcp":
-				Storage ts = Storage.Create(args[1]);
+				Repo ts = Repo.Create(args[1]);
 				TcpServer.Run(ts);
 				break;
 			case "test":

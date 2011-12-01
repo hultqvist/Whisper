@@ -17,13 +17,13 @@ namespace Whisper.Watcher
 		/// <summary>
 		/// Where to send changes
 		/// </summary>
-		readonly Storage storage;
+		readonly Repo storage;
 		/// <summary>
 		/// To whom we address the message
 		/// </summary>
 		readonly PublicKey recipient;
 
-		public DirectoryWatcher(string directory, PublicKey recipient, Storage storage)
+		public DirectoryWatcher(string directory, PublicKey recipient, Repo storage)
 		{
 			this.path = Path.GetFullPath(directory);
 			if(Directory.Exists(this.path) == false)

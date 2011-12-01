@@ -1,6 +1,6 @@
 //Message structures for the PipeStorage protocol
 
-option namespace = "Whisper.Storages.Pipe";
+option namespace = "Whisper.Repos.Pipe";
 
 message chunk_keys
 {

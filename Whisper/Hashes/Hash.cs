@@ -5,6 +5,9 @@ using Whisper.Chunks;
 
 namespace Whisper
 {
+	/// <summary>
+	/// Holds a 32 byte Hash
+	/// </summary>
 	public class Hash
 	{
 		public readonly byte[] bytes;
@@ -13,6 +16,8 @@ namespace Whisper
 
 		protected Hash(byte[] hash)
 		{
+			if (hash == null)
+				throw new ArgumentNullException();
 			if (hash.Length != 32)
 				throw new ArgumentException("hash must be 32 bytes", "hash");
 			
@@ -42,15 +47,11 @@ namespace Whisper
 
 		public override string ToString()
 		{
-			if (bytes == null)
-				return "!!!NULL Hash!!!";
 			return BitConverter.ToString(bytes).Replace("-", "");
 		}
 
 		public string ToHex()
 		{
-			if (bytes == null)
-				throw new InvalidDataException("bytes is null");
 			return BitConverter.ToString(bytes).Replace("-", "");
 		}
 

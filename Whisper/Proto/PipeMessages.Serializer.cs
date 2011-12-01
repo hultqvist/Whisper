@@ -123,7 +123,7 @@ namespace Whisper.Chunks
 	
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class PipeHeader
 	{
@@ -140,27 +140,27 @@ namespace Whisper.Storages.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.PipeHeader, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Repos.Pipe.PipeHeader, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.PipeHeader, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Repos.Pipe.PipeHeader, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.PipeHeader instance)
+		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.PipeHeader instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.PipeHeader Deserialize(Stream stream, Whisper.Storages.Pipe.PipeHeader instance)
+		public static Whisper.Repos.Pipe.PipeHeader Deserialize(Stream stream, Whisper.Repos.Pipe.PipeHeader instance)
 		{
 			while (true)
 			{
@@ -197,7 +197,7 @@ namespace Whisper.Storages.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storages.Pipe.PipeHeader Read(byte[] buffer, Whisper.Storages.Pipe.PipeHeader instance)
+		public static Whisper.Repos.Pipe.PipeHeader Read(byte[] buffer, Whisper.Repos.Pipe.PipeHeader instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -224,7 +224,7 @@ namespace Whisper.Storages.Pipe
 	
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class RequestCustomHash
 	{
@@ -241,27 +241,27 @@ namespace Whisper.Storages.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.RequestCustomHash, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Repos.Pipe.RequestCustomHash, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.RequestCustomHash, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Repos.Pipe.RequestCustomHash, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.RequestCustomHash instance)
+		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.RequestCustomHash Deserialize(Stream stream, Whisper.Storages.Pipe.RequestCustomHash instance)
+		public static Whisper.Repos.Pipe.RequestCustomHash Deserialize(Stream stream, Whisper.Repos.Pipe.RequestCustomHash instance)
 		{
 			while (true)
 			{
@@ -295,7 +295,7 @@ namespace Whisper.Storages.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storages.Pipe.RequestCustomHash Read(byte[] buffer, Whisper.Storages.Pipe.RequestCustomHash instance)
+		public static Whisper.Repos.Pipe.RequestCustomHash Read(byte[] buffer, Whisper.Repos.Pipe.RequestCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -322,7 +322,7 @@ namespace Whisper.Storages.Pipe
 	
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class ReplyCustomHash
 	{
@@ -339,27 +339,27 @@ namespace Whisper.Storages.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.ReplyCustomHash, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Repos.Pipe.ReplyCustomHash, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.ReplyCustomHash, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Repos.Pipe.ReplyCustomHash, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.ReplyCustomHash instance)
+		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyCustomHash Deserialize(Stream stream, Whisper.Storages.Pipe.ReplyCustomHash instance)
+		public static Whisper.Repos.Pipe.ReplyCustomHash Deserialize(Stream stream, Whisper.Repos.Pipe.ReplyCustomHash instance)
 		{
 			while (true)
 			{
@@ -393,7 +393,7 @@ namespace Whisper.Storages.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyCustomHash Read(byte[] buffer, Whisper.Storages.Pipe.ReplyCustomHash instance)
+		public static Whisper.Repos.Pipe.ReplyCustomHash Read(byte[] buffer, Whisper.Repos.Pipe.ReplyCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -421,7 +421,7 @@ namespace Whisper.Storages.Pipe
 	
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class RequestReadChunk
 	{
@@ -438,27 +438,27 @@ namespace Whisper.Storages.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.RequestReadChunk, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Repos.Pipe.RequestReadChunk, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.RequestReadChunk, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Repos.Pipe.RequestReadChunk, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.RequestReadChunk instance)
+		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.RequestReadChunk Deserialize(Stream stream, Whisper.Storages.Pipe.RequestReadChunk instance)
+		public static Whisper.Repos.Pipe.RequestReadChunk Deserialize(Stream stream, Whisper.Repos.Pipe.RequestReadChunk instance)
 		{
 			while (true)
 			{
@@ -492,7 +492,7 @@ namespace Whisper.Storages.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storages.Pipe.RequestReadChunk Read(byte[] buffer, Whisper.Storages.Pipe.RequestReadChunk instance)
+		public static Whisper.Repos.Pipe.RequestReadChunk Read(byte[] buffer, Whisper.Repos.Pipe.RequestReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -519,7 +519,7 @@ namespace Whisper.Storages.Pipe
 	
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class ReplyReadChunk
 	{
@@ -536,27 +536,27 @@ namespace Whisper.Storages.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.ReplyReadChunk, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Repos.Pipe.ReplyReadChunk, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.ReplyReadChunk, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Repos.Pipe.ReplyReadChunk, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.ReplyReadChunk instance)
+		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyReadChunk Deserialize(Stream stream, Whisper.Storages.Pipe.ReplyReadChunk instance)
+		public static Whisper.Repos.Pipe.ReplyReadChunk Deserialize(Stream stream, Whisper.Repos.Pipe.ReplyReadChunk instance)
 		{
 			while (true)
 			{
@@ -596,7 +596,7 @@ namespace Whisper.Storages.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyReadChunk Read(byte[] buffer, Whisper.Storages.Pipe.ReplyReadChunk instance)
+		public static Whisper.Repos.Pipe.ReplyReadChunk Read(byte[] buffer, Whisper.Repos.Pipe.ReplyReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -633,7 +633,7 @@ namespace Whisper.Storages.Pipe
 	
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class RequestWriteChunk
 	{
@@ -650,27 +650,27 @@ namespace Whisper.Storages.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.RequestWriteChunk, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Repos.Pipe.RequestWriteChunk, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.RequestWriteChunk, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Repos.Pipe.RequestWriteChunk, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.RequestWriteChunk instance)
+		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.RequestWriteChunk Deserialize(Stream stream, Whisper.Storages.Pipe.RequestWriteChunk instance)
+		public static Whisper.Repos.Pipe.RequestWriteChunk Deserialize(Stream stream, Whisper.Repos.Pipe.RequestWriteChunk instance)
 		{
 			while (true)
 			{
@@ -710,7 +710,7 @@ namespace Whisper.Storages.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storages.Pipe.RequestWriteChunk Read(byte[] buffer, Whisper.Storages.Pipe.RequestWriteChunk instance)
+		public static Whisper.Repos.Pipe.RequestWriteChunk Read(byte[] buffer, Whisper.Repos.Pipe.RequestWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -746,7 +746,7 @@ namespace Whisper.Storages.Pipe
 	
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class ReplyWriteChunk
 	{
@@ -763,27 +763,27 @@ namespace Whisper.Storages.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.ReplyWriteChunk, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Repos.Pipe.ReplyWriteChunk, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.ReplyWriteChunk, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Repos.Pipe.ReplyWriteChunk, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.ReplyWriteChunk instance)
+		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyWriteChunk Deserialize(Stream stream, Whisper.Storages.Pipe.ReplyWriteChunk instance)
+		public static Whisper.Repos.Pipe.ReplyWriteChunk Deserialize(Stream stream, Whisper.Repos.Pipe.ReplyWriteChunk instance)
 		{
 			while (true)
 			{
@@ -814,7 +814,7 @@ namespace Whisper.Storages.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyWriteChunk Read(byte[] buffer, Whisper.Storages.Pipe.ReplyWriteChunk instance)
+		public static Whisper.Repos.Pipe.ReplyWriteChunk Read(byte[] buffer, Whisper.Repos.Pipe.ReplyWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -837,7 +837,7 @@ namespace Whisper.Storages.Pipe
 	
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class RequestMessageList
 	{
@@ -854,27 +854,27 @@ namespace Whisper.Storages.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.RequestMessageList, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Repos.Pipe.RequestMessageList, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.RequestMessageList, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Repos.Pipe.RequestMessageList, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.RequestMessageList instance)
+		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.RequestMessageList Deserialize(Stream stream, Whisper.Storages.Pipe.RequestMessageList instance)
+		public static Whisper.Repos.Pipe.RequestMessageList Deserialize(Stream stream, Whisper.Repos.Pipe.RequestMessageList instance)
 		{
 			while (true)
 			{
@@ -905,7 +905,7 @@ namespace Whisper.Storages.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storages.Pipe.RequestMessageList Read(byte[] buffer, Whisper.Storages.Pipe.RequestMessageList instance)
+		public static Whisper.Repos.Pipe.RequestMessageList Read(byte[] buffer, Whisper.Repos.Pipe.RequestMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -928,7 +928,7 @@ namespace Whisper.Storages.Pipe
 	
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class ReplyMessageList
 	{
@@ -945,27 +945,27 @@ namespace Whisper.Storages.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.ReplyMessageList, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Repos.Pipe.ReplyMessageList, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.ReplyMessageList, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Repos.Pipe.ReplyMessageList, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.ReplyMessageList instance)
+		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyMessageList Deserialize(Stream stream, Whisper.Storages.Pipe.ReplyMessageList instance)
+		public static Whisper.Repos.Pipe.ReplyMessageList Deserialize(Stream stream, Whisper.Repos.Pipe.ReplyMessageList instance)
 		{
 			if(instance.ChunkHash == null)
 				instance.ChunkHash = new List<byte[]>();
@@ -1001,7 +1001,7 @@ namespace Whisper.Storages.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyMessageList Read(byte[] buffer, Whisper.Storages.Pipe.ReplyMessageList instance)
+		public static Whisper.Repos.Pipe.ReplyMessageList Read(byte[] buffer, Whisper.Repos.Pipe.ReplyMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -1033,7 +1033,7 @@ namespace Whisper.Storages.Pipe
 	
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class RequestStoreMessage
 	{
@@ -1050,27 +1050,27 @@ namespace Whisper.Storages.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.RequestStoreMessage, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Repos.Pipe.RequestStoreMessage, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.RequestStoreMessage, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Repos.Pipe.RequestStoreMessage, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.RequestStoreMessage instance)
+		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.RequestStoreMessage Deserialize(Stream stream, Whisper.Storages.Pipe.RequestStoreMessage instance)
+		public static Whisper.Repos.Pipe.RequestStoreMessage Deserialize(Stream stream, Whisper.Repos.Pipe.RequestStoreMessage instance)
 		{
 			while (true)
 			{
@@ -1104,7 +1104,7 @@ namespace Whisper.Storages.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storages.Pipe.RequestStoreMessage Read(byte[] buffer, Whisper.Storages.Pipe.RequestStoreMessage instance)
+		public static Whisper.Repos.Pipe.RequestStoreMessage Read(byte[] buffer, Whisper.Repos.Pipe.RequestStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -1131,7 +1131,7 @@ namespace Whisper.Storages.Pipe
 	
 
 }
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	public partial class ReplyStoreMessage
 	{
@@ -1148,27 +1148,27 @@ namespace Whisper.Storages.Pipe
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Storages.Pipe.ReplyStoreMessage, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Repos.Pipe.ReplyStoreMessage, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Storages.Pipe.ReplyStoreMessage, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Repos.Pipe.ReplyStoreMessage, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Storages.Pipe.ReplyStoreMessage instance)
+		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyStoreMessage Deserialize(Stream stream, Whisper.Storages.Pipe.ReplyStoreMessage instance)
+		public static Whisper.Repos.Pipe.ReplyStoreMessage Deserialize(Stream stream, Whisper.Repos.Pipe.ReplyStoreMessage instance)
 		{
 			while (true)
 			{
@@ -1199,7 +1199,7 @@ namespace Whisper.Storages.Pipe
 			return instance;
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyStoreMessage Read(byte[] buffer, Whisper.Storages.Pipe.ReplyStoreMessage instance)
+		public static Whisper.Repos.Pipe.ReplyStoreMessage Read(byte[] buffer, Whisper.Repos.Pipe.ReplyStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -1247,211 +1247,211 @@ namespace ProtocolBuffers
 		
 
 		
-		public static Whisper.Storages.Pipe.PipeHeader Read (Stream stream, Whisper.Storages.Pipe.PipeHeader instance)
+		public static Whisper.Repos.Pipe.PipeHeader Read (Stream stream, Whisper.Repos.Pipe.PipeHeader instance)
 		{
-			return Whisper.Storages.Pipe.PipeHeader.Deserialize(stream, instance);
+			return Whisper.Repos.Pipe.PipeHeader.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.PipeHeader Read(byte[] buffer, Whisper.Storages.Pipe.PipeHeader instance)
+		public static Whisper.Repos.Pipe.PipeHeader Read(byte[] buffer, Whisper.Repos.Pipe.PipeHeader instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storages.Pipe.PipeHeader.Deserialize (ms, instance);
+				Whisper.Repos.Pipe.PipeHeader.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storages.Pipe.PipeHeader instance)
+		public static void Write(Stream stream, Whisper.Repos.Pipe.PipeHeader instance)
 		{
-			Whisper.Storages.Pipe.PipeHeader.Serialize(stream, instance);
+			Whisper.Repos.Pipe.PipeHeader.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storages.Pipe.RequestCustomHash Read (Stream stream, Whisper.Storages.Pipe.RequestCustomHash instance)
+		public static Whisper.Repos.Pipe.RequestCustomHash Read (Stream stream, Whisper.Repos.Pipe.RequestCustomHash instance)
 		{
-			return Whisper.Storages.Pipe.RequestCustomHash.Deserialize(stream, instance);
+			return Whisper.Repos.Pipe.RequestCustomHash.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.RequestCustomHash Read(byte[] buffer, Whisper.Storages.Pipe.RequestCustomHash instance)
+		public static Whisper.Repos.Pipe.RequestCustomHash Read(byte[] buffer, Whisper.Repos.Pipe.RequestCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storages.Pipe.RequestCustomHash.Deserialize (ms, instance);
+				Whisper.Repos.Pipe.RequestCustomHash.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storages.Pipe.RequestCustomHash instance)
+		public static void Write(Stream stream, Whisper.Repos.Pipe.RequestCustomHash instance)
 		{
-			Whisper.Storages.Pipe.RequestCustomHash.Serialize(stream, instance);
+			Whisper.Repos.Pipe.RequestCustomHash.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storages.Pipe.ReplyCustomHash Read (Stream stream, Whisper.Storages.Pipe.ReplyCustomHash instance)
+		public static Whisper.Repos.Pipe.ReplyCustomHash Read (Stream stream, Whisper.Repos.Pipe.ReplyCustomHash instance)
 		{
-			return Whisper.Storages.Pipe.ReplyCustomHash.Deserialize(stream, instance);
+			return Whisper.Repos.Pipe.ReplyCustomHash.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyCustomHash Read(byte[] buffer, Whisper.Storages.Pipe.ReplyCustomHash instance)
+		public static Whisper.Repos.Pipe.ReplyCustomHash Read(byte[] buffer, Whisper.Repos.Pipe.ReplyCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storages.Pipe.ReplyCustomHash.Deserialize (ms, instance);
+				Whisper.Repos.Pipe.ReplyCustomHash.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storages.Pipe.ReplyCustomHash instance)
+		public static void Write(Stream stream, Whisper.Repos.Pipe.ReplyCustomHash instance)
 		{
-			Whisper.Storages.Pipe.ReplyCustomHash.Serialize(stream, instance);
+			Whisper.Repos.Pipe.ReplyCustomHash.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storages.Pipe.RequestReadChunk Read (Stream stream, Whisper.Storages.Pipe.RequestReadChunk instance)
+		public static Whisper.Repos.Pipe.RequestReadChunk Read (Stream stream, Whisper.Repos.Pipe.RequestReadChunk instance)
 		{
-			return Whisper.Storages.Pipe.RequestReadChunk.Deserialize(stream, instance);
+			return Whisper.Repos.Pipe.RequestReadChunk.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.RequestReadChunk Read(byte[] buffer, Whisper.Storages.Pipe.RequestReadChunk instance)
+		public static Whisper.Repos.Pipe.RequestReadChunk Read(byte[] buffer, Whisper.Repos.Pipe.RequestReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storages.Pipe.RequestReadChunk.Deserialize (ms, instance);
+				Whisper.Repos.Pipe.RequestReadChunk.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storages.Pipe.RequestReadChunk instance)
+		public static void Write(Stream stream, Whisper.Repos.Pipe.RequestReadChunk instance)
 		{
-			Whisper.Storages.Pipe.RequestReadChunk.Serialize(stream, instance);
+			Whisper.Repos.Pipe.RequestReadChunk.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storages.Pipe.ReplyReadChunk Read (Stream stream, Whisper.Storages.Pipe.ReplyReadChunk instance)
+		public static Whisper.Repos.Pipe.ReplyReadChunk Read (Stream stream, Whisper.Repos.Pipe.ReplyReadChunk instance)
 		{
-			return Whisper.Storages.Pipe.ReplyReadChunk.Deserialize(stream, instance);
+			return Whisper.Repos.Pipe.ReplyReadChunk.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyReadChunk Read(byte[] buffer, Whisper.Storages.Pipe.ReplyReadChunk instance)
+		public static Whisper.Repos.Pipe.ReplyReadChunk Read(byte[] buffer, Whisper.Repos.Pipe.ReplyReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storages.Pipe.ReplyReadChunk.Deserialize (ms, instance);
+				Whisper.Repos.Pipe.ReplyReadChunk.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storages.Pipe.ReplyReadChunk instance)
+		public static void Write(Stream stream, Whisper.Repos.Pipe.ReplyReadChunk instance)
 		{
-			Whisper.Storages.Pipe.ReplyReadChunk.Serialize(stream, instance);
+			Whisper.Repos.Pipe.ReplyReadChunk.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storages.Pipe.RequestWriteChunk Read (Stream stream, Whisper.Storages.Pipe.RequestWriteChunk instance)
+		public static Whisper.Repos.Pipe.RequestWriteChunk Read (Stream stream, Whisper.Repos.Pipe.RequestWriteChunk instance)
 		{
-			return Whisper.Storages.Pipe.RequestWriteChunk.Deserialize(stream, instance);
+			return Whisper.Repos.Pipe.RequestWriteChunk.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.RequestWriteChunk Read(byte[] buffer, Whisper.Storages.Pipe.RequestWriteChunk instance)
+		public static Whisper.Repos.Pipe.RequestWriteChunk Read(byte[] buffer, Whisper.Repos.Pipe.RequestWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storages.Pipe.RequestWriteChunk.Deserialize (ms, instance);
+				Whisper.Repos.Pipe.RequestWriteChunk.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storages.Pipe.RequestWriteChunk instance)
+		public static void Write(Stream stream, Whisper.Repos.Pipe.RequestWriteChunk instance)
 		{
-			Whisper.Storages.Pipe.RequestWriteChunk.Serialize(stream, instance);
+			Whisper.Repos.Pipe.RequestWriteChunk.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storages.Pipe.ReplyWriteChunk Read (Stream stream, Whisper.Storages.Pipe.ReplyWriteChunk instance)
+		public static Whisper.Repos.Pipe.ReplyWriteChunk Read (Stream stream, Whisper.Repos.Pipe.ReplyWriteChunk instance)
 		{
-			return Whisper.Storages.Pipe.ReplyWriteChunk.Deserialize(stream, instance);
+			return Whisper.Repos.Pipe.ReplyWriteChunk.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyWriteChunk Read(byte[] buffer, Whisper.Storages.Pipe.ReplyWriteChunk instance)
+		public static Whisper.Repos.Pipe.ReplyWriteChunk Read(byte[] buffer, Whisper.Repos.Pipe.ReplyWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storages.Pipe.ReplyWriteChunk.Deserialize (ms, instance);
+				Whisper.Repos.Pipe.ReplyWriteChunk.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storages.Pipe.ReplyWriteChunk instance)
+		public static void Write(Stream stream, Whisper.Repos.Pipe.ReplyWriteChunk instance)
 		{
-			Whisper.Storages.Pipe.ReplyWriteChunk.Serialize(stream, instance);
+			Whisper.Repos.Pipe.ReplyWriteChunk.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storages.Pipe.RequestMessageList Read (Stream stream, Whisper.Storages.Pipe.RequestMessageList instance)
+		public static Whisper.Repos.Pipe.RequestMessageList Read (Stream stream, Whisper.Repos.Pipe.RequestMessageList instance)
 		{
-			return Whisper.Storages.Pipe.RequestMessageList.Deserialize(stream, instance);
+			return Whisper.Repos.Pipe.RequestMessageList.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.RequestMessageList Read(byte[] buffer, Whisper.Storages.Pipe.RequestMessageList instance)
+		public static Whisper.Repos.Pipe.RequestMessageList Read(byte[] buffer, Whisper.Repos.Pipe.RequestMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storages.Pipe.RequestMessageList.Deserialize (ms, instance);
+				Whisper.Repos.Pipe.RequestMessageList.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storages.Pipe.RequestMessageList instance)
+		public static void Write(Stream stream, Whisper.Repos.Pipe.RequestMessageList instance)
 		{
-			Whisper.Storages.Pipe.RequestMessageList.Serialize(stream, instance);
+			Whisper.Repos.Pipe.RequestMessageList.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storages.Pipe.ReplyMessageList Read (Stream stream, Whisper.Storages.Pipe.ReplyMessageList instance)
+		public static Whisper.Repos.Pipe.ReplyMessageList Read (Stream stream, Whisper.Repos.Pipe.ReplyMessageList instance)
 		{
-			return Whisper.Storages.Pipe.ReplyMessageList.Deserialize(stream, instance);
+			return Whisper.Repos.Pipe.ReplyMessageList.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyMessageList Read(byte[] buffer, Whisper.Storages.Pipe.ReplyMessageList instance)
+		public static Whisper.Repos.Pipe.ReplyMessageList Read(byte[] buffer, Whisper.Repos.Pipe.ReplyMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storages.Pipe.ReplyMessageList.Deserialize (ms, instance);
+				Whisper.Repos.Pipe.ReplyMessageList.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storages.Pipe.ReplyMessageList instance)
+		public static void Write(Stream stream, Whisper.Repos.Pipe.ReplyMessageList instance)
 		{
-			Whisper.Storages.Pipe.ReplyMessageList.Serialize(stream, instance);
+			Whisper.Repos.Pipe.ReplyMessageList.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storages.Pipe.RequestStoreMessage Read (Stream stream, Whisper.Storages.Pipe.RequestStoreMessage instance)
+		public static Whisper.Repos.Pipe.RequestStoreMessage Read (Stream stream, Whisper.Repos.Pipe.RequestStoreMessage instance)
 		{
-			return Whisper.Storages.Pipe.RequestStoreMessage.Deserialize(stream, instance);
+			return Whisper.Repos.Pipe.RequestStoreMessage.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.RequestStoreMessage Read(byte[] buffer, Whisper.Storages.Pipe.RequestStoreMessage instance)
+		public static Whisper.Repos.Pipe.RequestStoreMessage Read(byte[] buffer, Whisper.Repos.Pipe.RequestStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storages.Pipe.RequestStoreMessage.Deserialize (ms, instance);
+				Whisper.Repos.Pipe.RequestStoreMessage.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storages.Pipe.RequestStoreMessage instance)
+		public static void Write(Stream stream, Whisper.Repos.Pipe.RequestStoreMessage instance)
 		{
-			Whisper.Storages.Pipe.RequestStoreMessage.Serialize(stream, instance);
+			Whisper.Repos.Pipe.RequestStoreMessage.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Storages.Pipe.ReplyStoreMessage Read (Stream stream, Whisper.Storages.Pipe.ReplyStoreMessage instance)
+		public static Whisper.Repos.Pipe.ReplyStoreMessage Read (Stream stream, Whisper.Repos.Pipe.ReplyStoreMessage instance)
 		{
-			return Whisper.Storages.Pipe.ReplyStoreMessage.Deserialize(stream, instance);
+			return Whisper.Repos.Pipe.ReplyStoreMessage.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Storages.Pipe.ReplyStoreMessage Read(byte[] buffer, Whisper.Storages.Pipe.ReplyStoreMessage instance)
+		public static Whisper.Repos.Pipe.ReplyStoreMessage Read(byte[] buffer, Whisper.Repos.Pipe.ReplyStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Storages.Pipe.ReplyStoreMessage.Deserialize (ms, instance);
+				Whisper.Repos.Pipe.ReplyStoreMessage.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Storages.Pipe.ReplyStoreMessage instance)
+		public static void Write(Stream stream, Whisper.Repos.Pipe.ReplyStoreMessage instance)
 		{
-			Whisper.Storages.Pipe.ReplyStoreMessage.Serialize(stream, instance);
+			Whisper.Repos.Pipe.ReplyStoreMessage.Serialize(stream, instance);
 		}
 		
 

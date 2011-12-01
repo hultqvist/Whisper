@@ -2,14 +2,18 @@ using System;
 using Whisper;
 using Whisper.Keys;
 using Whisper.Chunks;
-using Whisper.Storages;
+using Whisper.Repos;
 using System.IO;
 using Whisper.Messages;
 
 namespace Wcp
 {
+
 	public class Test
 	{
+		/// <summary>
+		/// Test reading and writing to repo
+		/// </summary>
 		public static void Main (string[] args, KeyStorage keyStorage)
 		{
 			//Test buffer to transmit
@@ -27,13 +31,13 @@ namespace Wcp
 			string storagePath = args [1];
 			
 			//Storage
-			Storage storage = Storage.Create (storagePath);
+			Repo storage = Repo.Create (storagePath);
 			
 			//Sender and Recipient keys
 			PublicKey recipientKey = null;
 			if (recipientName != null) {
 				recipientKey = keyStorage.GetPublic (recipientName);
-				EncryptedStorage es = new EncryptedStorage (storage, keyStorage);
+				EncryptedRepo es = new EncryptedRepo (storage, keyStorage);
 				es.AddKey (recipientKey);
 				storage = es;
 			}

@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
-namespace Whisper.Storages.Pipe
+namespace Whisper.Repos.Pipe
 {
 	/// <summary>
 	/// This header is sent before every message to determine the type of the message

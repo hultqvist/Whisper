@@ -1,7 +1,7 @@
 using System;
 using Whisper.Chunks;
 
-namespace Whisper.Storages
+namespace Whisper.Repos
 {
 	/// <summary>
 	/// No custom ID.
