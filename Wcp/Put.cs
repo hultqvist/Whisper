@@ -2,7 +2,11 @@ using System;
 using System.IO;
 using Whisper;
 using Whisper.Messages;
-using Whisper.Keys;
+using Whisper.Encryption;
+using Whisper.Repos;
+using Whisper.Chunks;
+using Whisper.Chunks.ID;
+using Whisper.ChunkGenerator;
 
 namespace Wcp
 {
@@ -17,46 +21,48 @@ namespace Wcp
 			if (args.Length != 4)
 				throw new HelpException("Missing arguments");
 			string sourcePath = args[1];
-			string storagePath = args[2];
+			string repoPath = args[2];
 			string receipientName = args[3];
 			
 			//Source
 			if (Directory.Exists(sourcePath) == false)
 				throw new HelpException("Source directory not found: " + sourcePath);
-			
-			//Storage
-			Repo storage = Repo.Create(storagePath);
-			
+
+			//Repo
+			Repo repo = Repo.Create(repoPath);
+
 			//Sender and Recipient keys
 			PrivateKey senderKey = keyStorage.DefaultKey;
 			PublicKey recipientKey = keyStorage.GetPublic(receipientName);
-			
-			//Send Tree
+
+			//Prepare Route message recording of ChunkID
+			RouteRepo rr = new RouteRepo(repo);
+
+			//Prepare Encryption
+			EncryptedRepo er = new EncryptedRepo(rr, null, new RecipientID(recipientKey));
+			er.AddKey(recipientKey);
+
 			Console.Write("Generating Tree...");
-			Tree tree = new Tree();
-			tree.SourcePath = sourcePath;
-			tree.TargetName = Path.GetDirectoryName(sourcePath);
-			tree.Repo.Add(storage);
-			tree.EncryptKeys.Add(recipientKey);
-			tree.SigningKey = senderKey;
-			ChunkHash treeMessage = tree.Generate();
-			Console.WriteLine("done");
-			
-			//Store Message ID
-			storage.StoreMessage(treeMessage);
-			
+
+			//Send Tree
+			TrippleID tree = TreeChunk.GenerateChunk(sourcePath, er);
+
+			//TreeMessage
+			TreeMessage tm = new TreeMessage(tree, Path.GetDirectoryName(sourcePath));
+			Chunk tmc = Message.ToChunk(tm, senderKey);
+			ChunkHash tmch = er.WriteChunk(tmc);
+			er.StoreMessage(tmch);
+
 			//RouteMessage
-			RouteMessage rm = new RouteMessage();
-			rm.MessageChunkHash = treeMessage.bytes;
-			foreach (ChunkHash ch in tree.ChunkList)
-				rm.Chunks.Add(ch.bytes);
+			RouteMessage rm = rr.RouteMessage;
+			rm.MessageChunkHash = tmch.bytes;
 			rm.To = receipientName;
+
 			//Store unencrypted RouteMessage
-			Whisper.Chunks.Chunk rmChunk = Message.ToChunk(rm);
-			storage.WriteChunk(rmChunk);
-			storage.StoreMessage(rmChunk.ChunkHash);
+			Chunk rmChunk = Message.ToChunk(rm);
+			repo.WriteChunk(rmChunk);
+			repo.StoreMessage(rmChunk.ChunkHash);
 			Console.WriteLine("RouteMessage Stored");
-			
 		}
 	}
 }

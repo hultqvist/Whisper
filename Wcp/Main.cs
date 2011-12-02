@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Whisper;
 using Whisper.Messages;
-using Whisper.Keys;
+using Whisper.Encryption;
 
 namespace Wcp
 {
@@ -16,12 +16,12 @@ namespace Wcp
 			try
 			{
 #if DEBUG_SERVER
-				ParseCommand(new string[]{ "tcp", "Storage/" });
+				ParseCommand(new string[]{ "tcp", "Repo/" });
 #elif DEBUG
 				if (args.Length == 0)
 				{
-					//string storageString = "Storage/";
-					//ParseCommand(new string[]{ "test", storageString, "Bob"});
+					//string repoString = "Repo/";
+					//ParseCommand(new string[]{ "test", repoString, "Bob"});
 
 					//ParseCommand(new string[]{ "put", "Source/", "tcp:", "Bob" });
 					ParseCommand(new string[]{ "list", "tcp:" });
@@ -38,9 +38,9 @@ namespace Wcp
 				Console.WriteLine(@"
 Usage: wcf.exe <command> [...]
 Where command is:
-	put <source directory> <storage path> <recipient name>
-	list <storage path>
-	get <storage path> <message id> <target directory>
+	put <source directory> <repo path> <recipient name>
+	list <repo path>
+	get <repo path> <message id> <target directory>
 	keys
 	keys generate <name>
 ");
@@ -68,13 +68,17 @@ Where command is:
 			case "keys":
 				Keys.Main(args, keyStorage);
 				break;
+			//Serve a single repo via the pipe
+			//Usually via a remote ssh connection
 			case "pipe":
-				Repo ps = Repo.Create(args[1]);
-				PipeServer.Run(ps);
+				Repo pr = Repo.Create(args[1]);
+				PipeServer.Run(pr);
 				break;
+			//Listen to localhost and serve a single repo
+			//Used for debugging
 			case "tcp":
-				Repo ts = Repo.Create(args[1]);
-				TcpServer.Run(ts);
+				Repo tr = Repo.Create(args[1]);
+				TcpServer.Run(tr);
 				break;
 			case "test":
 				Test.Main(args, keyStorage);

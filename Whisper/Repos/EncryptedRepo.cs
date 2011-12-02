@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using Whisper.Chunks;
 using Whisper.Repos;
-using Whisper.Keys;
+using Whisper.Encryption;
+using Whisper.Chunks.ID;
 
 namespace Whisper.Repos
 {
 	/// <summary>
 	/// Encrypt all data before being passed to the backend repo
 	/// </summary>
-	public class EncryptedRepo : Repo
+	public class EncryptedRepo : RepoFilter
 	{
-		private readonly Repo backend;
 		private readonly IGenerateID idGenerator;
 		private readonly KeyStorage keyStorage;
 		/// <summary>
@@ -22,7 +22,7 @@ namespace Whisper.Repos
 		public List<PublicKey> recipientKeys = new List<PublicKey>();
 
 		/// <summary>
-		/// Encrypts all chunks before sending them to the underlying storage
+		/// Encrypts all chunks before sending them to the backend repo
 		/// </summary>
 		/// <param name="backendRepo">
 		/// This is where the encrypted chunks are sent
@@ -35,7 +35,7 @@ namespace Whisper.Repos
 		}
 
 		/// <summary>
-		/// Encrypts all chunks before sending them to the underlying storage
+		/// Encrypts all chunks before sending them to the backend repo
 		/// </summary>
 		/// <param name="backendRepo">
 		/// This is where the encrypted chunks are sent
@@ -46,9 +46,8 @@ namespace Whisper.Repos
 		/// <param name="idgenerator">
 		/// Used to generate CustomID for all chunks
 		/// </param>
-		public EncryptedRepo(Repo backendRepo, KeyStorage keyStorage, IGenerateID idGenerator)
+		public EncryptedRepo(Repo backendRepo, KeyStorage keyStorage, IGenerateID idGenerator) : base(backendRepo)
 		{
-			this.backend = backendRepo;
 			if (idGenerator == null)
 				this.idGenerator = new NullID();
 			else
@@ -61,24 +60,6 @@ namespace Whisper.Repos
 			return "Encrypted(" + base.ToString() + ")";
 		}
 
-		#region Unmodified requests
-
-		public override List<ChunkHash> GetMessageList()
-		{
-			return backend.GetMessageList();
-		}
-
-		public override void StoreMessage(ChunkHash chunkHash)
-		{
-			backend.StoreMessage(chunkHash);
-		}
-
-		public override ChunkHash GetCustomHash(CustomID customID)
-		{
-			return backend.GetCustomHash(customID);
-		}
-		#endregion
-
 		/// <summary>
 		/// Add recipient keys
 		/// </summary>
@@ -87,72 +68,73 @@ namespace Whisper.Repos
 			this.recipientKeys.Add(key);
 		}
 
-		public override void WriteChunk(Chunk chunk)
+		public override ChunkHash WriteChunk(Chunk chunk)
 		{
 			if (recipientKeys.Count == 0)
-				throw new InvalidOperationException("EncryptedStorage must have at least one key");
+				throw new InvalidOperationException("EncryptedRepo must have at least one key");
 			
 			//Encrypt
-			Encrypt(chunk);
-			
+			Chunk encryptedChunk = Encrypt(chunk);
+
 			//Generate CustomID
 			chunk.CustomID = idGenerator.GetID(chunk);
-			
+
 			//Reuse already existsing CustomID
 			if (chunk.CustomID != null)
 			{
 				ChunkHash hash = GetCustomHash(chunk.CustomID);
 				if (hash != null)
-				{
-					chunk.ChunkHash = hash;
-					return;
-				}
+					return hash;
 			}
-			
-			backend.WriteChunk(chunk);
+
+			return base.WriteChunk(encryptedChunk);
 		}
 
 		public override Chunk ReadChunk(ChunkHash id)
 		{
-			Chunk chunk = backend.ReadChunk(id);
-			
-			if (chunk.Keys != null)
-				Decrypt(chunk);
-			
-			return chunk;
+			Chunk chunk = base.ReadChunk(id);
+
+			try
+			{
+				return Decrypt(chunk);
+			}
+			catch (Exception)
+			{
+				return null;
+			}
 		}
 
-		void Encrypt(Chunk chunk)
+		/// <summary>
+		/// Encrypt chunk data into a new chunk
+		/// </summary>
+		Chunk Encrypt(Chunk chunk)
 		{
-			if (chunk.Keys != null)
-				throw new InvalidOperationException("Can only encrypt once");
-			
+			KeysHeader kh = new KeysHeader();
 			//Generate key
-			chunk.Keys = new ChunkKeys();
-			chunk.Keys.RM.GenerateIV();
-			chunk.Keys.RM.GenerateKey();
+			kh.RM.GenerateIV();
+			kh.RM.GenerateKey();
 
 			//Add recipient keys
 			foreach (PublicKey pubkey in recipientKeys)
 			{
-				byte[] bk = pubkey.Encrypt(chunk.Keys.RM.Key);
-				chunk.Keys.EncryptedKeys.Add(bk);
+				byte[] bk = pubkey.Encrypt(kh.RM.Key);
+				kh.EncryptedKeys.Add(bk);
 			}
-			
+
 			//Encrypt data
 			using (MemoryStream ms = new MemoryStream())
 			{
-				using (CryptoStream cs = new CryptoStream(ms, chunk.Keys.RM.CreateEncryptor(), CryptoStreamMode.Write))
+				//Headers
+				ProtocolBuffers.ProtocolParser.WriteBytes(ms, KeysHeader.SerializeToBytes(kh));
+				//Encrypted data
+				using (CryptoStream cs = new CryptoStream(ms, kh.RM.CreateEncryptor(), CryptoStreamMode.Write))
 				{
 					cs.Write(chunk.Data, 0, chunk.Data.Length);
 				}
-				chunk.Data = ms.ToArray();
+				return new Chunk(ms.ToArray());
 			}
-			
-			//Generate Hash
-			chunk.ChunkHash = ChunkHash.ComputeHash(chunk.Data);
 		}
-		
+
 		/// <summary>
 		/// Tries to decrypt all encrypted keys using all available private keys
 		/// </summary>
@@ -172,32 +154,38 @@ namespace Whisper.Repos
 			return null;
 		}
 
-		bool Decrypt(Chunk chunk)
+		/// <summary>
+		/// Return new chunk with decrypted data
+		/// </summary>
+		Chunk Decrypt(Chunk chunk)
 		{
-			if (chunk.Keys == null)
-				throw new InvalidDataException("Missing keys");
-			
+			//Read header
+			int headerSize;
+			KeysHeader head;
+			using (MemoryStream chunkStream = new MemoryStream(chunk.Data))
+			{
+				head = KeysHeader.Deserialize(ProtocolBuffers.ProtocolParser.ReadBytes(chunkStream));
+				headerSize = (int) chunkStream.Position;
+			}
+
 			//Decrypt Key
-			byte[] key = Decrypt(chunk.Keys.EncryptedKeys);
+			byte[] key = Decrypt(head.EncryptedKeys);
 			if (key == null)
-				return false;
-			
-			chunk.Keys.RM.Key = key;
-			
+				return null;
+
+			head.RM.Key = key;
+
 			//Decrypt Data
-			chunk.Keys.RM.Mode = CipherMode.CBC;
+			head.RM.Mode = CipherMode.CBC;
 			using (MemoryStream ms = new MemoryStream())
 			{
-				using (CryptoStream cs = new CryptoStream(ms, chunk.Keys.RM.CreateDecryptor(), CryptoStreamMode.Write))
+				using (CryptoStream cs = new CryptoStream(ms, head.RM.CreateDecryptor(), CryptoStreamMode.Write))
 				{
-					cs.Write(chunk.Data, 0, chunk.Data.Length);
+					cs.Write(chunk.Data, headerSize, chunk.Data.Length - headerSize);
 				}
-				chunk.Data = ms.ToArray();
+				return new Chunk(ms.ToArray());
 			}
-			chunk.ClearHash = ClearHash.FromHashBytes(Hash.ComputeHash(chunk.Data).bytes);
-			return true;
 		}
-
 	}
 }
 

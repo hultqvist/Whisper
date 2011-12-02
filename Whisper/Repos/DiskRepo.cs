@@ -62,21 +62,12 @@ namespace Whisper.Repos
 			return path;
 		}
 
-		public override void WriteChunk(Chunk chunk)
+		public override ChunkHash WriteChunk(Chunk chunk)
 		{
 			//Data
 			string dataPath = GetPath(chunk.ChunkHash);
 			Directory.CreateDirectory(Path.GetDirectoryName(dataPath));
 			File.WriteAllBytes(dataPath, chunk.Data);
-
-			//Keys
-			if (chunk.Keys != null)
-			{
-				using (FileStream stream = new FileStream(dataPath + ".keys", FileMode.Create))
-				{
-					ChunkKeys.Serialize(stream, chunk.Keys);
-				}
-			}
 
 			//ID
 			if (chunk.CustomID != null)
@@ -84,31 +75,22 @@ namespace Whisper.Repos
 				string idPath = Path.Combine(idRoot, chunk.CustomID.ToString() + ".id");
 				File.WriteAllBytes(idPath, chunk.ChunkHash.bytes);
 			}
+
+			return chunk.ChunkHash;
 		}
 
 		public override Chunk ReadChunk(ChunkHash chunkHash)
 		{
-			Chunk chunk = new Chunk();
-			
 			//Read Data
 			string dataPath = GetPath(chunkHash);
-			chunk.Data = File.ReadAllBytes(dataPath);
+			Chunk chunk = new Chunk(File.ReadAllBytes(dataPath));
+
 			//Verify Hash
-			chunk.ChunkHash = ChunkHash.FromHashBytes(Hash.ComputeHash(chunk.Data).bytes);
 			if (chunk.ChunkHash.Equals(chunkHash) == false)
 				throw new InvalidDataException("Hash mismatch: " + chunkHash);
-			
+
 			//Read keys
-			string keyPath = dataPath + ".keys";
-			if (File.Exists(keyPath))
-			{
-				using (FileStream stream = new FileStream(dataPath + ".keys", FileMode.Open))
-				{
-					chunk.Keys = ChunkKeys.Deserialize<ChunkKeys>(stream);
-				}
-			}
-			else
-				chunk.ClearHash = ClearHash.FromHashBytes(chunkHash.bytes);
+			chunk.ClearHash = ClearHash.FromHashBytes(chunkHash.bytes);
 
 			return chunk;
 		}

@@ -14,13 +14,13 @@ namespace Wcp
 	{
 		readonly Stream input;
 		readonly Stream output;
-		readonly Repo storage;
+		readonly Repo localRepo;
 
-		public PipeServer (Stream sin, Stream sout, Repo storage)
+		public PipeServer (Stream sin, Stream sout, Repo localRepo)
 		{
 			this.input = sin;
 			this.output = sout;
-			this.storage = storage;
+			this.localRepo = localRepo;
 		}
 
 #if DEBUG_SERVER_PROFILING
@@ -29,11 +29,11 @@ namespace Wcp
 		DateTime nextReport = DateTime.Now;
 #endif
 
-		public static void Run (Repo storage)
+		public static void Run (Repo localRepo)
 		{
 			Stream stdin = Console.OpenStandardInput ();
 			Stream stdout = Console.OpenStandardOutput ();
-			PipeServer s = new PipeServer (stdin, stdout, storage);
+			PipeServer s = new PipeServer (stdin, stdout, localRepo);
 			s.Run ();
 		}
 
@@ -112,7 +112,7 @@ namespace Wcp
 			RequestCustomHash request = RequestCustomHash.Deserialize (ProtocolParser.ReadBytes (input));
 
 			ReplyCustomHash reply = new ReplyCustomHash ();
-			ChunkHash ch = storage.GetCustomHash (CustomID.FromBytes (request.CustomID));
+			ChunkHash ch = localRepo.GetCustomHash (CustomID.FromBytes (request.CustomID));
 			if (ch == null)
 				reply.ChunkHash = null;
 			else
@@ -127,10 +127,9 @@ namespace Wcp
 		{
 			RequestReadChunk request = RequestReadChunk.Deserialize (ProtocolParser.ReadBytes (input));
 			ReplyReadChunk reply = new ReplyReadChunk ();
-			Chunk c = storage.ReadChunk (ChunkHash.FromHashBytes (request.ChunkHash));
+			Chunk c = localRepo.ReadChunk (ChunkHash.FromHashBytes (request.ChunkHash));
 			reply.ChunkData = c.Data;
-			reply.Keys = c.Keys;
-			
+
 			ProtocolParser.WriteBytes (output, ReplyReadChunk.SerializeToBytes (reply));
 		}
 
@@ -139,8 +138,7 @@ namespace Wcp
 			RequestWriteChunk request = RequestWriteChunk.Deserialize (ProtocolParser.ReadBytes (input));
 			ReplyWriteChunk reply = new ReplyWriteChunk ();
 			Chunk chunk = new Chunk (request.ChunkData);
-			chunk.Keys = request.Keys;
-			storage.WriteChunk (chunk);
+			localRepo.WriteChunk (chunk);
 
 			ProtocolParser.WriteBytes (output, ReplyWriteChunk.SerializeToBytes (reply));
 		}
@@ -149,7 +147,7 @@ namespace Wcp
 		{
 			RequestMessageList.Deserialize (ProtocolParser.ReadBytes (input));
 			ReplyMessageList reply = new ReplyMessageList ();
-			List<ChunkHash > list = storage.GetMessageList ();
+			List<ChunkHash > list = localRepo.GetMessageList ();
 			foreach (ChunkHash ch in list)
 				reply.ChunkHash.Add (ch.bytes);
 			ProtocolParser.WriteBytes (output, ReplyMessageList.SerializeToBytes (reply));
@@ -159,7 +157,7 @@ namespace Wcp
 		{
 			RequestStoreMessage request = RequestStoreMessage.Deserialize (ProtocolParser.ReadBytes (input));
 			ReplyStoreMessage reply = new ReplyStoreMessage ();
-			storage.StoreMessage (ChunkHash.FromHashBytes (request.ChunkHash));
+			localRepo.StoreMessage (ChunkHash.FromHashBytes (request.ChunkHash));
 			ProtocolParser.WriteBytes (output, ReplyStoreMessage.SerializeToBytes (reply));
 		}
 	}

@@ -4,7 +4,7 @@ namespace Whisper.Watcher.Config
 {
 	public class FolderConfig
 	{
-		public string StoragePath { get; set; }
+		public string RepoPath { get; set; }
 		/// <summary>
 		/// If null don't send any changes
 		/// </summary>

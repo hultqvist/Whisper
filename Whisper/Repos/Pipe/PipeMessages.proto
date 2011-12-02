@@ -1,14 +1,6 @@
-//Message structures for the PipeStorage protocol
+//Message structures for the PipeRepo protocol
 
-option namespace = "Whisper.Repos.Pipe";
-
-message chunk_keys
-{
-	option namespace = "Whisper.Chunks";
-
-	required bytes IV = 1 [generate=false];
-	repeated bytes encrypted_keys = 2;
-}
+package "Whisper.Repos.Pipe";
 
 message pipe_header
 {
@@ -36,15 +28,11 @@ message reply_read_chunk
 {
 	//Only set if found
 	optional bytes chunk_data = 1;
-	//If found and encrypted
-	optional chunk_keys keys = 2;
 }
 
 message request_write_chunk
 {
 	required bytes chunk_data = 1;
-	//If found and encrypted
-	optional chunk_keys keys = 2;
 }
 
 message reply_write_chunk

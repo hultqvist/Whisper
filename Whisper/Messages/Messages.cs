@@ -9,7 +9,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Whisper.Chunks
+namespace Whisper.Messages
 {
 	public partial class TrippleID
 	{
@@ -22,35 +22,38 @@ namespace Whisper.Chunks
 	}
 
 }
-namespace Whisper.Chunks
+namespace Whisper.ChunkGenerator
 {
 	public partial class StreamChunk
 	{
 		public ulong Size { get; set; }
-		public List<Whisper.Chunks.TrippleID> Chunks { get; set; }
+		public List<Whisper.Messages.TrippleID> Chunks { get; set; }
 	}
 
 }
-namespace Whisper.Chunks
+namespace Whisper.ChunkGenerator
 {
 	public partial class TreeFile
 	{
 		public string Name { get; set; }
-		public Whisper.Chunks.TrippleID TreeChunkID { get; set; }
+		public Whisper.Messages.TrippleID TreeChunkID { get; set; }
 	}
 
 }
-namespace Whisper.Chunks
+namespace Whisper.ChunkGenerator
 {
 	public partial class TreeChunk
 	{
-		public List<Whisper.Chunks.TreeFile> Directories { get; set; }
-		public List<Whisper.Chunks.TreeFile> Files { get; set; }
+		public List<Whisper.ChunkGenerator.TreeFile> Directories { get; set; }
+		public List<Whisper.ChunkGenerator.TreeFile> Files { get; set; }
 	}
 
 }
 namespace Whisper.Messages
 {
+	/// <summary>
+	/// Chunk Messages
+	/// </summary>
 	public partial class MessageHeader
 	{
 		public uint MessageId { get; set; }
@@ -60,28 +63,46 @@ namespace Whisper.Messages
 }
 namespace Whisper.Messages
 {
+	/// <summary>
+	/// MessageID = 1
+	/// </summary>
 	public partial class TreeMessage
 	{
 		public string Name { get; set; }
-		public Whisper.Chunks.TrippleID TreeChunkID { get; set; }
+		public Whisper.Messages.TrippleID TreeChunkID { get; set; }
 	}
 
 }
 namespace Whisper.Messages
 {
+	/// <summary>
+	/// MessageID = 2
+	/// </summary>
 	public partial class RouteMessage
 	{
+		/// <summary>
+		///  What to send
+		/// </summary>
 		public byte[] MessageChunkHash { get; set; }
+		/// <summary>
+		///  Where to send it
+		/// </summary>
 		public string To { get; set; }
+		/// <summary>
+		///  All the chunks going with that message
+		/// </summary>
 		public List<byte[]> Chunks { get; set; }
 	}
 
 }
 namespace Whisper.Messages
 {
+	/// <summary>
+	/// MessageID = 3
+	/// </summary>
 	public partial class ListMessage
 	{
-		public List<Whisper.Chunks.TrippleID> List { get; set; }
+		public List<Whisper.Messages.TrippleID> List { get; set; }
 	}
 
 }

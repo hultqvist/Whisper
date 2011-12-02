@@ -3,8 +3,8 @@ using System;
 namespace Whisper.Watcher
 {
 	/// <summary>
-	/// Watching for incoming messages in storage.
-	/// Monitoring folders and send changes to predefined storage.
+	/// Watching for incoming messages in repo.
+	/// Monitoring folders and send changes to predefined repo.
 	/// </summary>
 	class MainClass
 	{

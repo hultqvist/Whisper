@@ -2,17 +2,17 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using Whisper.Chunks;
-using Whisper.Keys;
+using Whisper.Encryption;
 using ProtocolBuffers;
 using System.Text;
 
-namespace Whisper.Repos
+namespace Whisper.Chunks.ID
 {
 	/// <summary>
 	/// Always generates the same CustomID for one specific recipient and cleartext data.
 	/// Pro: Sender does not have to send data if already sent by another sender.
-	/// Con: Storage knows that senders are sending the same data.
-	/// Con: Storage working with sender can know what other data other senders are sending to receiver.
+	/// Con: Repo knows that senders are sending the same data.
+	/// Con: Repo working with sender can know what other data other senders are sending to receiver.
 	/// </summary>
 	public class RecipientID : IGenerateID
 	{

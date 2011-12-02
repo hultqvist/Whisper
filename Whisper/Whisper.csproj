@@ -40,25 +40,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="HexParser.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Tree.cs" />
-    <Compile Include="Keys\DiskKeyStorage.cs" />
     <Compile Include="Chunks\Chunk.cs" />
-    <Compile Include="Chunks\StreamChunk.cs" />
-    <Compile Include="Chunks\TreeChunk.cs" />
-    <Compile Include="Keys\KeyStorage.cs" />
-    <Compile Include="Keys\PrivateKey.cs" />
-    <Compile Include="Keys\PublicKey.cs" />
-    <Compile Include="Keys\MemoryKeyStorage.cs" />
-    <Compile Include="Proto\Keys.cs" />
-    <Compile Include="Proto\PipeMessages.cs" />
-    <Compile Include="Proto\ProtocolParser.cs" />
-    <Compile Include="Chunks\ChunkKeys.cs" />
-    <Compile Include="Proto\Keys.Serializer.cs" />
-    <Compile Include="Proto\PipeMessages.Serializer.cs" />
-    <Compile Include="Proto\Messages.cs" />
-    <Compile Include="Proto\Messages.Serializer.cs" />
-    <Compile Include="Chunks\TrippleID.cs" />
-    <Compile Include="Keys\IKey.cs" />
     <Compile Include="Hashes\ClearHash.cs" />
     <Compile Include="Hashes\Hash.cs" />
     <Compile Include="Hashes\ChunkHash.cs" />
@@ -72,23 +54,48 @@
     <Compile Include="Chunks\ID\NullID.cs" />
     <Compile Include="Chunks\ID\RecipientID.cs" />
     <Compile Include="Chunks\ID\SenderID.cs" />
-    <Compile Include="Keys\Pgp.cs" />
-    <Compile Include="Repos\Pipe\PipeMessages.cs" />
     <Compile Include="Repos\DiskRepo.cs" />
-    <Compile Include="Repos\EncryptedRepo.cs" />
     <Compile Include="Repos\MultiRepo.cs" />
     <Compile Include="Repos\PipeRepo.cs" />
     <Compile Include="Repos\Repo.cs" />
+    <Compile Include="ChunkGenerator\StreamChunk.cs" />
+    <Compile Include="ChunkGenerator\TreeChunk.cs" />
+    <Compile Include="Encryption\DiskKeyStorage.cs" />
+    <Compile Include="Encryption\KeyStorage.cs" />
+    <Compile Include="Encryption\PrivateKey.cs" />
+    <Compile Include="Encryption\PublicKey.cs" />
+    <Compile Include="Encryption\MemoryKeyStorage.cs" />
+    <Compile Include="Encryption\IKey.cs" />
+    <Compile Include="Repos\Pipe\PipeHeader.cs" />
+    <Compile Include="Repos\Pipe\IPipeMessage.cs" />
+    <Compile Include="Repos\Pipe\ReadChunk.cs" />
+    <Compile Include="Repos\Pipe\CustomHash.cs" />
+    <Compile Include="Repos\Pipe\WriteChunk.cs" />
+    <Compile Include="Repos\Pipe\MessageList.cs" />
+    <Compile Include="Repos\Pipe\StoreMessage.cs" />
+    <Compile Include="ProtocolParser.cs" />
+    <Compile Include="Repos\Pipe\PipeMessages.cs" />
+    <Compile Include="Repos\Pipe\PipeMessages.Serializer.cs" />
+    <Compile Include="Messages\Messages.cs" />
+    <Compile Include="Messages\Messages.Serializer.cs" />
+    <Compile Include="Repos\EncryptedRepo.cs" />
+    <Compile Include="Repos\RepoFilter.cs" />
+    <Compile Include="Messages\TrippleID.cs" />
+    <Compile Include="Encryption\EncryptionHeader.cs" />
+    <Compile Include="Encryption\EncryptionHeader.Serializer.cs" />
+    <Compile Include="Encryption\KeysHeader.cs" />
+    <Compile Include="Repos\RouteRepo.cs" />
+    <Compile Include="Repos\OpenPgpRepo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Keys\" />
     <Folder Include="Chunks\" />
-    <Folder Include="Proto\" />
     <Folder Include="Hashes\" />
     <Folder Include="Chunks\ID\" />
     <Folder Include="Repos\" />
     <Folder Include="Repos\Pipe\" />
+    <Folder Include="ChunkGenerator\" />
+    <Folder Include="Encryption\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -100,8 +107,8 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
-    <None Include="Proto\Keys.proto" />
-    <None Include="Proto\PipeMessages.proto" />
-    <None Include="Proto\Messages.proto" />
+    <None Include="Repos\Pipe\PipeMessages.proto" />
+    <None Include="Messages\Messages.proto" />
+    <None Include="Encryption\EncryptionHeader.proto" />
   </ItemGroup>
 </Project>

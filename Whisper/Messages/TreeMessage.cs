@@ -1,13 +1,14 @@
 using System;
 using System.IO;
 using Whisper.Chunks;
+
 namespace Whisper.Messages
 {
 	public partial class TreeMessage : Message
 	{
-		public TreeMessage(Chunk tree, string name)
+		public TreeMessage(TrippleID tree, string name)
 		{
-			this.TreeChunkID = new TrippleID(tree);
+			this.TreeChunkID = tree;
 			this.Name = name;
 		}
 
@@ -15,7 +16,8 @@ namespace Whisper.Messages
 		/// For serialization only
 		/// </summary>
 		private TreeMessage()
-		{}
+		{
+		}
 	}
 }
 

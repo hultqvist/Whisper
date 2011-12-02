@@ -1,0 +1,9 @@
+
+package "Whisper.Encryption";
+
+message keys_header
+{
+	required bytes IV = 1 [generate=false];
+	//If none, use key from parent chunk.
+	repeated bytes encrypted_keys = 2 [generate=false];
+}

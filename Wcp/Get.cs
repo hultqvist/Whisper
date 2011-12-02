@@ -5,7 +5,9 @@ using Whisper;
 using Whisper.Chunks;
 using Whisper.Messages;
 using Whisper.Repos;
-using Whisper.Keys;
+using Whisper.Encryption;
+using Whisper.Chunks.ID;
+using Whisper.ChunkGenerator;
 
 namespace Wcp
 {
@@ -20,22 +22,22 @@ namespace Wcp
 				throw new HelpException("Missing arguments");
 			
 			//Storage
-			Repo storage = Repo.Create(args[1]);
-			storage = new EncryptedRepo(storage, keyStorage, new RecipientID(keyStorage.DefaultKey.PublicKey));
+			Repo repo = Repo.Create(args[1]);
+			repo = new EncryptedRepo(repo, keyStorage, new RecipientID(keyStorage.DefaultKey.PublicKey));
 			
 			//Find message
 			Chunk chunk = null;
 			if (args[2].Length == 64)
 			{
 				ChunkHash id = ChunkHash.FromHashBytes(Hash.FromString(args[2]).bytes);
-				chunk = storage.ReadChunk(id);
+				chunk = repo.ReadChunk(id);
 			} else
 			{
-				ICollection<ChunkHash> messages = storage.GetMessageList();
+				ICollection<ChunkHash> messages = repo.GetMessageList();
 				foreach (ChunkHash bh in messages)
 				{
 					if (bh.ToString().StartsWith(args[2]))
-						chunk = storage.ReadChunk(bh);
+						chunk = repo.ReadChunk(bh);
 				}
 			}
 			
@@ -54,7 +56,7 @@ namespace Wcp
 			
 			Console.WriteLine("Found TreeMessage " + tm.Name);
 			string targetPath = Path.Combine(args[3], tm.Name);
-			TreeChunk.Extract(storage, tm.TreeChunkID, targetPath);
+			TreeChunk.Extract(repo, tm.TreeChunkID, targetPath);
 		}
 		
 	}

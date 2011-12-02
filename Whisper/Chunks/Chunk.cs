@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Whisper.Messages;
 using System.IO;
 using System.Security.Cryptography;
-using Whisper.Keys;
+using Whisper.Encryption;
 
 namespace Whisper.Chunks
 {
@@ -20,16 +20,11 @@ namespace Whisper.Chunks
 		/// <summary>
 		/// Hash of Data
 		/// </summary>
-		public ChunkHash ChunkHash;
+		public readonly ChunkHash ChunkHash;
 		/// <summary>
 		/// Chunk data as stored, can be either cleartext or encrypted.
 		/// </summary>
 		public byte[] Data { get; set; }
-
-		/// <summary>
-		/// Keys to decrypt Data
-		/// </summary>
-		public ChunkKeys Keys = null;
 
 		/// <summary>
 		/// Hash of cleartext data

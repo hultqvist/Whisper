@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using Whisper.Repos;
 using Whisper.Chunks;
 using ProtocolBuffers;
+using Whisper.Messages;
 
-namespace Whisper.Chunks
+namespace Whisper.ChunkGenerator
 {
 	/// <summary>
 	/// Collection of chunks into a larger stream(file).
@@ -20,7 +21,7 @@ namespace Whisper.Chunks
 		/// <summary>
 		/// Read file at path, split the contents in chunks and store them together with a StreamChunk.
 		/// </summary>
-		public static Chunk GenerateChunk(string path, Repo storage, ICollection<ChunkHash> chunkList)
+		public static TrippleID GenerateChunk(string path, Repo repo)
 		{
 			StreamChunk message = new StreamChunk();
 
@@ -37,25 +38,17 @@ namespace Whisper.Chunks
 						break;
 
 					Chunk c = new Chunk(data);
-					storage.WriteChunk(c);
+					ChunkHash ch = repo.WriteChunk(c);
 
-					message.Chunks.Add(new TrippleID(c));
+					message.Chunks.Add(new TrippleID(c.ClearHash, ch, c.CustomID));
 				}
 			}
 
 			byte[] messageBytes = StreamChunk.SerializeToBytes(message);
 			Chunk messageChunk = new Chunk(messageBytes);
+			ChunkHash messageHash = repo.WriteChunk(messageChunk);
 
-			storage.WriteChunk(messageChunk);
-
-			if (chunkList != null)
-			{
-				foreach (TrippleID cid in message.Chunks)
-					chunkList.Add(cid.ChunkHash);
-				chunkList.Add(messageChunk.ChunkHash);
-			}
-			
-			return messageChunk;
+			return new TrippleID(messageChunk.ClearHash, messageHash, messageChunk.CustomID);
 		}
 
 		public static void Extract(Repo store, TrippleID fileCID, string targetPath)

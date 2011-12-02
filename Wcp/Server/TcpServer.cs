@@ -9,7 +9,7 @@ namespace Wcp
 {
 	public static class TcpServer
 	{
-		public static void Run (Repo storage)
+		public static void Run (Repo repo)
 		{
 			TcpListener listener = new TcpListener (IPAddress.Loopback, PipeRepo.DefaultTcpPort);
 			listener.Start ();
@@ -20,7 +20,7 @@ namespace Wcp
 				Console.WriteLine ("Incoming from " + c.Client.RemoteEndPoint);
 
 				NetworkStream s = c.GetStream ();
-				PipeServer p = new PipeServer (s, s, storage);
+				PipeServer p = new PipeServer (s, s, repo);
 				Thread t = new Thread (p.Run);
 				t.Start ();
 			}

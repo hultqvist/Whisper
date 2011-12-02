@@ -67,13 +67,13 @@ namespace Whisper.Repos
 			h.TypeID = message.TypeID;
 			//Send Header
 #if DEBUG
-			//Console.WriteLine("PipeStorage: Header(" + h.TypeID + ", " + h.DebugNumber + ")");
+			//Console.WriteLine("PipeRepo: Header(" + h.TypeID + ", " + h.DebugNumber + ")");
 #endif
 			ProtocolParser.WriteBytes (output, PipeHeader.SerializeToBytes (h));
 
 			//Send Message
 #if DEBUG
-			//Console.WriteLine("PipeStorage: Message(" + message + ")");
+			//Console.WriteLine("PipeRepo: Message(" + message + ")");
 #endif
 			byte[] messageBytes = GetMessageBytes (message);
 			ProtocolParser.WriteBytes (output, messageBytes);
@@ -119,8 +119,6 @@ namespace Whisper.Repos
 
 			ReplyReadChunk reply = ReplyReadChunk.Deserialize (ProtocolParser.ReadBytes (input));
 			Chunk c = new Chunk (reply.ChunkData);
-			c.Keys = reply.Keys;
-			c.ChunkHash = ChunkHash.FromHashBytes (Hash.ComputeHash (c.Data).bytes);
 			//Verify Hash
 			if (c.ChunkHash.Equals (chunkHash) == false)
 				throw new InvalidDataException ("Hash mismatch: " + chunkHash);
@@ -128,14 +126,15 @@ namespace Whisper.Repos
 			return c;
 		}
 
-		public override void WriteChunk (Chunk chunk)
+		public override ChunkHash WriteChunk (Chunk chunk)
 		{
 			RequestWriteChunk msg = new RequestWriteChunk ();
 			msg.ChunkData = chunk.Data;
-			msg.Keys = chunk.Keys;
 			SendMessage (msg);
 
 			ReplyWriteChunk.Deserialize (ProtocolParser.ReadBytes (input));
+
+			return chunk.ChunkHash;
 		}
 
 		public override List<ChunkHash> GetMessageList ()

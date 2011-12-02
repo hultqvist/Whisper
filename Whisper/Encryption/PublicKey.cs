@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.IO;
 using Whisper.Chunks;
 
-namespace Whisper.Keys
+namespace Whisper.Encryption
 {
 	public partial class PublicKey : IKey
 	{

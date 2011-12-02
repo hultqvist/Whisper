@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Whisper.Keys
+namespace Whisper.Encryption
 {
 	/// <summary>
 	/// Empty, in memory key storage

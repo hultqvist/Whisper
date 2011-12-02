@@ -1,6 +1,6 @@
 using System;
 using Whisper;
-using Whisper.Keys;
+using Whisper.Encryption;
 using System.IO;
 
 namespace Wcp

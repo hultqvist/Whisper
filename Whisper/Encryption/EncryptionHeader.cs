@@ -9,3 +9,12 @@
 using System;
 using System.Collections.Generic;
 
+namespace Whisper.Encryption
+{
+	public partial class KeysHeader
+	{
+		//public byte[] IV { get; set; }	//Implemented by user elsewhere
+		//public List<byte[]> EncryptedKeys { get; set; }	//Implemented by user elsewhere
+	}
+
+}

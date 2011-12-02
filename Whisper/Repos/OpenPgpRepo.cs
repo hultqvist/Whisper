@@ -1,23 +1,52 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using Org.BouncyCastle.Bcpg;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Bcpg.OpenPgp;
-using Org.BouncyCastle.Bcpg;
-using System.IO;
+using Whisper.Chunks;
 
-namespace Whisper.Keys
+namespace Whisper.Repos
 {
 	/// <summary>
-	/// This is a test code gathered from the BouncyCastle examples.
-	/// It may in the future be used to encrypt chunks.
+	/// Encrypt chunk data using OpenPGP
 	/// </summary>
-	public class Pgp
+	public class OpenPgpRepo : RepoFilter
 	{
+		public List<PgpPublicKey> Recipients { get; private set; }
+
+		/// <summary>
+		/// Only for decryption
+		/// </summary>
+		public PgpSecretKey SecretKey { get; set; }
+
+		public OpenPgpRepo(Repo backendRepo) : base(backendRepo)
+		{
+			this.Recipients = new List<PgpPublicKey>();
+		}
+
+		public override ChunkHash WriteChunk(Chunk chunk)
+		{
+			Chunk encrypted = new Chunk(Encrypt(chunk.Data));
+			return base.WriteChunk(encrypted);
+		}
+
+		public override Chunk ReadChunk(ChunkHash chunkHash)
+		{
+			Chunk encrypted = base.ReadChunk(chunkHash);
+			return new Chunk(Decrypt(encrypted.Data));
+		}
+
 		const string password = "123456-7";
 
-		public Pgp()
+		/// <summary>
+		/// This is a test code gathered from the BouncyCastle examples.
+		/// It may in the future be used to encrypt chunks.
+		/// </summary>
+		public void RunTest()
 		{
 			PgpSecretKey key = GenerateKey();
 			SaveKey(key, "pubkey.pgp", "seckey.pgp");
@@ -25,9 +54,12 @@ namespace Whisper.Keys
 			PgpPublicKey pubKey = LoadPubKey("pubkey.pgp");
 			PgpSecretKey secKey = LoadSecKey("seckey.pgp");
 
+			Recipients.Add(pubKey);
+			SecretKey = secKey;
+
 			byte[] clearText = GenerateTestData();
-			byte[] cipherText = Encrypt(clearText, pubKey);
-			byte[] decryptText = Decrypt(cipherText, secKey);
+			byte[] cipherText = Encrypt(clearText);
+			byte[] decryptText = Decrypt(cipherText);
 
 			for (int n = 0; n < clearText.Length; n++)
 				if (clearText[n] != decryptText[n])
@@ -112,12 +144,13 @@ namespace Whisper.Keys
 			return test;
 		}
 
-		public byte[] Encrypt(byte[] clearText, PgpPublicKey pubKey)
+		public byte[] Encrypt(byte[] clearText)
 		{
 			byte[] bytes = Compress(clearText);
 
 			PgpEncryptedDataGenerator encGen = new PgpEncryptedDataGenerator(SymmetricKeyAlgorithmTag.Aes256, true, new SecureRandom());
-			encGen.AddMethod(pubKey);
+			foreach (PgpPublicKey pubKey in Recipients)
+				encGen.AddMethod(pubKey);
 
 			MemoryStream outputStream = new MemoryStream();
 			Stream cOut = encGen.Open(outputStream, bytes.Length);
@@ -127,7 +160,7 @@ namespace Whisper.Keys
 			return outputStream.ToArray();
 		}
 
-		public byte[] Decrypt(byte[] cipherText, PgpSecretKey secKey)
+		public byte[] Decrypt(byte[] cipherText)
 		{
 			MemoryStream ms = new MemoryStream(cipherText);
 			Stream inputStream = PgpUtilities.GetDecoderStream(ms);
@@ -150,7 +183,7 @@ namespace Whisper.Keys
 				break;
 			}
 
-			Stream clear = pbe.GetDataStream(secKey.ExtractPrivateKey(password.ToCharArray()));
+			Stream clear = pbe.GetDataStream(SecretKey.ExtractPrivateKey(password.ToCharArray()));
 
 			PgpObjectFactory plainFact = new PgpObjectFactory(clear);
 

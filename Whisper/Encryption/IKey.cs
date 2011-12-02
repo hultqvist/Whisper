@@ -1,6 +1,6 @@
 using System;
 
-namespace Whisper.Keys
+namespace Whisper.Encryption
 {
 	public interface IKey
 	{

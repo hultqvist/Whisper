@@ -6,7 +6,7 @@ using Whisper;
 using ProtocolBuffers;
 using System.Text;
 
-namespace Whisper.Keys
+namespace Whisper.Encryption
 {
 	public class DiskKeyStorage : KeyStorage
 	{

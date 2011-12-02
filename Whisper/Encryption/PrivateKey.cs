@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace Whisper.Keys
+namespace Whisper.Encryption
 {
 	public partial class PrivateKey : IKey
 	{
@@ -12,7 +12,7 @@ namespace Whisper.Keys
 		
 		public static PrivateKey Generate ()
 		{
-			return new Whisper.Keys.PrivateKey ();
+			return new Whisper.Encryption.PrivateKey ();
 		}
 		
 		/// <summary>

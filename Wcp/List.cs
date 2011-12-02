@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using Whisper;
 using Whisper.Repos;
 using Whisper.Messages;
-using Whisper.Keys;
+using Whisper.Encryption;
 
 namespace Wcp
 {
 	/// <summary>
-	/// List all available messages in a storage
+	/// List all available messages in a repo
 	/// </summary>
 	public static class List
 	{
@@ -18,12 +18,12 @@ namespace Wcp
 			if (args.Length != 2)
 				throw new HelpException ("Missing arguments");
 			
-			//Storage
-			Repo storage = Repo.Create (args [1]);
+			//Repo
+			Repo repo = Repo.Create (args [1]);
 			
 			//Find message
-			ICollection<ChunkHash > messages = storage.GetMessageList ();
-			EncryptedRepo es = new EncryptedRepo (storage, keyStorage);
+			ICollection<ChunkHash > messages = repo.GetMessageList ();
+			EncryptedRepo es = new EncryptedRepo (repo, keyStorage);
 			
 			//Iterate over all messages
 			foreach (ChunkHash mid in messages) {

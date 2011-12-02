@@ -1,6 +1,6 @@
 using System;
 using Whisper;
-using Whisper.Keys;
+using Whisper.Encryption;
 using Whisper.Chunks;
 using Whisper.Repos;
 using System.IO;
@@ -28,25 +28,25 @@ namespace Wcp
 			if (args.Length > 3 || args.Length < 2)
 				throw new HelpException ("Missing arguments");
 			
-			string storagePath = args [1];
+			string repoPath = args [1];
 			
-			//Storage
-			Repo storage = Repo.Create (storagePath);
+			//Repository
+			Repo repo = Repo.Create (repoPath);
 			
 			//Sender and Recipient keys
 			PublicKey recipientKey = null;
 			if (recipientName != null) {
 				recipientKey = keyStorage.GetPublic (recipientName);
-				EncryptedRepo es = new EncryptedRepo (storage, keyStorage);
+				EncryptedRepo es = new EncryptedRepo (repo, keyStorage);
 				es.AddKey (recipientKey);
-				storage = es;
+				repo = es;
 			}
 			
 			Chunk c = new Chunk (buffer);
 			
-			storage.WriteChunk (c);
+			repo.WriteChunk (c);
 			
-			Chunk c2 = storage.ReadChunk (c.ChunkHash);
+			Chunk c2 = repo.ReadChunk (c.ChunkHash);
 			
 			for (int n = 0; n < buffer.Length; n++)
 				if (buffer [n] != c2.Data [n])

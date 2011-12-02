@@ -11,118 +11,6 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using ProtocolBuffers;
-namespace Whisper.Chunks
-{
-	public partial class ChunkKeys
-	{
-		public static ChunkKeys Deserialize(Stream stream)
-		{
-			ChunkKeys instance = new ChunkKeys();
-			Deserialize(stream, instance);
-			return instance;
-		}
-		
-		public static ChunkKeys Deserialize(byte[] buffer)
-		{
-			using(MemoryStream ms = new MemoryStream(buffer))
-				return Deserialize(ms);
-		}
-		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Chunks.ChunkKeys, new()
-		{
-			T instance = new T ();
-			Deserialize (stream, instance);
-			return instance;
-		}
-		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Chunks.ChunkKeys, new()
-		{
-			T instance = new T ();
-			Deserialize(buffer, instance);
-			return instance;
-		}
-		
-		public static void Deserialize (byte[] buffer, Whisper.Chunks.ChunkKeys instance)
-		{
-			using (MemoryStream ms = new MemoryStream(buffer))
-				Deserialize (ms, instance);
-		}
-		
-		public static Whisper.Chunks.ChunkKeys Deserialize(Stream stream, Whisper.Chunks.ChunkKeys instance)
-		{
-			if(instance.EncryptedKeys == null)
-				instance.EncryptedKeys = new List<byte[]>();
-			while (true)
-			{
-				ProtocolBuffers.Key key = null;
-				int keyByte = stream.ReadByte ();
-				if (keyByte == -1)
-					break;
-				//Optimized reading of known fields with field ID < 16
-				switch (keyByte) {
-				case 10: //Field 1 LengthDelimited
-					instance.IV = ProtocolParser.ReadBytes(stream);
-					break;
-				case 18: //Field 2 LengthDelimited
-					instance.EncryptedKeys.Add(ProtocolParser.ReadBytes(stream));
-					break;
-				default:
-					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
-					break;
-				}
-		
-				if (key == null)
-					continue;
-		
-				//Reading field ID > 16 and unknown field ID/wire type combinations
-				switch (key.Field) {
-				case 0:
-					throw new InvalidDataException("Invalid field id: 0, something went wrong in the stream");
-				default:
-					ProtocolParser.SkipKey(stream, key);
-					break;
-				}
-			}
-			
-			return instance;
-		}
-		
-		public static Whisper.Chunks.ChunkKeys Read(byte[] buffer, Whisper.Chunks.ChunkKeys instance)
-		{
-			using (MemoryStream ms = new MemoryStream(buffer))
-				Deserialize (ms, instance);
-			return instance;
-		}
-	
-		public static void Serialize(Stream stream, ChunkKeys instance)
-		{
-			if(instance.IV == null)
-				throw new ArgumentNullException("IV", "Required by proto specification.");
-			ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(1, Wire.LengthDelimited));
-			ProtocolParser.WriteBytes(stream, instance.IV);
-			if(instance.EncryptedKeys != null)
-			{
-				foreach(byte[] i2 in instance.EncryptedKeys)
-				{
-					ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(2, Wire.LengthDelimited));
-					ProtocolParser.WriteBytes(stream, i2);
-			
-				}
-			}
-		}
-		
-		public static byte[] SerializeToBytes(ChunkKeys instance)
-		{
-			using(MemoryStream ms = new MemoryStream())
-			{
-				Serialize(ms, instance);
-				return ms.ToArray();
-			}
-		}
-	}
-	
-
-}
 namespace Whisper.Repos.Pipe
 {
 	public partial class PipeHeader
@@ -154,10 +42,11 @@ namespace Whisper.Repos.Pipe
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.PipeHeader instance)
+		public static Whisper.Repos.Pipe.PipeHeader Deserialize (byte[] buffer, Whisper.Repos.Pipe.PipeHeader instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Repos.Pipe.PipeHeader Deserialize(Stream stream, Whisper.Repos.Pipe.PipeHeader instance)
@@ -255,10 +144,11 @@ namespace Whisper.Repos.Pipe
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestCustomHash instance)
+		public static Whisper.Repos.Pipe.RequestCustomHash Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Repos.Pipe.RequestCustomHash Deserialize(Stream stream, Whisper.Repos.Pipe.RequestCustomHash instance)
@@ -353,10 +243,11 @@ namespace Whisper.Repos.Pipe
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyCustomHash instance)
+		public static Whisper.Repos.Pipe.ReplyCustomHash Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyCustomHash instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Repos.Pipe.ReplyCustomHash Deserialize(Stream stream, Whisper.Repos.Pipe.ReplyCustomHash instance)
@@ -452,10 +343,11 @@ namespace Whisper.Repos.Pipe
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestReadChunk instance)
+		public static Whisper.Repos.Pipe.RequestReadChunk Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Repos.Pipe.RequestReadChunk Deserialize(Stream stream, Whisper.Repos.Pipe.RequestReadChunk instance)
@@ -550,10 +442,11 @@ namespace Whisper.Repos.Pipe
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyReadChunk instance)
+		public static Whisper.Repos.Pipe.ReplyReadChunk Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyReadChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Repos.Pipe.ReplyReadChunk Deserialize(Stream stream, Whisper.Repos.Pipe.ReplyReadChunk instance)
@@ -568,12 +461,6 @@ namespace Whisper.Repos.Pipe
 				switch (keyByte) {
 				case 10: //Field 1 LengthDelimited
 					instance.ChunkData = ProtocolParser.ReadBytes(stream);
-					break;
-				case 18: //Field 2 LengthDelimited
-					if(instance.Keys == null)
-						instance.Keys = Whisper.Chunks.ChunkKeys.Deserialize(ProtocolParser.ReadBytes(stream));
-					else
-						instance.Keys = Serializer.Read(ProtocolParser.ReadBytes(stream), instance.Keys);
 					break;
 				default:
 					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
@@ -609,15 +496,6 @@ namespace Whisper.Repos.Pipe
 			{
 				ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(1, Wire.LengthDelimited));
 				ProtocolParser.WriteBytes(stream, instance.ChunkData);
-			}
-			if(instance.Keys != null)
-			{
-				ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(2, Wire.LengthDelimited));
-				using(MemoryStream ms2 = new MemoryStream())
-				{
-					Whisper.Chunks.ChunkKeys.Serialize(ms2, instance.Keys);
-					ProtocolParser.WriteBytes(stream, ms2.ToArray());
-				}
 			}
 		}
 		
@@ -664,10 +542,11 @@ namespace Whisper.Repos.Pipe
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestWriteChunk instance)
+		public static Whisper.Repos.Pipe.RequestWriteChunk Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Repos.Pipe.RequestWriteChunk Deserialize(Stream stream, Whisper.Repos.Pipe.RequestWriteChunk instance)
@@ -682,12 +561,6 @@ namespace Whisper.Repos.Pipe
 				switch (keyByte) {
 				case 10: //Field 1 LengthDelimited
 					instance.ChunkData = ProtocolParser.ReadBytes(stream);
-					break;
-				case 18: //Field 2 LengthDelimited
-					if(instance.Keys == null)
-						instance.Keys = Whisper.Chunks.ChunkKeys.Deserialize(ProtocolParser.ReadBytes(stream));
-					else
-						instance.Keys = Serializer.Read(ProtocolParser.ReadBytes(stream), instance.Keys);
 					break;
 				default:
 					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
@@ -723,15 +596,6 @@ namespace Whisper.Repos.Pipe
 				throw new ArgumentNullException("ChunkData", "Required by proto specification.");
 			ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(1, Wire.LengthDelimited));
 			ProtocolParser.WriteBytes(stream, instance.ChunkData);
-			if(instance.Keys != null)
-			{
-				ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(2, Wire.LengthDelimited));
-				using(MemoryStream ms2 = new MemoryStream())
-				{
-					Whisper.Chunks.ChunkKeys.Serialize(ms2, instance.Keys);
-					ProtocolParser.WriteBytes(stream, ms2.ToArray());
-				}
-			}
 		}
 		
 		public static byte[] SerializeToBytes(RequestWriteChunk instance)
@@ -777,10 +641,11 @@ namespace Whisper.Repos.Pipe
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyWriteChunk instance)
+		public static Whisper.Repos.Pipe.ReplyWriteChunk Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyWriteChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Repos.Pipe.ReplyWriteChunk Deserialize(Stream stream, Whisper.Repos.Pipe.ReplyWriteChunk instance)
@@ -868,10 +733,11 @@ namespace Whisper.Repos.Pipe
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestMessageList instance)
+		public static Whisper.Repos.Pipe.RequestMessageList Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Repos.Pipe.RequestMessageList Deserialize(Stream stream, Whisper.Repos.Pipe.RequestMessageList instance)
@@ -959,10 +825,11 @@ namespace Whisper.Repos.Pipe
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyMessageList instance)
+		public static Whisper.Repos.Pipe.ReplyMessageList Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyMessageList instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Repos.Pipe.ReplyMessageList Deserialize(Stream stream, Whisper.Repos.Pipe.ReplyMessageList instance)
@@ -979,6 +846,7 @@ namespace Whisper.Repos.Pipe
 				switch (keyByte) {
 				case 10: //Field 1 LengthDelimited
 					instance.ChunkHash.Add(ProtocolParser.ReadBytes(stream));
+		
 					break;
 				default:
 					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
@@ -1064,10 +932,11 @@ namespace Whisper.Repos.Pipe
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestStoreMessage instance)
+		public static Whisper.Repos.Pipe.RequestStoreMessage Deserialize (byte[] buffer, Whisper.Repos.Pipe.RequestStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Repos.Pipe.RequestStoreMessage Deserialize(Stream stream, Whisper.Repos.Pipe.RequestStoreMessage instance)
@@ -1162,10 +1031,11 @@ namespace Whisper.Repos.Pipe
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyStoreMessage instance)
+		public static Whisper.Repos.Pipe.ReplyStoreMessage Deserialize (byte[] buffer, Whisper.Repos.Pipe.ReplyStoreMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Repos.Pipe.ReplyStoreMessage Deserialize(Stream stream, Whisper.Repos.Pipe.ReplyStoreMessage instance)
@@ -1227,25 +1097,6 @@ namespace ProtocolBuffers
 {
 	public static partial class Serializer
 	{
-		
-		public static Whisper.Chunks.ChunkKeys Read (Stream stream, Whisper.Chunks.ChunkKeys instance)
-		{
-			return Whisper.Chunks.ChunkKeys.Deserialize(stream, instance);
-		}
-		
-		public static Whisper.Chunks.ChunkKeys Read(byte[] buffer, Whisper.Chunks.ChunkKeys instance)
-		{
-			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Chunks.ChunkKeys.Deserialize (ms, instance);
-			return instance;
-		}
-		
-		public static void Write(Stream stream, Whisper.Chunks.ChunkKeys instance)
-		{
-			Whisper.Chunks.ChunkKeys.Serialize(stream, instance);
-		}
-		
-
 		
 		public static Whisper.Repos.Pipe.PipeHeader Read (Stream stream, Whisper.Repos.Pipe.PipeHeader instance)
 		{

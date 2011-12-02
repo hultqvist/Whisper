@@ -11,7 +11,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using ProtocolBuffers;
-namespace Whisper.Chunks
+namespace Whisper.Messages
 {
 	public partial class TrippleID
 	{
@@ -28,27 +28,28 @@ namespace Whisper.Chunks
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Chunks.TrippleID, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.Messages.TrippleID, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Chunks.TrippleID, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Messages.TrippleID, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Chunks.TrippleID instance)
+		public static Whisper.Messages.TrippleID Deserialize (byte[] buffer, Whisper.Messages.TrippleID instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
-		public static Whisper.Chunks.TrippleID Deserialize(Stream stream, Whisper.Chunks.TrippleID instance)
+		public static Whisper.Messages.TrippleID Deserialize(Stream stream, Whisper.Messages.TrippleID instance)
 		{
 			while (true)
 			{
@@ -89,7 +90,7 @@ namespace Whisper.Chunks
 			return instance;
 		}
 		
-		public static Whisper.Chunks.TrippleID Read(byte[] buffer, Whisper.Chunks.TrippleID instance)
+		public static Whisper.Messages.TrippleID Read(byte[] buffer, Whisper.Messages.TrippleID instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -128,7 +129,7 @@ namespace Whisper.Chunks
 	
 
 }
-namespace Whisper.Chunks
+namespace Whisper.ChunkGenerator
 {
 	public partial class StreamChunk
 	{
@@ -145,30 +146,31 @@ namespace Whisper.Chunks
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Chunks.StreamChunk, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.ChunkGenerator.StreamChunk, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Chunks.StreamChunk, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.ChunkGenerator.StreamChunk, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Chunks.StreamChunk instance)
+		public static Whisper.ChunkGenerator.StreamChunk Deserialize (byte[] buffer, Whisper.ChunkGenerator.StreamChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
-		public static Whisper.Chunks.StreamChunk Deserialize(Stream stream, Whisper.Chunks.StreamChunk instance)
+		public static Whisper.ChunkGenerator.StreamChunk Deserialize(Stream stream, Whisper.ChunkGenerator.StreamChunk instance)
 		{
 			if(instance.Chunks == null)
-				instance.Chunks = new List<Whisper.Chunks.TrippleID>();
+				instance.Chunks = new List<Whisper.Messages.TrippleID>();
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
@@ -181,7 +183,8 @@ namespace Whisper.Chunks
 					instance.Size = ProtocolParser.ReadUInt64(stream);;
 					break;
 				case 18: //Field 2 LengthDelimited
-					instance.Chunks.Add(Whisper.Chunks.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream)));
+					instance.Chunks.Add(Whisper.Messages.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream)));
+		
 					break;
 				default:
 					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
@@ -204,7 +207,7 @@ namespace Whisper.Chunks
 			return instance;
 		}
 		
-		public static Whisper.Chunks.StreamChunk Read(byte[] buffer, Whisper.Chunks.StreamChunk instance)
+		public static Whisper.ChunkGenerator.StreamChunk Read(byte[] buffer, Whisper.ChunkGenerator.StreamChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -217,12 +220,12 @@ namespace Whisper.Chunks
 			ProtocolParser.WriteUInt64(stream, instance.Size);
 			if(instance.Chunks != null)
 			{
-				foreach(Whisper.Chunks.TrippleID i2 in instance.Chunks)
+				foreach(Whisper.Messages.TrippleID i2 in instance.Chunks)
 				{
 					ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(2, Wire.LengthDelimited));
 					using(MemoryStream ms2 = new MemoryStream())
 					{
-						Whisper.Chunks.TrippleID.Serialize(ms2, i2);
+						Whisper.Messages.TrippleID.Serialize(ms2, i2);
 						ProtocolParser.WriteBytes(stream, ms2.ToArray());
 					}
 			
@@ -242,7 +245,7 @@ namespace Whisper.Chunks
 	
 
 }
-namespace Whisper.Chunks
+namespace Whisper.ChunkGenerator
 {
 	public partial class TreeFile
 	{
@@ -259,27 +262,28 @@ namespace Whisper.Chunks
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Chunks.TreeFile, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.ChunkGenerator.TreeFile, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Chunks.TreeFile, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.ChunkGenerator.TreeFile, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Chunks.TreeFile instance)
+		public static Whisper.ChunkGenerator.TreeFile Deserialize (byte[] buffer, Whisper.ChunkGenerator.TreeFile instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
-		public static Whisper.Chunks.TreeFile Deserialize(Stream stream, Whisper.Chunks.TreeFile instance)
+		public static Whisper.ChunkGenerator.TreeFile Deserialize(Stream stream, Whisper.ChunkGenerator.TreeFile instance)
 		{
 			while (true)
 			{
@@ -294,9 +298,9 @@ namespace Whisper.Chunks
 					break;
 				case 18: //Field 2 LengthDelimited
 					if(instance.TreeChunkID == null)
-						instance.TreeChunkID = Whisper.Chunks.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream));
+						instance.TreeChunkID = Whisper.Messages.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream));
 					else
-						instance.TreeChunkID = Serializer.Read(ProtocolParser.ReadBytes(stream), instance.TreeChunkID);
+						instance.TreeChunkID = Whisper.Messages.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream), instance.TreeChunkID);
 					break;
 				default:
 					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
@@ -319,7 +323,7 @@ namespace Whisper.Chunks
 			return instance;
 		}
 		
-		public static Whisper.Chunks.TreeFile Read(byte[] buffer, Whisper.Chunks.TreeFile instance)
+		public static Whisper.ChunkGenerator.TreeFile Read(byte[] buffer, Whisper.ChunkGenerator.TreeFile instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -337,7 +341,7 @@ namespace Whisper.Chunks
 			ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(2, Wire.LengthDelimited));
 			using(MemoryStream ms2 = new MemoryStream())
 			{
-				Whisper.Chunks.TrippleID.Serialize(ms2, instance.TreeChunkID);
+				Whisper.Messages.TrippleID.Serialize(ms2, instance.TreeChunkID);
 				ProtocolParser.WriteBytes(stream, ms2.ToArray());
 			}
 		}
@@ -354,7 +358,7 @@ namespace Whisper.Chunks
 	
 
 }
-namespace Whisper.Chunks
+namespace Whisper.ChunkGenerator
 {
 	public partial class TreeChunk
 	{
@@ -371,32 +375,33 @@ namespace Whisper.Chunks
 				return Deserialize(ms);
 		}
 		
-		public static T Deserialize<T> (Stream stream) where T : Whisper.Chunks.TreeChunk, new()
+		public static T Deserialize<T> (Stream stream) where T : Whisper.ChunkGenerator.TreeChunk, new()
 		{
 			T instance = new T ();
 			Deserialize (stream, instance);
 			return instance;
 		}
 		
-		public static T Deserialize<T> (byte[] buffer) where T : Whisper.Chunks.TreeChunk, new()
+		public static T Deserialize<T> (byte[] buffer) where T : Whisper.ChunkGenerator.TreeChunk, new()
 		{
 			T instance = new T ();
 			Deserialize(buffer, instance);
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Chunks.TreeChunk instance)
+		public static Whisper.ChunkGenerator.TreeChunk Deserialize (byte[] buffer, Whisper.ChunkGenerator.TreeChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
-		public static Whisper.Chunks.TreeChunk Deserialize(Stream stream, Whisper.Chunks.TreeChunk instance)
+		public static Whisper.ChunkGenerator.TreeChunk Deserialize(Stream stream, Whisper.ChunkGenerator.TreeChunk instance)
 		{
 			if(instance.Directories == null)
-				instance.Directories = new List<Whisper.Chunks.TreeFile>();
+				instance.Directories = new List<Whisper.ChunkGenerator.TreeFile>();
 			if(instance.Files == null)
-				instance.Files = new List<Whisper.Chunks.TreeFile>();
+				instance.Files = new List<Whisper.ChunkGenerator.TreeFile>();
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
@@ -406,10 +411,12 @@ namespace Whisper.Chunks
 				//Optimized reading of known fields with field ID < 16
 				switch (keyByte) {
 				case 10: //Field 1 LengthDelimited
-					instance.Directories.Add(Whisper.Chunks.TreeFile.Deserialize(ProtocolParser.ReadBytes(stream)));
+					instance.Directories.Add(Whisper.ChunkGenerator.TreeFile.Deserialize(ProtocolParser.ReadBytes(stream)));
+		
 					break;
 				case 18: //Field 2 LengthDelimited
-					instance.Files.Add(Whisper.Chunks.TreeFile.Deserialize(ProtocolParser.ReadBytes(stream)));
+					instance.Files.Add(Whisper.ChunkGenerator.TreeFile.Deserialize(ProtocolParser.ReadBytes(stream)));
+		
 					break;
 				default:
 					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
@@ -432,7 +439,7 @@ namespace Whisper.Chunks
 			return instance;
 		}
 		
-		public static Whisper.Chunks.TreeChunk Read(byte[] buffer, Whisper.Chunks.TreeChunk instance)
+		public static Whisper.ChunkGenerator.TreeChunk Read(byte[] buffer, Whisper.ChunkGenerator.TreeChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
@@ -443,12 +450,12 @@ namespace Whisper.Chunks
 		{
 			if(instance.Directories != null)
 			{
-				foreach(Whisper.Chunks.TreeFile i1 in instance.Directories)
+				foreach(Whisper.ChunkGenerator.TreeFile i1 in instance.Directories)
 				{
 					ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(1, Wire.LengthDelimited));
 					using(MemoryStream ms1 = new MemoryStream())
 					{
-						Whisper.Chunks.TreeFile.Serialize(ms1, i1);
+						Whisper.ChunkGenerator.TreeFile.Serialize(ms1, i1);
 						ProtocolParser.WriteBytes(stream, ms1.ToArray());
 					}
 			
@@ -456,12 +463,12 @@ namespace Whisper.Chunks
 			}
 			if(instance.Files != null)
 			{
-				foreach(Whisper.Chunks.TreeFile i2 in instance.Files)
+				foreach(Whisper.ChunkGenerator.TreeFile i2 in instance.Files)
 				{
 					ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(2, Wire.LengthDelimited));
 					using(MemoryStream ms2 = new MemoryStream())
 					{
-						Whisper.Chunks.TreeFile.Serialize(ms2, i2);
+						Whisper.ChunkGenerator.TreeFile.Serialize(ms2, i2);
 						ProtocolParser.WriteBytes(stream, ms2.ToArray());
 					}
 			
@@ -512,10 +519,11 @@ namespace Whisper.Messages
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Messages.MessageHeader instance)
+		public static Whisper.Messages.MessageHeader Deserialize (byte[] buffer, Whisper.Messages.MessageHeader instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Messages.MessageHeader Deserialize(Stream stream, Whisper.Messages.MessageHeader instance)
@@ -616,10 +624,11 @@ namespace Whisper.Messages
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Messages.TreeMessage instance)
+		public static Whisper.Messages.TreeMessage Deserialize (byte[] buffer, Whisper.Messages.TreeMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Messages.TreeMessage Deserialize(Stream stream, Whisper.Messages.TreeMessage instance)
@@ -637,9 +646,9 @@ namespace Whisper.Messages
 					break;
 				case 18: //Field 2 LengthDelimited
 					if(instance.TreeChunkID == null)
-						instance.TreeChunkID = Whisper.Chunks.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream));
+						instance.TreeChunkID = Whisper.Messages.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream));
 					else
-						instance.TreeChunkID = Serializer.Read(ProtocolParser.ReadBytes(stream), instance.TreeChunkID);
+						instance.TreeChunkID = Whisper.Messages.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream), instance.TreeChunkID);
 					break;
 				default:
 					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
@@ -680,7 +689,7 @@ namespace Whisper.Messages
 			ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(2, Wire.LengthDelimited));
 			using(MemoryStream ms2 = new MemoryStream())
 			{
-				Whisper.Chunks.TrippleID.Serialize(ms2, instance.TreeChunkID);
+				Whisper.Messages.TrippleID.Serialize(ms2, instance.TreeChunkID);
 				ProtocolParser.WriteBytes(stream, ms2.ToArray());
 			}
 		}
@@ -728,10 +737,11 @@ namespace Whisper.Messages
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Messages.RouteMessage instance)
+		public static Whisper.Messages.RouteMessage Deserialize (byte[] buffer, Whisper.Messages.RouteMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Messages.RouteMessage Deserialize(Stream stream, Whisper.Messages.RouteMessage instance)
@@ -754,6 +764,7 @@ namespace Whisper.Messages
 					break;
 				case 26: //Field 3 LengthDelimited
 					instance.Chunks.Add(ProtocolParser.ReadBytes(stream));
+		
 					break;
 				default:
 					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
@@ -847,16 +858,17 @@ namespace Whisper.Messages
 			return instance;
 		}
 		
-		public static void Deserialize (byte[] buffer, Whisper.Messages.ListMessage instance)
+		public static Whisper.Messages.ListMessage Deserialize (byte[] buffer, Whisper.Messages.ListMessage instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
 				Deserialize (ms, instance);
+		   return instance;
 		}
 		
 		public static Whisper.Messages.ListMessage Deserialize(Stream stream, Whisper.Messages.ListMessage instance)
 		{
 			if(instance.List == null)
-				instance.List = new List<Whisper.Chunks.TrippleID>();
+				instance.List = new List<Whisper.Messages.TrippleID>();
 			while (true)
 			{
 				ProtocolBuffers.Key key = null;
@@ -866,7 +878,8 @@ namespace Whisper.Messages
 				//Optimized reading of known fields with field ID < 16
 				switch (keyByte) {
 				case 10: //Field 1 LengthDelimited
-					instance.List.Add(Whisper.Chunks.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream)));
+					instance.List.Add(Whisper.Messages.TrippleID.Deserialize(ProtocolParser.ReadBytes(stream)));
+		
 					break;
 				default:
 					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
@@ -900,12 +913,12 @@ namespace Whisper.Messages
 		{
 			if(instance.List != null)
 			{
-				foreach(Whisper.Chunks.TrippleID i1 in instance.List)
+				foreach(Whisper.Messages.TrippleID i1 in instance.List)
 				{
 					ProtocolParser.WriteKey(stream, new ProtocolBuffers.Key(1, Wire.LengthDelimited));
 					using(MemoryStream ms1 = new MemoryStream())
 					{
-						Whisper.Chunks.TrippleID.Serialize(ms1, i1);
+						Whisper.Messages.TrippleID.Serialize(ms1, i1);
 						ProtocolParser.WriteBytes(stream, ms1.ToArray());
 					}
 			
@@ -931,78 +944,78 @@ namespace ProtocolBuffers
 	public static partial class Serializer
 	{
 		
-		public static Whisper.Chunks.TrippleID Read (Stream stream, Whisper.Chunks.TrippleID instance)
+		public static Whisper.Messages.TrippleID Read (Stream stream, Whisper.Messages.TrippleID instance)
 		{
-			return Whisper.Chunks.TrippleID.Deserialize(stream, instance);
+			return Whisper.Messages.TrippleID.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Chunks.TrippleID Read(byte[] buffer, Whisper.Chunks.TrippleID instance)
+		public static Whisper.Messages.TrippleID Read(byte[] buffer, Whisper.Messages.TrippleID instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Chunks.TrippleID.Deserialize (ms, instance);
+				Whisper.Messages.TrippleID.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Chunks.TrippleID instance)
+		public static void Write(Stream stream, Whisper.Messages.TrippleID instance)
 		{
-			Whisper.Chunks.TrippleID.Serialize(stream, instance);
+			Whisper.Messages.TrippleID.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Chunks.StreamChunk Read (Stream stream, Whisper.Chunks.StreamChunk instance)
+		public static Whisper.ChunkGenerator.StreamChunk Read (Stream stream, Whisper.ChunkGenerator.StreamChunk instance)
 		{
-			return Whisper.Chunks.StreamChunk.Deserialize(stream, instance);
+			return Whisper.ChunkGenerator.StreamChunk.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Chunks.StreamChunk Read(byte[] buffer, Whisper.Chunks.StreamChunk instance)
+		public static Whisper.ChunkGenerator.StreamChunk Read(byte[] buffer, Whisper.ChunkGenerator.StreamChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Chunks.StreamChunk.Deserialize (ms, instance);
+				Whisper.ChunkGenerator.StreamChunk.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Chunks.StreamChunk instance)
+		public static void Write(Stream stream, Whisper.ChunkGenerator.StreamChunk instance)
 		{
-			Whisper.Chunks.StreamChunk.Serialize(stream, instance);
+			Whisper.ChunkGenerator.StreamChunk.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Chunks.TreeFile Read (Stream stream, Whisper.Chunks.TreeFile instance)
+		public static Whisper.ChunkGenerator.TreeFile Read (Stream stream, Whisper.ChunkGenerator.TreeFile instance)
 		{
-			return Whisper.Chunks.TreeFile.Deserialize(stream, instance);
+			return Whisper.ChunkGenerator.TreeFile.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Chunks.TreeFile Read(byte[] buffer, Whisper.Chunks.TreeFile instance)
+		public static Whisper.ChunkGenerator.TreeFile Read(byte[] buffer, Whisper.ChunkGenerator.TreeFile instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Chunks.TreeFile.Deserialize (ms, instance);
+				Whisper.ChunkGenerator.TreeFile.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Chunks.TreeFile instance)
+		public static void Write(Stream stream, Whisper.ChunkGenerator.TreeFile instance)
 		{
-			Whisper.Chunks.TreeFile.Serialize(stream, instance);
+			Whisper.ChunkGenerator.TreeFile.Serialize(stream, instance);
 		}
 		
 
 		
-		public static Whisper.Chunks.TreeChunk Read (Stream stream, Whisper.Chunks.TreeChunk instance)
+		public static Whisper.ChunkGenerator.TreeChunk Read (Stream stream, Whisper.ChunkGenerator.TreeChunk instance)
 		{
-			return Whisper.Chunks.TreeChunk.Deserialize(stream, instance);
+			return Whisper.ChunkGenerator.TreeChunk.Deserialize(stream, instance);
 		}
 		
-		public static Whisper.Chunks.TreeChunk Read(byte[] buffer, Whisper.Chunks.TreeChunk instance)
+		public static Whisper.ChunkGenerator.TreeChunk Read(byte[] buffer, Whisper.ChunkGenerator.TreeChunk instance)
 		{
 			using (MemoryStream ms = new MemoryStream(buffer))
-				Whisper.Chunks.TreeChunk.Deserialize (ms, instance);
+				Whisper.ChunkGenerator.TreeChunk.Deserialize (ms, instance);
 			return instance;
 		}
 		
-		public static void Write(Stream stream, Whisper.Chunks.TreeChunk instance)
+		public static void Write(Stream stream, Whisper.ChunkGenerator.TreeChunk instance)
 		{
-			Whisper.Chunks.TreeChunk.Serialize(stream, instance);
+			Whisper.ChunkGenerator.TreeChunk.Serialize(stream, instance);
 		}
 		
 

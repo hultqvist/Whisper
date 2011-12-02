@@ -1,8 +1,7 @@
-option namespace = "Whisper.Proto";
 
 message tripple_ID
 {
-	option namespace = "Whisper.Chunks";
+	option namespace = "Whisper.Messages";
 	option triggers = true;
 
 	required bytes chunk_hash_bytes = 1 [access=protected];
@@ -12,7 +11,7 @@ message tripple_ID
 
 message stream_chunk
 {
-	option namespace = "Whisper.Chunks";
+	option namespace = "Whisper.ChunkGenerator";
 
 	required uint64 size = 1;
 	repeated tripple_ID chunks = 2;
@@ -20,7 +19,7 @@ message stream_chunk
 
 message tree_file
 {
-	option namespace = "Whisper.Chunks";
+	option namespace = "Whisper.ChunkGenerator";
 
 	required string name = 1;
 	required tripple_ID tree_chunk_ID = 2;
@@ -28,7 +27,7 @@ message tree_file
 
 message tree_chunk
 {
-	option namespace = "Whisper.Chunks";
+	option namespace = "Whisper.ChunkGenerator";
 
 	repeated tree_file directories = 1;
 	repeated tree_file files = 2;

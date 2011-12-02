@@ -3,7 +3,7 @@ using System.IO;
 using Whisper.Chunks;
 using System.Text;
 using System.Collections.Generic;
-using Whisper.Keys;
+using Whisper.Encryption;
 using ProtocolBuffers;
 
 namespace Whisper.Messages

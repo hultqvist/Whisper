@@ -1,11 +1,12 @@
 using System;
 using System.IO;
+using Whisper.Chunks;
 
-namespace Whisper.Chunks
+namespace Whisper.Messages
 {
 	/// <summary>
-	/// A triplet representing a single blob.
-	/// Hash of the possibly encrypted blob,
+	/// A triplet representing a single chunk.
+	/// Hash of the possibly encrypted chunk,
 	/// CustomID and hash of the cleartext data.
 	/// </summary>
 	public partial class TrippleID
@@ -23,11 +24,11 @@ namespace Whisper.Chunks
 		/// </summary>
 		public ClearHash ClearHash { get; set; }
 
-		public TrippleID(Chunk chunk)
+		public TrippleID(ClearHash clear, ChunkHash chunk, CustomID custom)
 		{
-			this.ChunkHash = chunk.ChunkHash;
-			this.CustomID = chunk.CustomID;
-			this.ClearHash = chunk.ClearHash;
+			this.ClearHash = clear;
+			this.ChunkHash = chunk;
+			this.CustomID = custom;
 		}
 
 		/// <summary>

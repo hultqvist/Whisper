@@ -9,7 +9,7 @@ using System.Net;
 namespace Whisper
 {
 	/// <summary>
-	/// Base class for chunk storage
+	/// Base class for chunk repositories
 	/// </summary>
 	public abstract class Repo
 	{
@@ -26,7 +26,7 @@ namespace Whisper
 					throw new ArgumentException ("Missing target path");
 				string host = name.Substring (6, pathsep - 6);
 				string path = name.Substring (pathsep + 1);
-				return new PipeRepo ("ssh", host + " wcp.exe " + path);
+				return new PipeRepo ("ssh", host + " wcp.exe pipe " + path);
 			}
 
 			if (name == "tcp:") {
@@ -62,9 +62,10 @@ namespace Whisper
 		public abstract Chunk ReadChunk (ChunkHash chunkHash);
 
 		/// <summary>
-		/// Put chunk data in storage.
+		/// Put chunk data in the repo.
+		/// Return chunk hash which can have changed if the chunk got encrypted before storing.
 		/// </summary>
-		public abstract void WriteChunk (Chunk chunk);
+		public abstract ChunkHash WriteChunk (Chunk chunk);
 
 		#endregion
 
