@@ -19,17 +19,18 @@ namespace Whisper.Chunks.ID
 	{
 		byte[] keyBuffer;
 		
-		public SenderID (PrivateKey senderKey)
+		public SenderID(PrivateKey senderKey)
 		{
-			keyBuffer = Encoding.ASCII.GetBytes (senderKey.ToXml ());
+			keyBuffer = Encoding.ASCII.GetBytes(senderKey.ToXml());
 		}
 
-		public CustomID GetID (Chunk chunk)
+		public CustomID GetID(Chunk chunk)
 		{
-			using (MemoryStream ms = new MemoryStream()) {
-				ms.Write (keyBuffer, 0, keyBuffer.Length);
-				ProtocolParser.WriteBytes (ms, chunk.ClearHash.bytes);
-				return CustomID.FromBytes (Hash.ComputeHash (ms.ToArray ()).bytes);
+			using (MemoryStream ms = new MemoryStream())
+			{
+				ms.Write(keyBuffer, 0, keyBuffer.Length);
+				ProtocolParser.WriteBytes(ms, chunk.ClearHash.bytes);
+				return CustomID.FromBytes(Hash.ComputeHash(ms.ToArray()).bytes);
 			}
 		}
 		

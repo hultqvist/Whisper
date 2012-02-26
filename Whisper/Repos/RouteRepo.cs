@@ -12,15 +12,15 @@ namespace Whisper.Repos
 	{
 		public RouteMessage RouteMessage { get; private set; }
 
-		public RouteRepo(Repo backendRepo) : base(backendRepo)
+		public RouteRepo (Repo backendRepo) : base(backendRepo)
 		{
-			this.RouteMessage = new RouteMessage();
+			this.RouteMessage = new RouteMessage ();
 		}
 
-		public override ChunkHash WriteChunk(Chunk chunk)
+		public override ChunkHash WriteChunk (Chunk chunk)
 		{
-			ChunkHash hash = base.WriteChunk(chunk);
-			this.RouteMessage.Chunks.Add(hash.bytes);
+			ChunkHash hash = base.WriteChunk (chunk);
+			this.RouteMessage.Chunks.Add (hash.bytes);
 			return hash;
 		}
 	}

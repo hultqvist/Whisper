@@ -6,7 +6,7 @@ namespace Whisper.Messages
 {
 	public partial class TreeMessage : Message
 	{
-		public TreeMessage(TrippleID tree, string name)
+		public TreeMessage (TrippleID tree, string name)
 		{
 			this.TreeChunkID = tree;
 			this.Name = name;
@@ -15,7 +15,7 @@ namespace Whisper.Messages
 		/// <summary>
 		/// For serialization only
 		/// </summary>
-		private TreeMessage()
+		private TreeMessage ()
 		{
 		}
 	}

@@ -8,25 +8,22 @@ namespace Whisper.Encryption
 	/// </summary>
 	public class MemoryKeyStorage : KeyStorage
 	{
-		public MemoryKeyStorage()
+		public MemoryKeyStorage ()
 		{
 		}
 
-		Dictionary<string, PrivateKey> privateKeys = new Dictionary<string, PrivateKey>();
-		Dictionary<string, PublicKey> publicKeys = new Dictionary<string, PublicKey>();
+		Dictionary<string, PrivateKey> privateKeys = new Dictionary<string, PrivateKey> ();
+		Dictionary<string, PublicKey> publicKeys = new Dictionary<string, PublicKey> ();
 
-		public override void Add(string name, IKey key)
+		public override void Add (string name, IKey key)
 		{
-			if (key is PrivateKey)
-			{
-				privateKeys.Add(name, (PrivateKey) key);
+			if (key is PrivateKey) {
+				privateKeys.Add (name, (PrivateKey)key);
 				if (DefaultKey == null)
-					DefaultKey = (PrivateKey) key;
-				publicKeys.Add(name, ((PrivateKey) key).PublicKey);
-			}
-			else
-			{
-				publicKeys.Add(name, (PublicKey) key);
+					DefaultKey = (PrivateKey)key;
+				publicKeys.Add (name, ((PrivateKey)key).PublicKey);
+			} else {
+				publicKeys.Add (name, (PublicKey)key);
 			}
 		}
 
@@ -42,14 +39,14 @@ namespace Whisper.Encryption
 			}
 		}
 
-		public override PublicKey GetPublic(string name)
+		public override PublicKey GetPublic (string name)
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException ();
 		}
 
-		public override PrivateKey GetPrivate(string name)
+		public override PrivateKey GetPrivate (string name)
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException ();
 		}
 	}
 }

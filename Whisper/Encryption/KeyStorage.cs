@@ -14,12 +14,12 @@ namespace Whisper.Encryption
 		public static KeyStorage Default {
 			get {
 				if (_default == null)
-					_default = new DiskKeyStorage();
+					_default = new DiskKeyStorage ();
 				return _default;
 			}
 		}
 
-		public abstract void Add(string name, IKey key);
+		public abstract void Add (string name, IKey key);
 
 		public virtual PrivateKey DefaultKey { get; set; }
 
@@ -27,8 +27,9 @@ namespace Whisper.Encryption
 
 		public abstract IEnumerable<PrivateKey> PrivateKeys { get; }
 
-		public abstract PublicKey GetPublic(string name);
-		public abstract PrivateKey GetPrivate(string name);
+		public abstract PublicKey GetPublic (string name);
+
+		public abstract PrivateKey GetPrivate (string name);
 	}
 }
 

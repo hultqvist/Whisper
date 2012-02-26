@@ -31,20 +31,20 @@ namespace Whisper.Chunks
 		/// </summary>
 		public ClearHash ClearHash;
 
-		public Chunk()
+		public Chunk ()
 		{
 		}
 
-		public Chunk(byte[] buffer)
+		public Chunk (byte[] buffer)
 		{
 			//Hash data
 			this.Data = buffer;
 
-			this.ClearHash = ClearHash.ComputeHash(buffer);
-			this.ChunkHash = ChunkHash.FromHashBytes(this.ClearHash.bytes);
+			this.ClearHash = ClearHash.ComputeHash (buffer);
+			this.ChunkHash = ChunkHash.FromHashBytes (this.ClearHash.bytes);
 		}
 
-		public override string ToString()
+		public override string ToString ()
 		{
 			return "Chunk(" + Data.Length + " bytes)";
 		}
@@ -53,9 +53,9 @@ namespace Whisper.Chunks
 		/// Verify the ClearID.ClearHash against chunk data.
 		/// The data is assumed to be decrypted, otherwise the verification will fail.
 		/// </summary>
-		public bool Verify(TrippleID id)
+		public bool Verify (TrippleID id)
 		{
-			if (id.ClearHash.Equals(ClearHash) == false)
+			if (id.ClearHash.Equals (ClearHash) == false)
 				return false;
 			return true;
 		}

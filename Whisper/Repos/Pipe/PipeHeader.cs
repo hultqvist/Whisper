@@ -12,9 +12,9 @@ namespace Whisper.Repos.Pipe
 	{
 		static uint nextDebug = 1;
 
-		public static PipeHeader Next()
+		public static PipeHeader Next ()
 		{
-			PipeHeader h = new PipeHeader();
+			PipeHeader h = new PipeHeader ();
 			h.DebugNumber = nextDebug;
 			nextDebug++;
 			return h;

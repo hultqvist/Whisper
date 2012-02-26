@@ -8,7 +8,7 @@ namespace Whisper
 		/// <summary>
 		/// Return the first item in the enumerable;
 		/// </summary>
-		public static T First<T>(this IEnumerable<T> e)
+		public static T First<T> (this IEnumerable<T> e)
 		{
 			foreach (T i in e)
 				return i;

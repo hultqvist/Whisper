@@ -11,34 +11,34 @@ namespace Whisper.Repos
 	{
 		Repo backend;
 
-		public RepoFilter(Repo backendRepo)
+		public RepoFilter (Repo backendRepo)
 		{
 			this.backend = backendRepo;
 		}
 
-		public override Chunk ReadChunk(ChunkHash chunkHash)
+		public override Chunk ReadChunk (ChunkHash chunkHash)
 		{
-			return backend.ReadChunk(chunkHash);
+			return backend.ReadChunk (chunkHash);
 		}
 
-		public override ChunkHash WriteChunk(Chunk chunk)
+		public override ChunkHash WriteChunk (Chunk chunk)
 		{
-			return backend.WriteChunk(chunk);
+			return backend.WriteChunk (chunk);
 		}
 
-		public override List<ChunkHash> GetMessageList()
+		public override List<ChunkHash> GetMessageList ()
 		{
-			return backend.GetMessageList();
+			return backend.GetMessageList ();
 		}
 
-		public override void StoreMessage(ChunkHash chunkHash)
+		public override void StoreMessage (ChunkHash chunkHash)
 		{
-			backend.StoreMessage(chunkHash);
+			backend.StoreMessage (chunkHash);
 		}
 
-		public override ChunkHash GetCustomHash(CustomID customID)
+		public override ChunkHash GetCustomHash (CustomID customID)
 		{
-			return backend.GetCustomHash(customID);
+			return backend.GetCustomHash (customID);
 		}
 	}
 }

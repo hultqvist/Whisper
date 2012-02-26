@@ -23,11 +23,11 @@ namespace Whisper.Watcher
 		/// </summary>
 		readonly PublicKey recipient;
 
-		public DirectoryWatcher(string directory, PublicKey recipient, Repo remoteRepo)
+		public DirectoryWatcher (string directory, PublicKey recipient, Repo remoteRepo)
 		{
-			this.path = Path.GetFullPath(directory);
-			if(Directory.Exists(this.path) == false)
-				throw new ArgumentException("Directory does not exist");
+			this.path = Path.GetFullPath (directory);
+			if (Directory.Exists (this.path) == false)
+				throw new ArgumentException ("Directory does not exist");
 			this.recipient = recipient;
 			this.remote = remoteRepo;
 		}

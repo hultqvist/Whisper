@@ -9,19 +9,19 @@ namespace Whisper.Repos.Pipe
 	{
 		public uint TypeID { get { return 1; } }
 
-		public override string ToString()
+		public override string ToString ()
 		{
-			return "RequestCustomHash: " + BitConverter.ToString(this.CustomID);
+			return "RequestCustomHash: " + BitConverter.ToString (this.CustomID);
 		}
 	}
 
 	public partial class ReplyCustomHash
 	{
-		public override string ToString()
+		public override string ToString ()
 		{
 			if (ChunkHash == null)
 				return "ReplyCustomHash: null";
-			return "ReplyCustomHash: " + BitConverter.ToString(this.ChunkHash);
+			return "ReplyCustomHash: " + BitConverter.ToString (this.ChunkHash);
 		}
 	}
 }

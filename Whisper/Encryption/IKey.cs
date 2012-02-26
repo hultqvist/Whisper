@@ -4,7 +4,7 @@ namespace Whisper.Encryption
 {
 	public interface IKey
 	{
-		string ToXml();
+		string ToXml ();
 	}
 }
 

@@ -11,10 +11,9 @@ namespace Wcp
 {
 	class MainClass
 	{
-		public static void Main(string[] args)
+		public static void Main (string[] args)
 		{
-			try
-			{
+			try {
 #if DEBUG_SERVER
 				ParseCommand(new string[]{ "tcp", "Repo/" });
 #elif DEBUG
@@ -29,13 +28,11 @@ namespace Wcp
 				}
 #endif
 #if !DEBUG
-				ParseCommand(args);
+				ParseCommand (args);
 #endif
-			}
-			catch (HelpException he)
-			{
-				Console.Error.WriteLine("Error: {0}", he.Message);
-				Console.WriteLine(@"
+			} catch (HelpException he) {
+				Console.Error.WriteLine ("Error: {0}", he.Message);
+				Console.WriteLine (@"
 Usage: wcf.exe <command> [...]
 Where command is:
 	put <source directory> <repo path> <recipient name>
@@ -47,44 +44,43 @@ Where command is:
 			}
 		}
 		
-		public static void ParseCommand(string[] args)
+		public static void ParseCommand (string[] args)
 		{
 			if (args.Length == 0)
-				throw new HelpException("Missing command argument");
+				throw new HelpException ("Missing command argument");
 
 			KeyStorage keyStorage = KeyStorage.Default;
 
-			switch (args[0].ToLower())
-			{
+			switch (args [0].ToLower ()) {
 			case "list":
-				List.Main(args, keyStorage);
+				List.Main (args, keyStorage);
 				break;
 			case "put":
-				Put.Main(args, keyStorage);
+				Put.Main (args, keyStorage);
 				break;
 			case "get":
-				Get.Main(args, keyStorage);
+				Get.Main (args, keyStorage);
 				break;
 			case "keys":
-				Keys.Main(args, keyStorage);
+				Keys.Main (args, keyStorage);
 				break;
 			//Serve a single repo via the pipe
 			//Usually via a remote ssh connection
 			case "pipe":
-				Repo pr = Repo.Create(args[1]);
-				PipeServer.Run(pr);
+				Repo pr = Repo.Create (args [1]);
+				PipeServer.Run (pr);
 				break;
 			//Listen to localhost and serve a single repo
 			//Used for debugging
 			case "tcp":
-				Repo tr = Repo.Create(args[1]);
-				TcpServer.Run(tr);
+				Repo tr = Repo.Create (args [1]);
+				TcpServer.Run (tr);
 				break;
 			case "test":
-				Test.Main(args, keyStorage);
+				Test.Main (args, keyStorage);
 				break;
 			default:
-				throw new HelpException("Unknown command: " + args[0]);
+				throw new HelpException ("Unknown command: " + args [0]);
 			}
 		}
 	}

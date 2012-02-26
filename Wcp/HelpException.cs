@@ -1,4 +1,5 @@
 using System;
+
 namespace Wcp
 {
 	/// <summary>
@@ -6,7 +7,7 @@ namespace Wcp
 	/// </summary>
 	public class HelpException : Exception
 	{
-		public HelpException(string message) : base(message)
+		public HelpException (string message) : base(message)
 		{
 		}
 	}

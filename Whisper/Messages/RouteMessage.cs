@@ -9,7 +9,7 @@ namespace Whisper.Messages
 	{
 		public RouteMessage ()
 		{
-			this.Chunks = new List<byte[]>();
+			this.Chunks = new List<byte[]> ();
 		}
 	}
 }

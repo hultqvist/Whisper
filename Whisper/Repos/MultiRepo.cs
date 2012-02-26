@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Whisper.Chunks;
+
 namespace Whisper.Repos
 {
 	/// <summary>
@@ -10,55 +11,50 @@ namespace Whisper.Repos
 	{
 		readonly IEnumerable<Repo> repos;
 
-		public MultiRepo(IEnumerable<Repo> repoList)
+		public MultiRepo (IEnumerable<Repo> repoList)
 		{
 			this.repos = repoList;
 		}
 
-		public override ChunkHash GetCustomHash(CustomID customID)
+		public override ChunkHash GetCustomHash (CustomID customID)
 		{
 			//foreach (Storage s in repos)
-			throw new System.NotImplementedException();
+			throw new System.NotImplementedException ();
 		}
 
-
-		public override Chunk ReadChunk(ChunkHash chunkHash)
+		public override Chunk ReadChunk (ChunkHash chunkHash)
 		{
-			foreach (Repo r in repos)
-			{
-				Chunk b = r.ReadChunk(chunkHash);
+			foreach (Repo r in repos) {
+				Chunk b = r.ReadChunk (chunkHash);
 				if (b != null)
 					return b;
 			}
 			return null;
 		}
 
-
-		public override ChunkHash WriteChunk(Chunk chunk)
+		public override ChunkHash WriteChunk (Chunk chunk)
 		{
 			ChunkHash ch = null;
 			foreach (Repo r in repos)
-				ch = r.WriteChunk(chunk);
+				ch = r.WriteChunk (chunk);
 			return ch;
 		}
 
-
-		public override List<ChunkHash> GetMessageList()
+		public override List<ChunkHash> GetMessageList ()
 		{
-			List<ChunkHash> list = new List<ChunkHash>();
-			foreach (Repo r in repos)
-			{
-				var sl = r.GetMessageList();
+			List<ChunkHash> list = new List<ChunkHash> ();
+			foreach (Repo r in repos) {
+				var sl = r.GetMessageList ();
 				foreach (ChunkHash bh in sl)
-					list.Add(bh);
+					list.Add (bh);
 			}
 			return list;
 		}
 
-		public override void StoreMessage(ChunkHash chunkHash)
+		public override void StoreMessage (ChunkHash chunkHash)
 		{
 			foreach (Repo r in repos)
-				r.StoreMessage(chunkHash);
+				r.StoreMessage (chunkHash);
 		}
 
 	}

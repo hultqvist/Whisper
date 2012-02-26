@@ -8,7 +8,6 @@ using Whisper.Messages;
 
 namespace Wcp
 {
-
 	public class Test
 	{
 		/// <summary>

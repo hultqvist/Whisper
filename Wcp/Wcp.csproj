@@ -10,7 +10,6 @@
     <RootNamespace>Wcp</RootNamespace>
     <AssemblyName>wcp</AssemblyName>
     <StartupObject>Wcp.MainClass</StartupObject>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

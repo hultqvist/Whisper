@@ -30,9 +30,9 @@ namespace Whisper
 			}
 
 			if (name == "tcp:") {
-				TcpClient tcp = new TcpClient();
-				tcp.Connect(IPAddress.Loopback, PipeRepo.DefaultTcpPort);
-				NetworkStream s = tcp.GetStream();
+				TcpClient tcp = new TcpClient ();
+				tcp.Connect (IPAddress.Loopback, PipeRepo.DefaultTcpPort);
+				NetworkStream s = tcp.GetStream ();
 				return new PipeRepo (s, s);
 			}
 

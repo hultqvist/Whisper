@@ -20,7 +20,6 @@ namespace ProtocolBuffers
 			}
 		}
 	}*/
-	
 	public static partial class ProtocolParser
 	{
 		
@@ -36,7 +35,7 @@ namespace ProtocolBuffers
 			
 			//Bytes
 			byte[] buffer = new byte[length];
-			if(length != 0)
+			if (length != 0)
 				stream.Read (buffer, 0, buffer.Length);
 			return buffer;
 		}

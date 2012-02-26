@@ -24,7 +24,7 @@ namespace Whisper.Messages
 		/// </summary>
 		public ClearHash ClearHash { get; set; }
 
-		public TrippleID(ClearHash clear, ChunkHash chunk, CustomID custom)
+		public TrippleID (ClearHash clear, ChunkHash chunk, CustomID custom)
 		{
 			this.ClearHash = clear;
 			this.ChunkHash = chunk;
@@ -34,25 +34,25 @@ namespace Whisper.Messages
 		/// <summary>
 		/// For serialization only
 		/// </summary>
-		private TrippleID()
+		private TrippleID ()
 		{
 		}
 
-		protected void BeforeSerialize()
+		protected void BeforeSerialize ()
 		{
-			this.ChunkHashBytes = ChunkHash.GetBytes(this.ChunkHash);
-			this.ClearHashBytes = ClearHash.GetBytes(this.ClearHash);
-			this.CustomIdBytes = CustomID.GetBytes(this.CustomID);
+			this.ChunkHashBytes = ChunkHash.GetBytes (this.ChunkHash);
+			this.ClearHashBytes = ClearHash.GetBytes (this.ClearHash);
+			this.CustomIdBytes = CustomID.GetBytes (this.CustomID);
 		}
 
-		protected void AfterDeserialize()
+		protected void AfterDeserialize ()
 		{
-			this.ChunkHash = ChunkHash.FromHashBytes(this.ChunkHashBytes);
-			this.ClearHash = ClearHash.FromHashBytes(this.ClearHashBytes);
-			this.CustomID = CustomID.FromBytes(this.CustomIdBytes);
+			this.ChunkHash = ChunkHash.FromHashBytes (this.ChunkHashBytes);
+			this.ClearHash = ClearHash.FromHashBytes (this.ClearHashBytes);
+			this.CustomID = CustomID.FromBytes (this.CustomIdBytes);
 		}
 
-		public override string ToString()
+		public override string ToString ()
 		{
 			return "Clear " + ChunkHash + " [" + ClearHash + "]";
 		}

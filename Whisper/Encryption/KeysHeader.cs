@@ -12,14 +12,14 @@ namespace Whisper.Encryption
 	/// </summary>
 	public partial class KeysHeader
 	{
-		public RijndaelManaged RM = new RijndaelManaged() { KeySize = 256, Mode = CipherMode.CBC};
+		public RijndaelManaged RM = new RijndaelManaged () { KeySize = 256, Mode = CipherMode.CBC};
 
 		public byte[] IV {
 			get { return RM.IV; }
 			set { RM.IV = value; }
 		}
 
-		public List<byte[]> EncryptedKeys = new List<byte[]>();
+		public List<byte[]> EncryptedKeys = new List<byte[]> ();
 	}
 }
 

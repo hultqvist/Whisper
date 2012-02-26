@@ -14,7 +14,7 @@ namespace Whisper.Repos.Pipe
 	{
 		public ReplyMessageList ()
 		{
-			this.ChunkHash = new List<byte[]>();	
+			this.ChunkHash = new List<byte[]> ();	
 		}
 	}
 }

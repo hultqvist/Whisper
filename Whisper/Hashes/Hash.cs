@@ -14,50 +14,50 @@ namespace Whisper
 
 		#region Constructors and Hash creators
 
-		protected Hash(byte[] hash)
+		protected Hash (byte[] hash)
 		{
 			if (hash == null)
-				throw new ArgumentNullException();
+				throw new ArgumentNullException ();
 			if (hash.Length != 32)
-				throw new ArgumentException("hash must be 32 bytes", "hash");
+				throw new ArgumentException ("hash must be 32 bytes", "hash");
 			
 			this.bytes = hash;
 		}
 
-		public static Hash FromString(string id)
+		public static Hash FromString (string id)
 		{
-			byte[] bytes = HexParser.ParseHex(id);
-			return new Hash(bytes);
+			byte[] bytes = HexParser.ParseHex (id);
+			return new Hash (bytes);
 		}
 
-		public static Hash ComputeHash(byte[] data)
+		public static Hash ComputeHash (byte[] data)
 		{
-			SHA256Managed sha = new SHA256Managed();
-			return new Hash(sha.ComputeHash(data));
+			SHA256Managed sha = new SHA256Managed ();
+			return new Hash (sha.ComputeHash (data));
 		}
 
-		public static Hash FromHashBytes(byte[] bytes)
+		public static Hash FromHashBytes (byte[] bytes)
 		{
 			if (bytes == null)
 				return null;
-			return new Hash(bytes);
+			return new Hash (bytes);
 		}
 
 		#endregion
 
-		public override string ToString()
+		public override string ToString ()
 		{
-			return BitConverter.ToString(bytes).Replace("-", "");
+			return BitConverter.ToString (bytes).Replace ("-", "");
 		}
 
-		public string ToHex()
+		public string ToHex ()
 		{
-			return BitConverter.ToString(bytes).Replace("-", "");
+			return BitConverter.ToString (bytes).Replace ("-", "");
 		}
 
 		#region Equals
 
-		public override bool Equals(object obj)
+		public override bool Equals (object obj)
 		{
 			Hash h2 = obj as Hash;
 			if (h2 == null)
@@ -69,17 +69,16 @@ namespace Whisper
 				return false;
 			if (bytes.Length != h2.bytes.Length)
 				return false;
-			for (int i = 0; i < bytes.Length; i++)
-			{
-				if (bytes[i] != h2.bytes[i])
+			for (int i = 0; i < bytes.Length; i++) {
+				if (bytes [i] != h2.bytes [i])
 					return false;
 			}
 			return true;
 		}
 
-		public override int GetHashCode()
+		public override int GetHashCode ()
 		{
-			return bytes.GetHashCode();
+			return bytes.GetHashCode ();
 		}
 
 		#endregion
