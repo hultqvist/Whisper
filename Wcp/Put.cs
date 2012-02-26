@@ -51,7 +51,7 @@ namespace Wcp
 			TreeMessage tm = new TreeMessage (tree, Path.GetDirectoryName (sourcePath));
 			Chunk tmc = Message.ToChunk (tm, senderKey);
 			ChunkHash tmch = er.WriteChunk (tmc);
-			er.StoreMessage (tmch);
+			er.StoreMessage ("file", tmch);
 
 			//RouteMessage
 			RouteMessage rm = rr.RouteMessage;
@@ -61,7 +61,7 @@ namespace Wcp
 			//Store unencrypted RouteMessage
 			Chunk rmChunk = Message.ToChunk (rm);
 			repo.WriteChunk (rmChunk);
-			repo.StoreMessage (rmChunk.ChunkHash);
+			repo.StoreMessage ("route", rmChunk.ChunkHash);
 			Console.WriteLine ("RouteMessage Stored");
 		}
 	}

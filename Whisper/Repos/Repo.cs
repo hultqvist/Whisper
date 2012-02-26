@@ -74,12 +74,18 @@ namespace Whisper
 		/// <summary>
 		/// Get a list of all available messages
 		/// </summary>
-		public abstract List<ChunkHash> GetMessageList ();
+		public abstract List<ChunkHash> GetMessageList (string prefix);
 
 		/// <summary>
 		/// Put message ChunkHash in special message list
 		/// </summary>
-		public abstract void StoreMessage (ChunkHash chunkHash);
+		/// <param name='prefix'>
+		/// A custom namespace for messages, can be used to separate different sources or protocols.
+		/// </param>
+		/// <param name='chunkHash'>
+		/// Hash of the chunk containing the message
+		/// </param>
+		public abstract void StoreMessage (string prefix, ChunkHash chunkHash);
 
 		#endregion
 

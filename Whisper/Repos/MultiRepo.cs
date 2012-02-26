@@ -40,21 +40,21 @@ namespace Whisper.Repos
 			return ch;
 		}
 
-		public override List<ChunkHash> GetMessageList ()
+		public override List<ChunkHash> GetMessageList (string prefix)
 		{
 			List<ChunkHash> list = new List<ChunkHash> ();
 			foreach (Repo r in repos) {
-				var sl = r.GetMessageList ();
+				var sl = r.GetMessageList (prefix);
 				foreach (ChunkHash bh in sl)
 					list.Add (bh);
 			}
 			return list;
 		}
 
-		public override void StoreMessage (ChunkHash chunkHash)
+		public override void StoreMessage (string prefix, ChunkHash chunkHash)
 		{
 			foreach (Repo r in repos)
-				r.StoreMessage (chunkHash);
+				r.StoreMessage (prefix, chunkHash);
 		}
 
 	}

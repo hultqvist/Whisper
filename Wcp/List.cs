@@ -22,7 +22,7 @@ namespace Wcp
 			Repo repo = Repo.Create (args [1]);
 			
 			//Find message
-			ICollection<ChunkHash > messages = repo.GetMessageList ();
+			ICollection<ChunkHash > messages = repo.GetMessageList ("file");
 			EncryptedRepo es = new EncryptedRepo (repo, keyStorage);
 			
 			//Iterate over all messages

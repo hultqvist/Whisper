@@ -145,9 +145,9 @@ namespace Wcp
 
 		void ProcessMessageList ()
 		{
-			RequestMessageList.Deserialize (ProtocolParser.ReadBytes (input));
+			var req = RequestMessageList.Deserialize (ProtocolParser.ReadBytes (input));
 			ReplyMessageList reply = new ReplyMessageList ();
-			List<ChunkHash > list = localRepo.GetMessageList ();
+			List<ChunkHash > list = localRepo.GetMessageList (req.Prefix);
 			foreach (ChunkHash ch in list)
 				reply.ChunkHash.Add (ch.bytes);
 			ProtocolParser.WriteBytes (output, ReplyMessageList.SerializeToBytes (reply));
@@ -157,7 +157,7 @@ namespace Wcp
 		{
 			RequestStoreMessage request = RequestStoreMessage.Deserialize (ProtocolParser.ReadBytes (input));
 			ReplyStoreMessage reply = new ReplyStoreMessage ();
-			localRepo.StoreMessage (ChunkHash.FromHashBytes (request.ChunkHash));
+			localRepo.StoreMessage (request.Prefix, ChunkHash.FromHashBytes (request.ChunkHash));
 			ProtocolParser.WriteBytes (output, ReplyStoreMessage.SerializeToBytes (reply));
 		}
 	}

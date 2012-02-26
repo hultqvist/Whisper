@@ -733,6 +733,9 @@ namespace Whisper.Repos.Pipe
 					break;
 				//Optimized reading of known fields with field ID < 16
 				switch (keyByte) {
+				case 10: //Field 1 LengthDelimited
+					instance.Prefix = ProtocolParser.ReadString (stream);
+					break;
 				default:
 					key = ProtocolParser.ReadKey ((byte)keyByte, stream);
 					break;
@@ -763,6 +766,10 @@ namespace Whisper.Repos.Pipe
 	
 		public static void Serialize (Stream stream, RequestMessageList instance)
 		{
+			if (instance.Prefix == null)
+				throw new ArgumentNullException ("Prefix", "Required by proto specification.");
+			ProtocolParser.WriteKey (stream, new ProtocolBuffers.Key (1, Wire.LengthDelimited));
+			ProtocolParser.WriteString (stream, instance.Prefix);
 		}
 		
 		public static byte[] SerializeToBytes (RequestMessageList instance)
@@ -927,6 +934,9 @@ namespace Whisper.Repos.Pipe
 				//Optimized reading of known fields with field ID < 16
 				switch (keyByte) {
 				case 10: //Field 1 LengthDelimited
+					instance.Prefix = ProtocolParser.ReadString (stream);
+					break;
+				case 18: //Field 2 LengthDelimited
 					instance.ChunkHash = ProtocolParser.ReadBytes (stream);
 					break;
 				default:
@@ -959,9 +969,13 @@ namespace Whisper.Repos.Pipe
 	
 		public static void Serialize (Stream stream, RequestStoreMessage instance)
 		{
+			if (instance.Prefix == null)
+				throw new ArgumentNullException ("Prefix", "Required by proto specification.");
+			ProtocolParser.WriteKey (stream, new ProtocolBuffers.Key (1, Wire.LengthDelimited));
+			ProtocolParser.WriteString (stream, instance.Prefix);
 			if (instance.ChunkHash == null)
 				throw new ArgumentNullException ("ChunkHash", "Required by proto specification.");
-			ProtocolParser.WriteKey (stream, new ProtocolBuffers.Key (1, Wire.LengthDelimited));
+			ProtocolParser.WriteKey (stream, new ProtocolBuffers.Key (2, Wire.LengthDelimited));
 			ProtocolParser.WriteBytes (stream, instance.ChunkHash);
 		}
 		

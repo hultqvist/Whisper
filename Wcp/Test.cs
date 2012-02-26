@@ -36,16 +36,16 @@ namespace Wcp
 			PublicKey recipientKey = null;
 			if (recipientName != null) {
 				recipientKey = keyStorage.GetPublic (recipientName);
-				EncryptedRepo es = new EncryptedRepo (repo, keyStorage);
-				es.AddKey (recipientKey);
-				repo = es;
+				EncryptedRepo er = new EncryptedRepo (repo, keyStorage);
+				er.AddKey (recipientKey);
+				repo = er;
 			}
 			
 			Chunk c = new Chunk (buffer);
 			
-			repo.WriteChunk (c);
+			var ch = repo.WriteChunk (c);
 			
-			Chunk c2 = repo.ReadChunk (c.ChunkHash);
+			Chunk c2 = repo.ReadChunk (ch);
 			
 			for (int n = 0; n < buffer.Length; n++)
 				if (buffer [n] != c2.Data [n])

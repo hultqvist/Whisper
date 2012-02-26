@@ -94,17 +94,21 @@ namespace Whisper.Repos
 			return chunk;
 		}
 
-		public override void StoreMessage (ChunkHash id)
+		public override void StoreMessage (string prefix, ChunkHash id)
 		{
-			string path = Path.Combine (messageRoot, id.ToString ());
+			string path = Path.Combine (messageRoot, Path.GetFileName (prefix));
+			Directory.CreateDirectory(path);
+			path = Path.Combine (path, id.ToString ());
 			File.WriteAllBytes (path, new byte[0]);
 		}
 
-		public override List<ChunkHash> GetMessageList ()
+		public override List<ChunkHash> GetMessageList (string prefix)
 		{
+			string path = Path.Combine (messageRoot, Path.GetFileName (prefix));
+
 			List<ChunkHash > list = new List<ChunkHash> ();
-			string[] files = Directory.GetFiles (messageRoot);
-			
+			string[] files = Directory.GetFiles (path);
+
 			foreach (string file in files) {
 				string name = Path.GetFileName (file);
 				list.Add (ChunkHash.FromString (name));

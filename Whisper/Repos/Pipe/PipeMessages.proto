@@ -41,6 +41,7 @@ message reply_write_chunk
 
 message request_message_list
 {
+	required string prefix = 1;
 }
 
 message reply_message_list
@@ -50,7 +51,8 @@ message reply_message_list
 
 message request_store_message
 {
-	required bytes chunk_hash = 1;	
+	required string prefix = 1;
+	required bytes chunk_hash = 2;
 }
 
 message reply_store_message

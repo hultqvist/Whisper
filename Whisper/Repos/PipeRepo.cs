@@ -137,9 +137,9 @@ namespace Whisper.Repos
 			return chunk.ChunkHash;
 		}
 
-		public override List<ChunkHash> GetMessageList ()
+		public override List<ChunkHash> GetMessageList (string prefix)
 		{
-			RequestMessageList msg = new RequestMessageList ();
+			RequestMessageList msg = new RequestMessageList (prefix);
 			SendMessage (msg);
 
 			ReplyMessageList reply = ReplyMessageList.Deserialize (ProtocolParser.ReadBytes (input));
@@ -150,9 +150,10 @@ namespace Whisper.Repos
 			return list;
 		}
 
-		public override void StoreMessage (ChunkHash chunkHash)
+		public override void StoreMessage (string prefix, ChunkHash chunkHash)
 		{
 			RequestStoreMessage msg = new RequestStoreMessage ();
+			msg.Prefix = prefix;
 			msg.ChunkHash = chunkHash.bytes;
 			SendMessage (msg);
 

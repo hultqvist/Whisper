@@ -31,7 +31,7 @@ namespace Wcp
 				ChunkHash id = ChunkHash.FromHashBytes (Hash.FromString (args [2]).bytes);
 				chunk = repo.ReadChunk (id);
 			} else {
-				ICollection<ChunkHash> messages = repo.GetMessageList ();
+				ICollection<ChunkHash> messages = repo.GetMessageList ("file");
 				foreach (ChunkHash bh in messages) {
 					if (bh.ToString ().StartsWith (args [2]))
 						chunk = repo.ReadChunk (bh);

@@ -19,12 +19,13 @@ namespace Wcp
 #elif DEBUG
 				if (args.Length == 0)
 				{
-					//string repoString = "Repo/";
-					//ParseCommand(new string[]{ "test", repoString, "Bob"});
+					ParseCommand(new string[]{ "test", "Repo/", "Bob"});
+					ParseCommand(new string[]{ "test", "tcp:", "Bob"});
 
-					//ParseCommand(new string[]{ "put", "Source/", "tcp:", "Bob" });
+					ParseCommand(new string[]{ "put", "Source/", "tcp:", "Bob" });
 					ParseCommand(new string[]{ "list", "tcp:" });
-					ParseCommand(new string[]{ "get", "tcp:", "C6", "Target/"});
+					//Third parameter must be adjusted to match one from the list command
+					ParseCommand(new string[]{ "get", "tcp:", "55", "Target/"});
 				}
 #endif
 #if !DEBUG
@@ -36,7 +37,7 @@ namespace Wcp
 Usage: wcf.exe <command> [...]
 Where command is:
 	put <source directory> <repo path> <recipient name>
-	list <repo path>
+	list <repo path> <prefix>
 	get <repo path> <message id> <target directory>
 	keys
 	keys generate <name>

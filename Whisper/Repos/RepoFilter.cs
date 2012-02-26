@@ -26,14 +26,14 @@ namespace Whisper.Repos
 			return backend.WriteChunk (chunk);
 		}
 
-		public override List<ChunkHash> GetMessageList ()
+		public override List<ChunkHash> GetMessageList (string prefix)
 		{
-			return backend.GetMessageList ();
+			return backend.GetMessageList (prefix);
 		}
 
-		public override void StoreMessage (ChunkHash chunkHash)
+		public override void StoreMessage (string prefix, ChunkHash chunkHash)
 		{
-			backend.StoreMessage (chunkHash);
+			backend.StoreMessage (prefix, chunkHash);
 		}
 
 		public override ChunkHash GetCustomHash (CustomID customID)

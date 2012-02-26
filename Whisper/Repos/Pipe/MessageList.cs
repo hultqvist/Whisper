@@ -7,6 +7,18 @@ namespace Whisper.Repos.Pipe
 {
 	public partial class RequestMessageList : IPipeMessage
 	{
+		/// <summary>
+		/// Only for internal use in serializer
+		/// </summary>
+		public RequestMessageList ()
+		{
+		}
+
+		public RequestMessageList (string prefix)
+		{
+			this.Prefix = prefix;
+		}
+
 		public uint TypeID { get { return 4; } }
 	}
 

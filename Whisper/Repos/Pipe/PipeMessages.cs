@@ -81,6 +81,8 @@ namespace Whisper.Repos.Pipe
 {
 	public partial class RequestMessageList
 	{
+		public string Prefix { get; set; }
+		
 	}
 
 }
@@ -97,6 +99,8 @@ namespace Whisper.Repos.Pipe
 {
 	public partial class RequestStoreMessage
 	{
+		public string Prefix { get; set; }
+		
 		public byte[] ChunkHash { get; set; }
 		
 	}
