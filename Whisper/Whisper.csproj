@@ -50,10 +50,6 @@
     <Compile Include="Messages\RouteMessage.cs" />
     <Compile Include="Messages\SignedMessage.cs" />
     <Compile Include="Messages\TreeMessage.cs" />
-    <Compile Include="Chunks\ID\IGenerateID.cs" />
-    <Compile Include="Chunks\ID\NullID.cs" />
-    <Compile Include="Chunks\ID\RecipientID.cs" />
-    <Compile Include="Chunks\ID\SenderID.cs" />
     <Compile Include="Repos\DiskRepo.cs" />
     <Compile Include="Repos\MultiRepo.cs" />
     <Compile Include="Repos\PipeRepo.cs" />
@@ -80,7 +76,6 @@
     <Compile Include="Messages\Messages.Serializer.cs" />
     <Compile Include="Repos\EncryptedRepo.cs" />
     <Compile Include="Repos\RepoFilter.cs" />
-    <Compile Include="Messages\TrippleID.cs" />
     <Compile Include="Encryption\EncryptionHeader.cs" />
     <Compile Include="Encryption\EncryptionHeader.Serializer.cs" />
     <Compile Include="Encryption\KeysHeader.cs" />
@@ -91,7 +86,6 @@
   <ItemGroup>
     <Folder Include="Chunks\" />
     <Folder Include="Hashes\" />
-    <Folder Include="Chunks\ID\" />
     <Folder Include="Repos\" />
     <Folder Include="Repos\Pipe\" />
     <Folder Include="ChunkGenerator\" />

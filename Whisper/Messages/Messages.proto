@@ -1,20 +1,10 @@
 
-message tripple_ID
-{
-	option namespace = "Whisper.Messages";
-	option triggers = true;
-
-	required bytes chunk_hash_bytes = 1 [access=protected];
-	optional bytes custom_id_bytes = 2 [access=protected];
-	optional bytes clear_hash_bytes = 3 [access=protected];
-}
-
 message stream_chunk
 {
 	option namespace = "Whisper.ChunkGenerator";
 
 	required uint64 size = 1;
-	repeated tripple_ID chunks = 2;
+	repeated bytes chunks = 2;
 }
 
 message tree_file
@@ -22,7 +12,7 @@ message tree_file
 	option namespace = "Whisper.ChunkGenerator";
 
 	required string name = 1;
-	required tripple_ID tree_chunk_ID = 2;
+	required bytes tree_chunk_hash = 2;
 }
 
 message tree_chunk
@@ -49,7 +39,7 @@ message tree_message
 	option namespace = "Whisper.Messages";
 	
 	required string name = 1;
-	required tripple_ID tree_chunk_ID = 2;
+	required bytes tree_chunk_hash = 2;
 }
 
 //MessageID = 2
@@ -72,5 +62,5 @@ message list_message
 {
 	option namespace = "Whisper.Messages";
 	
-	repeated tripple_ID list = 1;
+	repeated bytes list = 1;
 }

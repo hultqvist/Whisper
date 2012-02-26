@@ -6,7 +6,6 @@ using Whisper.Chunks;
 using Whisper.Messages;
 using Whisper.Repos;
 using Whisper.Encryption;
-using Whisper.Chunks.ID;
 using Whisper.ChunkGenerator;
 
 namespace Wcp
@@ -23,7 +22,7 @@ namespace Wcp
 			
 			//Storage
 			Repo repo = Repo.Create (args [1]);
-			repo = new EncryptedRepo (repo, keyStorage, new RecipientID (keyStorage.DefaultKey.PublicKey));
+			repo = new EncryptedRepo (repo, keyStorage);
 			
 			//Find message
 			Chunk chunk = null;
@@ -37,7 +36,7 @@ namespace Wcp
 						chunk = repo.ReadChunk (bh);
 				}
 			}
-			
+
 			Message message = Message.FromChunk (chunk, keyStorage);
 			if (message == null) {
 				Console.Error.WriteLine ("Message not found");
@@ -48,12 +47,12 @@ namespace Wcp
 				Console.Error.WriteLine ("Not a TreeMessage: " + message.GetType ().Name);
 				return;
 			}
-			
+
 			Console.WriteLine ("Found TreeMessage " + tm.Name);
 			string targetPath = Path.Combine (args [3], tm.Name);
-			TreeChunk.Extract (repo, tm.TreeChunkID, targetPath);
+			TreeChunk.Extract (repo, ChunkHash.FromHashBytes (tm.TreeChunkHash), targetPath);
 		}
-		
+
 	}
 }
 

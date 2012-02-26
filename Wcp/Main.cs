@@ -25,7 +25,7 @@ namespace Wcp
 					ParseCommand(new string[]{ "put", "Source/", "tcp:", "Bob" });
 					ParseCommand(new string[]{ "list", "tcp:" });
 					//Third parameter must be adjusted to match one from the list command
-					ParseCommand(new string[]{ "get", "tcp:", "55", "Target/"});
+					ParseCommand(new string[]{ "get", "tcp:", "84", "Target/"});
 				}
 #endif
 #if !DEBUG

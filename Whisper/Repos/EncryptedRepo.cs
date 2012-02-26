@@ -5,7 +5,6 @@ using System.Security.Cryptography;
 using Whisper.Chunks;
 using Whisper.Repos;
 using Whisper.Encryption;
-using Whisper.Chunks.ID;
 
 namespace Whisper.Repos
 {
@@ -14,7 +13,9 @@ namespace Whisper.Repos
 	/// </summary>
 	public class EncryptedRepo : RepoFilter
 	{
-		private readonly IGenerateID idGenerator;
+		/// <summary>
+		/// Only used for finding decryption key
+		/// </summary>
 		private readonly KeyStorage keyStorage;
 		/// <summary>
 		/// keys used for encryption
@@ -30,28 +31,8 @@ namespace Whisper.Repos
 		/// <param name="keyStorage">
 		/// If decrypting, this is where we look for private keys
 		/// </param>
-		public EncryptedRepo (Repo backendRepo, KeyStorage keyStorage) : this(backendRepo, keyStorage, null)
+		public EncryptedRepo (Repo backendRepo, KeyStorage keyStorage) : base(backendRepo)
 		{
-		}
-
-		/// <summary>
-		/// Encrypts all chunks before sending them to the backend repo
-		/// </summary>
-		/// <param name="backendRepo">
-		/// This is where the encrypted chunks are sent
-		/// </param>
-		/// <param name="keyStorage">
-		/// If decrypting, this is where we look for private keys
-		/// </param>
-		/// <param name="idgenerator">
-		/// Used to generate CustomID for all chunks
-		/// </param>
-		public EncryptedRepo (Repo backendRepo, KeyStorage keyStorage, IGenerateID idGenerator) : base(backendRepo)
-		{
-			if (idGenerator == null)
-				this.idGenerator = new NullID ();
-			else
-				this.idGenerator = idGenerator;
 			this.keyStorage = keyStorage;
 		}
 
@@ -75,9 +56,6 @@ namespace Whisper.Repos
 			
 			//Encrypt
 			Chunk encryptedChunk = Encrypt (chunk);
-
-			//Generate CustomID
-			chunk.CustomID = idGenerator.GetID (chunk);
 
 			//Reuse already existsing CustomID
 			if (chunk.CustomID != null) {

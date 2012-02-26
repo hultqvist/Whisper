@@ -8,28 +8,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace Whisper.Messages
-{
-	public partial class TrippleID
-	{
-		protected byte[] ChunkHashBytes { get; set; }
-		
-		protected byte[] CustomIdBytes { get; set; }
-		
-		protected byte[] ClearHashBytes { get; set; }
-		
-		//protected virtual void BeforeSerialize () {}
-		//protected virtual void AfterDeserialize () {}
-	}
-
-}
 namespace Whisper.ChunkGenerator
 {
 	public partial class StreamChunk
 	{
 		public ulong Size { get; set; }
 		
-		public List<Whisper.Messages.TrippleID> Chunks { get; set; }
+		public List<byte[]> Chunks { get; set; }
 		
 	}
 
@@ -40,7 +25,7 @@ namespace Whisper.ChunkGenerator
 	{
 		public string Name { get; set; }
 		
-		public Whisper.Messages.TrippleID TreeChunkID { get; set; }
+		public byte[] TreeChunkHash { get; set; }
 		
 	}
 
@@ -79,7 +64,7 @@ namespace Whisper.Messages
 	{
 		public string Name { get; set; }
 		
-		public Whisper.Messages.TrippleID TreeChunkID { get; set; }
+		public byte[] TreeChunkHash { get; set; }
 		
 	}
 
@@ -116,7 +101,7 @@ namespace Whisper.Messages
 	/// </summary>
 	public partial class ListMessage
 	{
-		public List<Whisper.Messages.TrippleID> List { get; set; }
+		public List<byte[]> List { get; set; }
 		
 	}
 

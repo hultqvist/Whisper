@@ -15,13 +15,13 @@ namespace Whisper.ChunkGenerator
 	{
 		public StreamChunk ()
 		{
-			Chunks = new List<TrippleID> ();
+			Chunks = new List<byte[]> ();
 		}
 
 		/// <summary>
 		/// Read file at path, split the contents in chunks and store them together with a StreamChunk.
 		/// </summary>
-		public static TrippleID GenerateChunk (string path, Repo repo)
+		public static ChunkHash GenerateChunk (string path, Repo repo)
 		{
 			StreamChunk message = new StreamChunk ();
 
@@ -38,7 +38,7 @@ namespace Whisper.ChunkGenerator
 					Chunk c = new Chunk (data);
 					ChunkHash ch = repo.WriteChunk (c);
 
-					message.Chunks.Add (new TrippleID (c.ClearHash, ch, c.CustomID));
+					message.Chunks.Add (ch.bytes);
 				}
 			}
 
@@ -46,22 +46,17 @@ namespace Whisper.ChunkGenerator
 			Chunk messageChunk = new Chunk (messageBytes);
 			ChunkHash messageHash = repo.WriteChunk (messageChunk);
 
-			return new TrippleID (messageChunk.ClearHash, messageHash, messageChunk.CustomID);
+			return messageHash;
 		}
 
-		public static void Extract (Repo store, TrippleID fileCID, string targetPath)
+		public static void Extract (Repo store, ChunkHash fileHash, string targetPath)
 		{
-			Chunk chunk = store.ReadChunk (fileCID.ChunkHash);
-			if (chunk.Verify (fileCID) == false)
-				throw new InvalidDataException ("ClearID verification failed");
+			Chunk chunk = store.ReadChunk (fileHash);
 			StreamChunk streamChunk = StreamChunk.Deserialize<StreamChunk> (chunk.Data);
-			
+
 			using (FileStream file = File.Open(targetPath, FileMode.Create)) {
-				foreach (TrippleID cid in streamChunk.Chunks) {
-					Chunk fc = store.ReadChunk (cid.ChunkHash);
-					if (fc.Verify (cid) == false)
-						throw new InvalidDataException ("ClearID verification failed");
-					
+				foreach (byte[] hashBytes in streamChunk.Chunks) {
+					Chunk fc = store.ReadChunk (ChunkHash.FromHashBytes (hashBytes));
 					file.Write (fc.Data, 0, fc.Data.Length);
 				}
 				

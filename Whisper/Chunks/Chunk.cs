@@ -53,9 +53,9 @@ namespace Whisper.Chunks
 		/// Verify the ClearID.ClearHash against chunk data.
 		/// The data is assumed to be decrypted, otherwise the verification will fail.
 		/// </summary>
-		public bool Verify (TrippleID id)
+		public bool Verify (ChunkHash ch)
 		{
-			if (id.ClearHash.Equals (ClearHash) == false)
+			if (ch.Equals (ChunkHash) == false)
 				return false;
 			return true;
 		}

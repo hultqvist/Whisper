@@ -20,14 +20,10 @@ namespace Whisper.Watcher
 		/// Where to send changes
 		/// </summary>
 		readonly Repo remote;
+		/// <summary>
+		/// Prefix for messages
+		/// </summary>
 		readonly string prefix;
-		readonly FileSystemWatcher fsw;
-
-		//States: Files
-		readonly List<WatchState> files = new List<WatchState> ();
-
-		//States: Hashes already sent
-		readonly List<ClearHash> hashes = new List<ClearHash> ();
 
 		public DirectoryWatcher (string directory, Repo remoteRepo, string prefix)
 		{
@@ -42,24 +38,27 @@ namespace Whisper.Watcher
 			//TODO
 
 			//Scan directory
+			Console.WriteLine ("Scanning...");
 			string[] files = Directory.GetFiles (path, "*", SearchOption.AllDirectories);
-
+			foreach (string f in files)
+				Console.WriteLine (f);
 
 			//Start watching
-			FileSystemWatcher fsw = new FileSystemWatcher ();
-			fsw.Path = path;
-			fsw.Changed += FileChanged;
-			fsw.Deleted +=  FileDeleted;
-			//fsw.Created += FileChanged;
-			fsw.Renamed += FileRenamed;
-			fsw.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
-			fsw.IncludeSubdirectories = true;
-			fsw.InternalBufferSize = 4096 * 10;
-			fsw.EnableRaisingEvents = true;
+			using (FileSystemWatcher fsw = new FileSystemWatcher ()) {
+				fsw.Path = path;
+				fsw.Changed += FileChanged;
+				fsw.Deleted += FileDeleted;
+				//fsw.Created += FileChanged;
+				fsw.Renamed += FileRenamed;
+				fsw.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
+				fsw.IncludeSubdirectories = true;
+				fsw.InternalBufferSize = 4096 * 10;
+				fsw.EnableRaisingEvents = true;
 
-			while (true) {
-				//var res = fsw.WaitForChanged (WatcherChangeTypes.All);
-				Thread.Sleep (5000);
+				while (true) {
+					//var res = fsw.WaitForChanged (WatcherChangeTypes.All);
+					Thread.Sleep (5000);
+				}
 			}
 
 		}

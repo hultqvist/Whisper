@@ -17,7 +17,7 @@ namespace Whisper.ChunkGenerator
 			this.Files = new List<TreeFile> ();
 		}
 
-		public static TrippleID GenerateChunk (string path, Repo repo)
+		public static ChunkHash GenerateChunk (string path, Repo repo)
 		{
 			string fullPath = Path.GetFullPath (path);
 			TreeChunk tree = new TreeChunk ();
@@ -27,7 +27,7 @@ namespace Whisper.ChunkGenerator
 			foreach (string d in dirs) {
 				TreeFile df = new TreeFile ();
 				df.Name = Path.GetFileName (d);
-				df.TreeChunkID = TreeChunk.GenerateChunk (d, repo);
+				df.TreeChunkHash = TreeChunk.GenerateChunk (d, repo).bytes;
 				tree.Directories.Add (df);
 			}
 
@@ -36,38 +36,29 @@ namespace Whisper.ChunkGenerator
 			foreach (string f in files) {
 				TreeFile ff = new TreeFile ();
 				ff.Name = Path.GetFileName (f);
-				ff.TreeChunkID = StreamChunk.GenerateChunk (f, repo);
+				ff.TreeChunkHash = StreamChunk.GenerateChunk (f, repo).bytes;
 				tree.Files.Add (ff);
 			}
 
 			Chunk treeChunk = new Chunk (TreeChunk.SerializeToBytes (tree));
 			ChunkHash ch = repo.WriteChunk (treeChunk);
 
-			return new TrippleID (treeChunk.ClearHash, ch, treeChunk.CustomID);
+			return ch;
 		}
 
-		public static void Extract (Repo store, TrippleID id, string targetPath)
+		public static void Extract (Repo store, ChunkHash cid, string targetPath)
 		{
 			Directory.CreateDirectory (targetPath);
 
-			ChunkHash cid = id.ChunkHash;
-			if (id.CustomID != null) {
-				ChunkHash custom = store.GetCustomHash (id.CustomID);
-				if (custom != null)
-					cid = custom;
-			}
 			Chunk c = store.ReadChunk (cid);
-			if (c.Verify (id) == false)
-				throw new InvalidDataException ("Invalid hash data");
 			TreeChunk tree = TreeChunk.Deserialize (c.Data);
-			;
 
 			foreach (TreeFile file in tree.Files) {
-				StreamChunk.Extract (store, file.TreeChunkID, Path.Combine (targetPath, file.Name));
+				StreamChunk.Extract (store, ChunkHash.FromHashBytes (file.TreeChunkHash), Path.Combine (targetPath, file.Name));
 			}
-			
+
 			foreach (TreeFile subdir in tree.Directories) {
-				TreeChunk.Extract (store, subdir.TreeChunkID, Path.Combine (targetPath, subdir.Name));
+				TreeChunk.Extract (store, ChunkHash.FromHashBytes (subdir.TreeChunkHash), Path.Combine (targetPath, subdir.Name));
 			}
 		}
 	}

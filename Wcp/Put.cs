@@ -5,7 +5,6 @@ using Whisper.Messages;
 using Whisper.Encryption;
 using Whisper.Repos;
 using Whisper.Chunks;
-using Whisper.Chunks.ID;
 using Whisper.ChunkGenerator;
 
 namespace Wcp
@@ -39,13 +38,13 @@ namespace Wcp
 			RouteRepo rr = new RouteRepo (repo);
 
 			//Prepare Encryption
-			EncryptedRepo er = new EncryptedRepo (rr, null, new RecipientID (recipientKey));
+			EncryptedRepo er = new EncryptedRepo (rr, null);
 			er.AddKey (recipientKey);
 
 			Console.Write ("Generating Tree...");
 
 			//Send Tree
-			TrippleID tree = TreeChunk.GenerateChunk (sourcePath, er);
+			ChunkHash tree = TreeChunk.GenerateChunk (sourcePath, er);
 
 			//TreeMessage
 			TreeMessage tm = new TreeMessage (tree, Path.GetDirectoryName (sourcePath));
